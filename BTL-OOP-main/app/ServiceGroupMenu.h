@@ -7,7 +7,7 @@
  * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra trùng tên, kiểm tra toàn vẹn dữ liệu khi xóa.
  */
 
-#include "app.h"
+#include "App.h"
 
 using namespace std;
 
@@ -25,9 +25,6 @@ private:
     void update();            // Cập nhật thông tin nhóm dịch vụ (Update)
     void remove();            // Xóa nhóm dịch vụ và kiểm tra ràng buộc (Delete)
 
-    // Các hàm tiện ích hỗ trợ nhập liệu
-    static string trim(const string& str);
-    static string inputNonEmptyString(const string& prompt);
 
 public:
     // Hàm khởi tạo nhận vào tham chiếu của 2 repository

@@ -1,6 +1,7 @@
 #include "ServiceGroupMenu.h"
 #include <iostream>
 #include <iomanip>
+#include <Utilities.h>
 
 using namespace std;
 
@@ -12,38 +13,6 @@ using namespace std;
 ServiceGroupMenu::ServiceGroupMenu(Repository<ServiceGroup>& sgRepo, Repository<Ticket>& tRepo)
     : serviceGroupRepository(sgRepo), ticketRepository(tRepo)
 {
-}
-
-/**
- * @brief Cắt bỏ khoảng trắng thừa ở hai đầu chuỗi ký tự
- */
-string ServiceGroupMenu::trim(const string& str)
-{
-    size_t first = str.find_first_not_of(" \t\r\n");
-    if (first == string::npos) return "";
-    size_t last = str.find_last_not_of(" \t\r\n");
-    return str.substr(first, (last - first + 1));
-}
-
-/**
- * @brief Nhập chuỗi ký tự từ bàn phím và đảm bảo không được để trống
- * @param prompt Lời nhắc nhập dữ liệu
- * @return Chuỗi ký tự hợp lệ đã được cắt khoảng trắng
- */
-string ServiceGroupMenu::inputNonEmptyString(const string& prompt)
-{
-    string input;
-    while (true)
-    {
-        cout << prompt;
-        getline(cin, input);
-        input = trim(input);
-        if (!input.empty())
-        {
-            return input;
-        }
-        cout << "Gia tri khong duoc de trong! Vui long nhap lai." << endl;
-    }
 }
 
 /**
@@ -83,6 +52,7 @@ void ServiceGroupMenu::run()
             continue;
         }
         cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng còn sót trong bộ đệm
+
 
         switch (choice)
         {
@@ -130,7 +100,6 @@ void ServiceGroupMenu::displayAll()
         cout << "Danh sach nhom dich vu dang trong!" << endl;
         return;
     }
-
     cout << left
          << setw(8)  << "Ma ID"
          << setw(25) << "Ten nhom dich vu"
@@ -153,7 +122,7 @@ void ServiceGroupMenu::displayAll()
  */
 void ServiceGroupMenu::findById()
 {
-    string id = inputNonEmptyString("Nhap ma nhom dich vu can tim (vi du NP001): ");
+    string id = Utils::inputNonEmtpyString("Nhap ma nhom dich vu can tim (vi du SG001): ");
     ServiceGroup* sg = serviceGroupRepository.findById(id);
 
     if (sg == nullptr)
@@ -176,7 +145,7 @@ void ServiceGroupMenu::findById()
 void ServiceGroupMenu::add()
 {
     cout << "--- Them nhom dich vu moi ---" << endl;
-    string name = inputNonEmptyString("Nhap ten nhom dich vu: ");
+    string name = Utils::inputNonEmtpyString("Nhap ten nhom dich vu: ");
 
     // Ràng buộc: Tên nhóm dịch vụ không được trùng lặp trong hệ thống
     for (const auto& existing : serviceGroupRepository.getAll())
@@ -188,7 +157,7 @@ void ServiceGroupMenu::add()
         }
     }
 
-    string description = inputNonEmptyString("Nhap mo ta nhom dich vu: ");
+    string description = Utils::inputNonEmtpyString("Nhap mo ta nhom dich vu: ");
 
     ServiceGroup newSg(name, description);
     try
@@ -210,7 +179,7 @@ void ServiceGroupMenu::add()
 void ServiceGroupMenu::update()
 {
     cout << "--- Cap nhat thong tin nhom dich vu ---" << endl;
-    string id = inputNonEmptyString("Nhap ma nhom dich vu can cap nhat: ");
+    string id = Utils::inputNonEmtpyString("Nhap ma nhom dich vu can cap nhat: ");
 
     ServiceGroup* sg = serviceGroupRepository.findById(id);
     if (sg == nullptr)
@@ -219,15 +188,17 @@ void ServiceGroupMenu::update()
         return;
     }
 
-    cout << "Thong tin hien tai: [" << sg->getId() << "] " << sg->getName()
-         << " | " << sg->getDescription()
-         << " | " << (sg->isActive() ? "Hoat dong" : "Tam dung") << endl;
+    ServiceGroup updated = *sg;
+
+    cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getName()
+         << " | " << updated.getDescription()
+         << " | " << (updated.isActive() ? "Hoat dong" : "Tam dung") << endl;
 
     // Cập nhật tên nhóm
     cout << "Nhap ten moi (nhan Enter de giu nguyen): ";
     string newName;
     getline(cin, newName);
-    newName = trim(newName);
+    newName = Utils::trim(newName);
     if (!newName.empty())
     {
         // Ràng buộc: Tên mới không được trùng với tên của nhóm dịch vụ khác
@@ -239,40 +210,47 @@ void ServiceGroupMenu::update()
                 return;
             }
         }
-        sg->setName(newName);
+        updated.setName(newName);
     }
 
     // Cập nhật mô tả
     cout << "Nhap mo ta moi (nhan Enter de giu nguyen): ";
     string newDesc;
     getline(cin, newDesc);
-    newDesc = trim(newDesc);
+    newDesc = Utils::trim(newDesc);
     if (!newDesc.empty())
     {
-        sg->setDescription(newDesc);
+        updated.setDescription(newDesc);
     }
 
     // Cập nhật trạng thái hoạt động
     cout << "Doi trang thai (1: Hoat dong, 0: Tam dung, Enter: Giu nguyen): ";
     string statusChoice;
     getline(cin, statusChoice);
-    statusChoice = trim(statusChoice);
+    statusChoice = Utils::trim(statusChoice);
     if (statusChoice == "1")
     {
-        sg->activate();
+        updated.activate();
     }
     else if (statusChoice == "0")
     {
-        sg->deactivate();
+        updated.deactivate();
     }
 
-    if (serviceGroupRepository.update(*sg))
+    try
     {
-        cout << "Cap nhat nhom dich vu thanh cong!" << endl;
+        if (serviceGroupRepository.update(updated))
+        {
+            cout << "Cap nhat nhom dich vu thanh cong!" << endl;
+        }
+        else
+        {
+            cout << "Loi khi cap nhat nhom dich vu!" << endl;
+        }
     }
-    else
+    catch (const exception& e)
     {
-        cout << "Loi khi cap nhat nhom dich vu!" << endl;
+        cout << "Loi khi cap nhat nhom dich vu: " << e.what() << endl;
     }
 }
 
@@ -283,7 +261,7 @@ void ServiceGroupMenu::update()
 void ServiceGroupMenu::remove()
 {
     cout << "--- Xoa nhom dich vu ---" << endl;
-    string id = inputNonEmptyString("Nhap ma nhom dich vu can xoa: ");
+    string id = Utils::inputNonEmtpyString("Nhap ma nhom dich vu can xoa: ");
 
     ServiceGroup* sg = serviceGroupRepository.findById(id);
     if (sg == nullptr)
@@ -307,17 +285,24 @@ void ServiceGroupMenu::remove()
     cout << "Ban co chac chan muon xoa nhom dich vu " << id << " (" << sg->getName() << ")? (y/n): ";
     string confirm;
     getline(cin, confirm);
-    confirm = trim(confirm);
+    confirm = Utils::trim(confirm);
 
     if (confirm == "y" || confirm == "Y")
     {
-        if (serviceGroupRepository.remove(id))
+        try
         {
-            cout << "Da xoa nhom dich vu thanh cong!" << endl;
+            if (serviceGroupRepository.remove(id))
+            {
+                cout << "Da xoa nhom dich vu thanh cong!" << endl;
+            }
+            else
+            {
+                cout << "Loi: Khong the xoa nhom dich vu!" << endl;
+            }
         }
-        else
+        catch (const exception& e)
         {
-            cout << "Loi: Khong the xoa nhom dich vu!" << endl;
+            cout << "Loi khi xoa nhom dich vu: " << e.what() << endl;
         }
     }
     else

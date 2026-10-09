@@ -20,16 +20,24 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/app
     ${CMAKE_CURRENT_SOURCE_DIR}/Entity
     ${CMAKE_CURRENT_SOURCE_DIR}/Repository
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities
+    ${CMAKE_CURRENT_SOURCE_DIR}/FileManager
 )
 
 # Danh sách toàn bộ các file mã nguồn (.cpp) của dự án
 set(SOURCES
     main.cpp
-    app/app.cpp
+    app/App.cpp
     app/ServiceGroupMenu.cpp
     app/TicketMenu.cpp
+    app/AgentMenu.cpp
     Entity/ServiceGroup.cpp
     Entity/Ticket.cpp
+    Entity/Agent.cpp
+    FileManager/ServiceGroupFileMenuFile.cpp
+    FileManager/TicketMenuFile.cpp
+    FileManager/AgentFileManager.cpp
+    Utilities/Utilities.cpp
 )
 
 # Tạo file thực thi 'myprogram' (trên Windows sẽ tự động sinh myprogram.exe)

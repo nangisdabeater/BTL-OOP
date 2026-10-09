@@ -7,7 +7,7 @@
  * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra khóa ngoại ServiceGroupId, trạng thái hoạt động của nhóm dịch vụ.
  */
 
-#include "app.h"
+#include "App.h"
 
 using namespace std;
 

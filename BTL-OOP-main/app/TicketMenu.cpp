@@ -220,7 +220,7 @@ void TicketMenu::add()
     string title = inputNonEmptyString("Nhap tieu de ticket: ");
     string description = inputNonEmptyString("Nhap mo ta chi tiet van de: ");
     string customerId = inputNonEmptyString("Nhap ma khach hang: ");
-    string serviceGroupId = inputNonEmptyString("Nhap ma nhom dich vu (vi du NP001): ");
+    string serviceGroupId = inputNonEmptyString("Nhap ma nhom dich vu (vi du SG001): ");
 
     // Ràng buộc khóa ngoại: Kiểm tra tồn tại của nhóm dịch vụ
     ServiceGroup* sg = serviceGroupRepository.findById(serviceGroupId);
@@ -267,8 +267,10 @@ void TicketMenu::update()
         return;
     }
 
-    cout << "Thong tin hien tai: [" << t->getId() << "] " << t->getTitle()
-         << " | Trang thai: " << ticketStatusToString(t->getStatus()) << endl;
+    Ticket updated = *t;
+
+    cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getTitle()
+         << " | Trang thai: " << ticketStatusToString(updated.getStatus()) << endl;
 
     // Cập nhật tiêu đề
     cout << "Nhap tieu de moi (nhan Enter de giu nguyen): ";
@@ -277,7 +279,7 @@ void TicketMenu::update()
     newTitle = trim(newTitle);
     if (!newTitle.empty())
     {
-        t->setTitle(newTitle);
+        updated.setTitle(newTitle);
     }
 
     // Cập nhật mô tả
@@ -287,7 +289,7 @@ void TicketMenu::update()
     newDesc = trim(newDesc);
     if (!newDesc.empty())
     {
-        t->setDescription(newDesc);
+        updated.setDescription(newDesc);
     }
 
     // Cập nhật trạng thái
@@ -302,7 +304,7 @@ void TicketMenu::update()
             int st = stoi(statusChoice);
             if (st >= 0 && st <= 3)
             {
-                t->changeStatus(static_cast<TicketStatus>(st));
+                updated.changeStatus(static_cast<TicketStatus>(st));
             }
             else
             {
@@ -315,13 +317,20 @@ void TicketMenu::update()
         }
     }
 
-    if (ticketRepository.update(*t))
+    try
     {
-        cout << "Cap nhat ticket thanh cong!" << endl;
+        if (ticketRepository.update(updated))
+        {
+            cout << "Cap nhat ticket thanh cong!" << endl;
+        }
+        else
+        {
+            cout << "Loi khi cap nhat ticket!" << endl;
+        }
     }
-    else
+    catch (const exception& e)
     {
-        cout << "Loi khi cap nhat ticket!" << endl;
+        cout << "Loi khi cap nhat ticket: " << e.what() << endl;
     }
 }
 
@@ -354,13 +363,20 @@ void TicketMenu::remove()
 
     if (confirm == "y" || confirm == "Y")
     {
-        if (ticketRepository.remove(id))
+        try
         {
-            cout << "Da xoa ticket thanh cong!" << endl;
+            if (ticketRepository.remove(id))
+            {
+                cout << "Da xoa ticket thanh cong!" << endl;
+            }
+            else
+            {
+                cout << "Loi: Khong the xoa ticket!" << endl;
+            }
         }
-        else
+        catch (const exception& e)
         {
-            cout << "Loi: Khong the xoa ticket!" << endl;
+            cout << "Loi khi xoa ticket: " << e.what() << endl;
         }
     }
     else
