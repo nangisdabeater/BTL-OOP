@@ -1,3 +1,3 @@
 Ma ID    | Ten nhom dich vu          | Mo ta                                         | Trang thai
 -----------------------------------------------------------------------------------------------
-NP001    | toi bi ngu                | toi oc cho                                    | 1
+SG001    | toi bi ngu                | toi oc cho                                    | 1

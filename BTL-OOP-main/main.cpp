@@ -4,7 +4,7 @@
  * Khởi tạo đối tượng Application và kích hoạt luồng chạy ứng dụng.
  */
 
-#include "App/App.h"
+#include "app/App.h"
 
 using namespace std;
 
