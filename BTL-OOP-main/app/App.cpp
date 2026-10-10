@@ -2,6 +2,8 @@
 #include "ServiceGroupMenu.h"
 #include "TicketMenu.h"
 #include "AgentMenu.h"
+#include "SLALevelMenu.h"        //Added
+#include "TransferTicketMenu.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -21,11 +23,17 @@ using namespace std;
 Application::Application()
         : serviceGroupRepository("SG", "data/service_groups.txt"),
             ticketRepository("NP", "data/tickets.txt"),
-            agentRepository("AG", "data/agents.txt")
+            agentRepository("AG", "data/agents.txt"),
+
+        slaLevelRepository("SL", "data/sla_levels.txt"),                  //Added
+        transferTicketRepository("TF", "data/transfer_tickets.txt")
 {
     serviceGroupRepository.load();
     ticketRepository.load();
     agentRepository.load();
+        
+    slaLevelRepository.load();         //Added
+    transferTicketRepository.load();
 }
 
 /**
@@ -62,6 +70,15 @@ void Application::run()
         case 3: 
             agentMenu();
             break;
+
+        case 4:                   //Added
+            slaLevelMenu();
+            break;
+        case 5:
+            transferTicketMenu();
+            break;
+
+                
         case 0:
             running = false;
             cout << "Dang luu du lieu va thoat chuong trinh..." << endl;
@@ -111,6 +128,10 @@ void Application::showMainMenu()
     cout << "1. Quan ly nhom dich vu" << endl;
     cout << "2. Quan ly ticket" << endl;
     cout << "3. Quan ly dien thoai vien" << endl;
+
+    cout << "4. Quan ly muc SLA" << endl;                   //Added
+    cout << "5. Quan ly phieu chuyen xu ly" << endl;
+        
     cout << "0. Thoat" << endl;
 
     cout << "==============================" << endl;
@@ -139,5 +160,15 @@ void Application::ticketMenu()
  */
 void Application::agentMenu() {
     AgentMenu menu(agentRepository);
+    menu.run();
+}
+                                           //Added
+void Application::slaLevelMenu() {
+    SLALevelMenu menu(slaLevelRepository);
+    menu.run();
+}
+
+void Application::transferTicketMenu() {
+    TransferTicketMenu menu(transferTicketRepository, ticketRepository, agentRepository);
     menu.run();
 }
