@@ -31,12 +31,27 @@ set(SOURCES
     app/ServiceGroupMenu.cpp
     app/TicketMenu.cpp
     app/AgentMenu.cpp
+    
+#Sửa đổi
+    app/SLALevelMenu.cpp
+    app/TransferTicketMenu.cpp
+    
     Entity/ServiceGroup.cpp
     Entity/Ticket.cpp
     Entity/Agent.cpp
+    
+#Sửa đổi
+    Entity/SLALevel.cpp
+    Entity/TransferTicket.cpp
+    
     FileManager/ServiceGroupFileMenuFile.cpp
     FileManager/TicketMenuFile.cpp
     FileManager/AgentFileManager.cpp
+    
+#Sửa đổi
+    FileManager/SLALevelFileManager.cpp
+    FileManager/TransferTicketFileManager.cpp
+    
     Utilities/Utilities.cpp
 )
 
