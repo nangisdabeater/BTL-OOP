@@ -5,6 +5,8 @@
 #include "../Entity/Ticket.h"
 #include "../Entity/ServiceGroup.h"
 #include "../Entity/Agent.h"
+#include "../Entity/SLALevel.h"            //Added
+#include "../Entity/TransferTicket.h"      //Added
 
 template <typename T>
 class FileManager;
@@ -43,5 +45,21 @@ class FileManager<Agent>
 public:
     static std::vector<Agent> load(const std::string& filePath);
     static void save(const std::string& filePath, const std::vector<Agent>& data);
+};
+template <>
+class FileManager<SLALevel>
+{
+public:
+    static std::vector<SLALevel> load(const std::string& filePath);
+    static void save(const std::string& filePath, const std::vector<SLALevel>& data);
+};
+
+// Added
+template <>
+class FileManager<TransferTicket>
+{
+public:
+    static std::vector<TransferTicket> load(const std::string& filePath);
+    static void save(const std::string& filePath, const std::vector<TransferTicket>& data);
 };
   
