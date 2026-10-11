@@ -1,0 +1,5 @@
+Ma ID    | Ten kenh tiep nhan        | Mo ta                                    | Trang thai
+------------------------------------------------------------------------------------------
+CN001    | Hotline 1900 1000         | Tong dai tiep nhan cuoc goi 24/7         | 1
+CN002    | Email CSKH                | Hop thu cskh@hotro.vn                    | 1
+CN003    | Fanpage Facebook          | Kenh chat qua Facebook Messenger         | 1
