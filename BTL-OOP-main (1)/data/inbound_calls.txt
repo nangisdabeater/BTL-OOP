@@ -1,0 +1,5 @@
+Ma ID    | So dien thoai | Ma kenh   | Ma DTV    | Thoi gian          | Thoi luong | Trang thai   | Ghi chu
+--------------------------------------------------------------------------------------------------------------
+CA001    | 0987654321    | CN001     | AG001     | 2026-10-11 08:30   | 125        | ANSWERED     | Khach hang hoi ve thoi gian giao hang
+CA002    | 0912345678    | CN001     | AG001     | 2026-10-11 09:15   | 45         | ANSWERED     | Yeu cau huong dan kich hoat tai khoan
+CA003    | 0905555666    | CN001     |           | 2026-10-11 10:00   | 0          | MISSED       | Cuoc goi nho ngoai gio truc
