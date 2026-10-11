@@ -5,6 +5,9 @@
 #include "../Entity/Ticket.h"
 #include "../Entity/ServiceGroup.h"
 #include "../Entity/Agent.h"
+// [PHẦN THÊM MỚI] Include các thực thể mới
+#include "../Entity/ReceptionChannel.h"
+#include "../Entity/InboundCall.h"
 
 template <typename T>
 class FileManager;
@@ -44,4 +47,27 @@ public:
     static std::vector<Agent> load(const std::string& filePath);
     static void save(const std::string& filePath, const std::vector<Agent>& data);
 };
-  
+
+/**
+ * @brief [PHẦN THÊM MỚI] Chuyên biệt hóa lớp FileManager cho Thực thể ReceptionChannel (Kênh tiếp nhận)
+ * Quản lý đọc và ghi file dữ liệu riêng trong thư mục data: 'data/channels.txt'
+ */
+template <>
+class FileManager<ReceptionChannel>
+{
+public:
+    static std::vector<ReceptionChannel> load(const std::string& filePath);
+    static void save(const std::string& filePath, const std::vector<ReceptionChannel>& data);
+};
+
+/**
+ * @brief [PHẦN THÊM MỚI] Chuyên biệt hóa lớp FileManager cho Thực thể InboundCall (Cuộc gọi tiếp nhận)
+ * Quản lý đọc và ghi file dữ liệu riêng trong thư mục data: 'data/inbound_calls.txt'
+ */
+template <>
+class FileManager<InboundCall>
+{
+public:
+    static std::vector<InboundCall> load(const std::string& filePath);
+    static void save(const std::string& filePath, const std::vector<InboundCall>& data);
+};

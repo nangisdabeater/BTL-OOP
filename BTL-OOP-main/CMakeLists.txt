@@ -38,6 +38,15 @@ set(SOURCES
     FileManager/TicketMenuFile.cpp
     FileManager/AgentFileManager.cpp
     Utilities/Utilities.cpp
+    # [PHẦN THÊM MỚI] Các file thực thể Kênh tiếp nhận và Cuộc gọi tiếp nhận
+    Entity/ReceptionChannel.cpp
+    Entity/InboundCall.cpp
+    # [PHẦN THÊM MỚI] Các file quản lý file cho Kênh tiếp nhận và Cuộc gọi tiếp nhận
+    FileManager/ReceptionChannelFileManager.cpp
+    FileManager/InboundCallFileManager.cpp
+    # [PHẦN THÊM MỚI] Các file menu điều khiển giao diện
+    app/ReceptionChannelMenu.cpp
+    app/InboundCallMenu.cpp
 )
 
 # Tạo file thực thi 'myprogram' (trên Windows sẽ tự động sinh myprogram.exe)
