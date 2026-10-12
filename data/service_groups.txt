@@ -1,0 +1,3 @@
+Ma ID    | Ten dich vu               | Mo ta                               | Phong ban          | SLA(gio)   | Phi co ban   | Ngay ban hanh  | Trang thai
+-----------------------------------------------------------------------------------------------------------------------------------------
+SM001    | Dich vu Internet          | Ho tro mang                         | Phong Ky Thuat     | 24         | 150000.00    | 15/10/2026     | 1

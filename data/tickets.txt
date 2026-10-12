@@ -1,0 +1,3 @@
+Ma ID    | Tieu de                  | Mo ta chi tiet                      | Ma KH      | Ma DV      | Uu tien    | Chi phi      | Ngay tao     | Trang thai
+--------------------------------------------------------------------------------------------------------------------------------------------
+TK001    | Loi ket noi              | Khach hang mat mang                 | KH001      | SM001      | 3          | 50000.00     | 16/10/2026   | 0

@@ -1,0 +1,19 @@
+# Thu muc build
+build/
+bin/
+out/
+cmake-build-*/
+
+# File thuc thi va file tam
+*.exe
+*.obj
+*.o
+*.pdb
+*.ilk
+*.idb
+
+# Cau hinh IDE
+.vscode/
+.idea/
+*.suo
+*.user

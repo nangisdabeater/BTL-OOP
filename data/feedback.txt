@@ -1,0 +1,13 @@
+Ma ID    | Ma KH      | Ma Ticket    | Diem   | Ngay ban hanh  | Noi dung danh gia
+-----------------------------------------------------------------------------------------------------
+DG001    | KH001      | NP001        | 2      | 01/09/2026     | Rat hai long
+DG002    | KH002      | NP002        | 3      | 02/09/2026     | Tu van nhanh
+DG003    | KH003      | NP003        | 4      | 03/09/2026     | Ho tro tot
+DG004    | KH004      | NP004        | 5      | 04/09/2026     | Can cai thien thoi gian cho
+DG005    | KH005      | NP005        | 1      | 05/09/2026     | Nhan vien than thien
+DG006    | KH006      | NP006        | 2      | 06/09/2026     | Xu ly hieu qua
+DG007    | KH007      | NP007        | 3      | 07/09/2026     | Dich vu tot
+DG008    | KH008      | NP008        | 4      | 08/09/2026     | Thong tin ro rang
+DG009    | KH009      | NP009        | 5      | 09/09/2026     | Hai long
+DG010    | KH010      | NP010        | 1      | 10/09/2026     | Se tiep tuc su dung
+DG011    | KH011      | TK001        | 5      | 12/10/2026     | Dich vu rat tuyet voi
