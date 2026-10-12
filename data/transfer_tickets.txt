@@ -1,2 +1,3 @@
 Ma ID    | Ma Ticket  | Agent chuyen | Agent nhan | Ly do                          | Trang thai
 ------------------------------------------------------------------------------------------
+TF001    | TK001      | AG001      | AG002      | Chuyen xu ly ky thuat mang     | 0

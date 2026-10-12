@@ -1,2 +1,5 @@
 Ma ID    | Ten muc SLA          | Phan hoi(phut)  | Xu ly(gio)   | Uu tien
 ---------------------------------------------------------------------------
+SL001    | SLA Tieu chuan       | 60              | 24           | 3
+SL002    | SLA Khan cap         | 15              | 4            | 1
+SL003    | SLA Uu tien cao      | 30              | 8            | 2
