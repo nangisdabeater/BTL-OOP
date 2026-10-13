@@ -12,6 +12,7 @@
 #include "../Entity/TransferTicket.h"
 #include "../Entity/Customer.h"
 #include "../Entity/Feedback.h"
+#include "../Entity/AgentShift.h"
 
 template <typename T>
 class FileManager;
@@ -50,6 +51,18 @@ class FileManager<Agent>
 public:
     static std::vector<Agent> load(const std::string& filePath);
     static void save(const std::string& filePath, const std::vector<Agent>& data);
+};
+
+/**
+ * @brief Chuyên biệt hóa lớp FileManager cho Thực thể AgentShift
+ * Quản lý đọc và ghi file dữ liệu riêng trong thư mục data: 'data/agent_shifts.txt'
+ */
+template <>
+class FileManager<AgentShift> 
+{
+public:
+    static std::vector<AgentShift> load(const std::string& filePath);
+    static void save(const std::string& filePath, const std::vector<AgentShift>& data);
 };
 
 /**

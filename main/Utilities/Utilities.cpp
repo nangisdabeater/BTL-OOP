@@ -126,4 +126,36 @@ namespace Utils {
                       << minVal << " - " << maxVal << "]." << std::endl;
         }
     }
+
+    std::string join(const std::vector<std::string>& vec, const std::string& delemiter) {
+    std::string result = "";
+    for (size_t i = 0; i < vec.size(); i++) {
+        result += vec[i];
+        if (i < vec.size() - 1) result += delemiter;
+    }
+
+    return result.empty() ? "Chua phan cong" : result;
+    }
+
+    void backChoice() {
+    int backChoice;
+    while (true) {
+        std::cout << "0. Quay lai menu chinh" << std::endl;
+        std::cout << "Moi nhap lua chon: ";
+
+        if (!(std::cin >> backChoice)) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Loi: Vui long nhap so 0!" << std::endl;
+            continue;
+        }
+        std::cin.ignore(10000, '\n');
+
+        if (backChoice == 0) {
+            break;
+        } else {
+            std::cout << "Loi: Chuc nang khong ton tai!" << std::endl;
+        }
+    }
+}
 }
