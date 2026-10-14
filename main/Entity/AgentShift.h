@@ -1,10 +1,10 @@
 #pragma once 
 
 /**
- * @file ServiceGroup.h
+ * @file AgentShift.h
  * @brief Định nghĩa thực thể Ca trực (Agent Shift)
- * Đại diện cho 1 nhóm dịch vụ với các thuộc tính: mã ID, tên ca trực, 
- * ngày trực, giờ bắt đầu, giờ kết thúc, id nhân viên trực.
+ * Đại diện cho ca trực với các thuộc tính: mã ID, tên ca trực, 
+ * ngày trực, giờ bắt đầu, giờ kết thúc, danh sách ID nhân viên trực.
  */
 
 #include <string>

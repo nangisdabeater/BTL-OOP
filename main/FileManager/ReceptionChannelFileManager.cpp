@@ -28,7 +28,14 @@ vector<ReceptionChannel> FileManager<ReceptionChannel>::load(const string& fileP
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-        return result; // Nếu file chưa tồn tại thì trả về danh sách rỗng ban đầu
+        filesystem::path p(filePath);
+        if (p.has_parent_path())
+        {
+            filesystem::create_directories(p.parent_path());
+        }
+        ofstream outFile(filePath);
+        outFile.close();
+        return result;
     }
 
     string line;
@@ -37,7 +44,7 @@ vector<ReceptionChannel> FileManager<ReceptionChannel>::load(const string& fileP
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
         // Bỏ qua dòng trống hoặc dòng gạch ngang phân cách tiêu đề
-        if (firstChar == string::npos || line[firstChar] == '-') continue;
+        if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, name, desc, activeStr;
@@ -63,21 +70,30 @@ vector<ReceptionChannel> FileManager<ReceptionChannel>::load(const string& fileP
             // Nếu không đúng định dạng CNxxx thì bỏ qua dòng rác
             if (Utils::extractIdNumber(id, "CN") == -1)
             {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
 
-            ReceptionChannel ch(name, desc);
-            ch.setId(id);
-            if (activeStr == "0")
-            {
-                ch.deactivate();
-            }
-            else
-            {
-                ch.activate();
-            }
+            try {
+                ReceptionChannel ch(name, desc);
+                ch.setId(id);
+                if (activeStr == "0")
+                {
+                    ch.deactivate();
+                }
+                else
+                {
+                    ch.activate();
+                }
 
-            result.push_back(ch);
+                result.push_back(ch);
+            } catch (...) {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+            }
+        }
+        else
+        {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;

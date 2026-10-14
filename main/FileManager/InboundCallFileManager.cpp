@@ -28,7 +28,14 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-        return result; // Trả về rỗng nếu chưa có file
+        filesystem::path p(filePath);
+        if (p.has_parent_path())
+        {
+            filesystem::create_directories(p.parent_path());
+        }
+        ofstream outFile(filePath);
+        outFile.close();
+        return result;
     }
 
     string line;
@@ -37,7 +44,7 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
         // Bỏ qua dòng trống hoặc dòng phân cách gạch ngang
-        if (firstChar == string::npos || line[firstChar] == '-') continue;
+        if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, phone, chId, agId, time, durStr, status, note;
@@ -70,19 +77,29 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
             // KIỂM TRA ĐỊNH DẠNG ID: Yêu cầu định dạng tiền tố "CA" (CA001, CA002,...)
             if (Utils::extractIdNumber(id, "CA") == -1)
             {
-                continue; // Bỏ qua dữ liệu sai format
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
             }
 
             int dur = 0;
             try {
                 dur = stoi(durStr);
             } catch (...) {
-                dur = 0;
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
             }
 
-            InboundCall call(phone, chId, agId, time, dur, status, note);
-            call.setId(id);
-            result.push_back(call);
+            try {
+                InboundCall call(phone, chId, agId, time, dur, status, note);
+                call.setId(id);
+                result.push_back(call);
+            } catch (...) {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+            }
+        }
+        else
+        {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;

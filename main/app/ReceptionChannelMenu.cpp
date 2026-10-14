@@ -100,6 +100,7 @@ void ReceptionChannelMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach kenh tiep nhan dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -118,6 +119,7 @@ void ReceptionChannelMenu::displayAll()
              << setw(35) << ch.getDescription()
              << setw(15) << (ch.isActive() ? "Hoat dong" : "Ngung hoat dong") << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -125,12 +127,17 @@ void ReceptionChannelMenu::displayAll()
  */
 void ReceptionChannelMenu::findById()
 {
-    string id = Utils::inputNonEmtpyString("Nhap ma kenh tiep nhan can tim (vi du CN001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan can tim (vi du CN001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     ReceptionChannel* ch = channelRepository.findById(id);
 
     if (ch == nullptr)
     {
         cout << "Khong tim thay kenh tiep nhan voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -139,6 +146,7 @@ void ReceptionChannelMenu::findById()
     cout << "Ten kenh   : " << ch->getName() << endl;
     cout << "Mo ta      : " << ch->getDescription() << endl;
     cout << "Trang thai : " << (ch->isActive() ? "Hoat dong" : "Ngung hoat dong") << endl;
+    Utils::backChoice();
 }
 
 /**
@@ -149,7 +157,11 @@ void ReceptionChannelMenu::findById()
 void ReceptionChannelMenu::add()
 {
     cout << "--- Them kenh tiep nhan moi ---" << endl;
-    string name = Utils::inputNonEmtpyString("Nhap ten kenh tiep nhan (VD: Hotline 1900, Email, Zalo OA...): ");
+    string name = Utils::inputNonEmptyString("Nhap ten kenh tiep nhan (VD: Hotline 1900, Email, Zalo OA... nhap 0 de quay lai): ");
+    if (name == "0")
+    {
+        return;
+    }
 
     // Kiểm tra trùng lặp tên kênh bằng tiện ích isDuplicate
     bool duplicate = ValidationUtils::isDuplicate(
@@ -162,10 +174,11 @@ void ReceptionChannelMenu::add()
     if (duplicate)
     {
         cout << "Loi: Ten kenh tiep nhan '" << name << "' da ton tai tren he thong!" << endl;
+        Utils::backChoice();
         return;
     }
 
-    string description = Utils::inputNonEmtpyString("Nhap mo ta kenh tiep nhan: ");
+    string description = Utils::inputNonEmptyString("Nhap mo ta kenh tiep nhan: ");
 
     ReceptionChannel newChannel(name, description);
     try
@@ -179,6 +192,7 @@ void ReceptionChannelMenu::add()
     {
         cout << "Loi khi them kenh tiep nhan: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -187,12 +201,17 @@ void ReceptionChannelMenu::add()
 void ReceptionChannelMenu::update()
 {
     cout << "--- Cap nhat thong tin kenh tiep nhan ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma kenh tiep nhan can cap nhat: ");
+    string id = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan can cap nhat (vi du CN001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     ReceptionChannel* ch = channelRepository.findById(id);
     if (ch == nullptr)
     {
         cout << "Khong tim thay kenh tiep nhan voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -219,6 +238,7 @@ void ReceptionChannelMenu::update()
         if (duplicate)
         {
             cout << "Loi: Ten kenh tiep nhan '" << newName << "' da ton tai!" << endl;
+            Utils::backChoice();
             return;
         }
         updated.setName(newName);
@@ -249,6 +269,7 @@ void ReceptionChannelMenu::update()
     {
         cout << "Loi khi cap nhat kenh tiep nhan: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -257,12 +278,17 @@ void ReceptionChannelMenu::update()
 void ReceptionChannelMenu::toggleStatus()
 {
     cout << "--- Thay doi trang thai kenh tiep nhan ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma kenh tiep nhan: ");
+    string id = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan (vi du CN001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     ReceptionChannel* ch = channelRepository.findById(id);
     if (ch == nullptr)
     {
         cout << "Khong tim thay kenh tiep nhan voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -285,6 +311,7 @@ void ReceptionChannelMenu::toggleStatus()
     {
         cout << "Loi khi luu trang thai: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -294,12 +321,17 @@ void ReceptionChannelMenu::toggleStatus()
 void ReceptionChannelMenu::remove()
 {
     cout << "--- Xoa kenh tiep nhan ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma kenh tiep nhan can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan can xoa (vi du CN001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     ReceptionChannel* ch = channelRepository.findById(id);
     if (ch == nullptr)
     {
         cout << "Khong tim thay kenh tiep nhan voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -310,6 +342,7 @@ void ReceptionChannelMenu::remove()
         {
             cout << "Loi rang buoc: Kenh '" << id << "' dang co cuoc goi tiep nhan lien ket (VD ma " 
                  << call.getId() << ")! Khong the xoa." << endl;
+            Utils::backChoice();
             return;
         }
     }
@@ -341,4 +374,5 @@ void ReceptionChannelMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }

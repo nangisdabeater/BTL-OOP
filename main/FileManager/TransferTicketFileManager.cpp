@@ -1,4 +1,5 @@
 #include "FileManager.h"
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
@@ -17,14 +18,22 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
+        filesystem::path p(filePath);
+        if (p.has_parent_path())
+        {
+            filesystem::create_directories(p.parent_path());
+        }
+        ofstream outFile(filePath);
+        outFile.close();
         return result;
     }
 
     string line;
     while (getline(inFile, line))
     {
+        if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
-        if (firstChar == string::npos || line[firstChar] == '-') continue;
+        if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, ticketId, fromId, toId, reason, statusStr;
@@ -43,12 +52,21 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
             statusStr = Utils::trim(statusStr);
 
             if (id == "Ma ID") continue;
-            if (Utils::extractIdNumber(id, "TF") == -1) continue;
+
+            if (Utils::extractIdNumber(id, "TF") == -1)
+            {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
+            }
 
             try
             {
                 int st = stoi(statusStr);
-                if (st < 0 || st > 2) continue;   // trang thai ngoai khoang -> dong loi
+                if (st < 0 || st > 2)
+                {
+                    cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                    continue;
+                }
 
                 TransferTicket t(ticketId, fromId, toId, reason);
                 t.setId(id);
@@ -57,8 +75,12 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
             }
             catch (...)
             {
-                continue;
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
+        }
+        else
+        {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;

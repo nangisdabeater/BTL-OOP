@@ -65,6 +65,7 @@ void SLALevelMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach muc SLA dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
     cout << left
@@ -84,15 +85,21 @@ void SLALevelMenu::displayAll()
              << setw(14) << s.getResolveHours()
              << setw(8)  << s.getPriority() << endl;
     }
+    Utils::backChoice();
 }
 
 void SLALevelMenu::findById()
 {
-    string id = Utils::inputNonEmtpyString("Nhap ma muc SLA can tim (vi du SL001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma muc SLA can tim (vi du SL001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     SLALevel* s = slaRepository.findById(id);
     if (s == nullptr)
     {
         cout << "Khong tim thay muc SLA voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
     cout << "--- Thong tin muc SLA ---" << endl;
@@ -101,6 +108,7 @@ void SLALevelMenu::findById()
     cout << "TG phan hoi   : " << s->getResponseMinutes() << " phut" << endl;
     cout << "TG xu ly      : " << s->getResolveHours() << " gio" << endl;
     cout << "Muc uu tien   : " << s->getPriority() << endl;
+    Utils::backChoice();
 }
 
 /**
@@ -109,13 +117,18 @@ void SLALevelMenu::findById()
 void SLALevelMenu::add()
 {
     cout << "--- Them muc SLA moi ---" << endl;
-    string name = Utils::inputNonEmtpyString("Nhap ten muc SLA: ");
+    string name = Utils::inputNonEmptyString("Nhap ten muc SLA (nhap 0 de quay lai): ");
+    if (name == "0")
+    {
+        return;
+    }
 
     for (const auto& existing : slaRepository.getAll())
     {
         if (existing.getName() == name)
         {
             cout << "Loi rang buoc: Ten muc SLA '" << name << "' da ton tai!" << endl;
+            Utils::backChoice();
             return;
         }
     }
@@ -134,6 +147,7 @@ void SLALevelMenu::add()
     {
         cout << "Loi khi them muc SLA: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -143,12 +157,17 @@ void SLALevelMenu::add()
 void SLALevelMenu::update()
 {
     cout << "--- Cap nhat muc SLA ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma muc SLA can cap nhat: ");
+    string id = Utils::inputNonEmptyString("Nhap ma muc SLA can cap nhat (vi du SL001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     SLALevel* s = slaRepository.findById(id);
     if (s == nullptr)
     {
         cout << "Loi: Khong tim thay muc SLA voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -172,6 +191,7 @@ void SLALevelMenu::update()
                 if (other.getId() != id && other.getName() == line)
                 {
                     cout << "Loi rang buoc: Ten muc SLA '" << line << "' da ton tai!" << endl;
+                    Utils::backChoice();
                     return;
                 }
             }
@@ -207,6 +227,7 @@ void SLALevelMenu::update()
         // Gom ca loi rang buoc (invalid_argument) va loi nhap so (stoi)
         cout << "Cap nhat that bai, gia tri khong hop le: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -217,12 +238,17 @@ void SLALevelMenu::update()
 void SLALevelMenu::remove()
 {
     cout << "--- Xoa muc SLA ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma muc SLA can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma muc SLA can xoa (vi du SL001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     SLALevel* s = slaRepository.findById(id);
     if (s == nullptr)
     {
         cout << "Loi: Khong tim thay muc SLA voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -253,4 +279,5 @@ void SLALevelMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }

@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <iomanip>
 #include <stdexcept>
-#include <Utilities.h>
+#include "Utilities.h"
 
 using namespace std;
 
@@ -21,7 +21,15 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-        return result; // Nếu file chưa tồn tại thì trả về danh sách rỗng
+        // Tự tạo file rỗng nếu chưa tồn tại
+        filesystem::path p(filePath);
+        if (p.has_parent_path())
+        {
+            filesystem::create_directories(p.parent_path());
+        }
+        ofstream outFile(filePath);
+        outFile.close();
+        return result;
     }
 
     string line;
@@ -29,8 +37,8 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
     {
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
-        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách
-        if (firstChar == string::npos || line[firstChar] == '-') continue;
+        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách (bắt đầu bằng '-' hoặc '+')
+        if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, title, desc, customerId, sgId;
@@ -57,6 +65,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             // Kiểm tra định dạng ID với tiền tố "TK" (TKxxx)
             if (Utils::extractIdNumber(id, "TK") == -1)
             {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
 
@@ -90,18 +99,34 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
                 // Định dạng cũ: chỉ có status
                 try { statusCode = stoi(remainingCols[0]); } catch (...) { statusCode = 0; }
             }
-
-            Ticket t(title, desc, customerId, sgId, priority, estimatedFee, createdDate);
-            t.setId(id);
-            if (statusCode >= 0 && statusCode <= 3)
-            {
-                t.changeStatus(static_cast<TicketStatus>(statusCode));
-            }
             else
             {
-                t.changeStatus(TicketStatus::OPEN);
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
             }
-            result.push_back(t);
+
+            try
+            {
+                Ticket t(title, desc, customerId, sgId, priority, estimatedFee, createdDate);
+                t.setId(id);
+                if (statusCode >= 0 && statusCode <= 3)
+                {
+                    t.changeStatus(static_cast<TicketStatus>(statusCode));
+                }
+                else
+                {
+                    t.changeStatus(TicketStatus::OPEN);
+                }
+                result.push_back(t);
+            }
+            catch (...)
+            {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+            }
+        }
+        else
+        {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;

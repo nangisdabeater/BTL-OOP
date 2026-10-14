@@ -10,8 +10,8 @@ using namespace std;
  * @param tRepo Tham chiếu tới kho lưu trữ Ticket
  * @param sgRepo Tham chiếu tới kho lưu trữ Dịch vụ (để kiểm tra khóa ngoại)
  */
-TicketMenu::TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo)
-    : ticketRepository(tRepo), serviceGroupRepository(sgRepo)
+TicketMenu::TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo, Repository<Customer>& cRepo)
+    : ticketRepository(tRepo), serviceGroupRepository(sgRepo), customerRepository(cRepo)
 {
 }
 
@@ -125,6 +125,7 @@ void TicketMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach ticket dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -151,6 +152,7 @@ void TicketMenu::displayAll()
              << setw(12) << t.getCreatedDate()
              << setw(14) << ticketStatusToString(t.getStatus()) << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -158,12 +160,17 @@ void TicketMenu::displayAll()
  */
 void TicketMenu::findById()
 {
-    string id = Utils::inputNonEmptyString("Nhap ma ticket can tim (vi du TK001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma ticket can tim (vi du TK001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     Ticket* t = ticketRepository.findById(id);
 
     if (t == nullptr)
     {
         cout << "Khong tim thay ticket voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -184,6 +191,7 @@ void TicketMenu::findById()
     cout << "Chi phi uoc tinh: " << fixed << setprecision(2) << t->getEstimatedFee() << " VND" << endl;
     cout << "Ngay tao       : " << t->getCreatedDate() << endl;
     cout << "Trang thai     : " << ticketStatusToString(t->getStatus()) << endl;
+    Utils::backChoice();
 }
 
 /**
@@ -197,15 +205,46 @@ void TicketMenu::findById()
 void TicketMenu::add()
 {
     cout << "--- Tao ticket moi ---" << endl;
-    string title = Utils::inputNonEmptyString("Nhap tieu de ticket: ");
+    string title = Utils::inputNonEmptyString("Nhap tieu de ticket (nhap 0 de quay lai): ");
+    if (title == "0")
+    {
+        return;
+    }
     string description = Utils::inputNonEmptyString("Nhap mo ta chi tiet van de: ");
-    string customerId = Utils::inputNonEmptyString("Nhap ma khach hang (VD: KH001): ");
+    
+    // Ràng buộc khóa ngoại: Kiểm tra tồn tại của khách hàng trong CustomerRepository
+    string customerId;
+    while (true)
+    {
+        customerId = Utils::inputNonEmptyString("Nhap ma khach hang (VD: KH001, nhap 0 de quay lai): ");
+        if (customerId == "0")
+        {
+            cout << "Da huy thao tac tao ticket." << endl;
+            Utils::backChoice();
+            return;
+        }
+        Customer* cust = customerRepository.findById(customerId);
+        if (cust == nullptr)
+        {
+            cout << "Loi rang buoc: Khach hang voi ma '" << customerId << "' khong ton tai! Vui long nhap lai." << endl;
+        }
+        else
+        {
+            break;
+        }
+    }
     
     // Ràng buộc khóa ngoại: Kiểm tra tồn tại và hoạt động của dịch vụ
     string serviceGroupId;
     while (true)
     {
-        serviceGroupId = Utils::inputNonEmptyString("Nhap ma dich vu (vi du SM001): ");
+        serviceGroupId = Utils::inputNonEmptyString("Nhap ma dich vu (vi du SM001, nhap 0 de quay lai): ");
+        if (serviceGroupId == "0")
+        {
+            cout << "Da huy thao tac tao ticket." << endl;
+            Utils::backChoice();
+            return;
+        }
         ServiceGroup* sg = serviceGroupRepository.findById(serviceGroupId);
         if (sg == nullptr)
         {
@@ -237,6 +276,7 @@ void TicketMenu::add()
     {
         cout << "Loi khi tao ticket: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -245,12 +285,17 @@ void TicketMenu::add()
 void TicketMenu::update()
 {
     cout << "--- Cap nhat thong tin ticket ---" << endl;
-    string id = Utils::inputNonEmptyString("Nhap ma ticket can cap nhat (vi du TK001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma ticket can cap nhat (vi du TK001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     Ticket* t = ticketRepository.findById(id);
     if (t == nullptr)
     {
         cout << "Loi: Khong tim thay ticket voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -293,7 +338,7 @@ void TicketMenu::update()
             if (p >= 1 && p <= 4) updated.setPriority(p);
             else cout << "Muc uu tien khong hop le, giu nguyen cu." << endl;
         } catch (...) {
-            cout << "Muc uu tien khong hop le, giu nguyen cu." << endl;
+            cout << "Muc ưu tiên khong hop le, giu nguyen cu." << endl;
         }
     }
 
@@ -353,6 +398,7 @@ void TicketMenu::update()
     {
         cout << "Loi khi cap nhat ticket: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -361,12 +407,17 @@ void TicketMenu::update()
 void TicketMenu::remove()
 {
     cout << "--- Xoa ticket ---" << endl;
-    string id = Utils::inputNonEmptyString("Nhap ma ticket can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma ticket can xoa (vi du TK001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     Ticket* t = ticketRepository.findById(id);
     if (t == nullptr)
     {
         cout << "Loi: Khong tim thay ticket voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -402,4 +453,5 @@ void TicketMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }

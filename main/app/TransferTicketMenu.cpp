@@ -88,6 +88,7 @@ void TransferTicketMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach phieu chuyen xu ly dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
     cout << left
@@ -109,15 +110,21 @@ void TransferTicketMenu::displayAll()
              << setw(28) << t.getReason()
              << setw(12) << statusToString(t.getStatus()) << endl;
     }
+    Utils::backChoice();
 }
 
 void TransferTicketMenu::findById()
 {
-    string id = Utils::inputNonEmtpyString("Nhap ma phieu chuyen can tim (vi du TF001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma phieu chuyen can tim (vi du TF001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     TransferTicket* t = transferRepository.findById(id);
     if (t == nullptr)
     {
         cout << "Khong tim thay phieu chuyen voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -128,6 +135,7 @@ void TransferTicketMenu::findById()
     cout << "Agent nhan   : [" << t->getToAgentId() << "] " << agentNameOf(t->getToAgentId()) << endl;
     cout << "Ly do        : " << t->getReason() << endl;
     cout << "Trang thai   : " << statusToString(t->getStatus()) << endl;
+    Utils::backChoice();
 }
 
 /**
@@ -141,48 +149,66 @@ void TransferTicketMenu::findById()
 void TransferTicketMenu::add()
 {
     cout << "--- Tao phieu chuyen xu ly ---" << endl;
-    string ticketId = Utils::inputNonEmtpyString("Nhap ma ticket can chuyen: ");
+    string ticketId = Utils::inputNonEmptyString("Nhap ma ticket can chuyen (nhap 0 de quay lai): ");
+    if (ticketId == "0")
+    {
+        return;
+    }
 
     Ticket* ticket = ticketRepository.findById(ticketId);
     if (ticket == nullptr)
     {
         cout << "Loi rang buoc: Ticket '" << ticketId << "' khong ton tai!" << endl;
+        Utils::backChoice();
         return;
     }
     if (ticket->getStatus() == TicketStatus::RESOLVED || ticket->getStatus() == TicketStatus::CLOSED)
     {
         cout << "Loi rang buoc: Ticket '" << ticketId << "' da xu ly xong/da dong, khong the chuyen!" << endl;
+        Utils::backChoice();
         return;
     }
 
-    string fromId = Utils::inputNonEmtpyString("Nhap ma agent chuyen: ");
+    string fromId = Utils::inputNonEmptyString("Nhap ma agent chuyen (nhap 0 de quay lai): ");
+    if (fromId == "0")
+    {
+        return;
+    }
     Agent* from = agentRepository.findById(fromId);
     if (from == nullptr)
     {
         cout << "Loi rang buoc: Agent chuyen '" << fromId << "' khong ton tai!" << endl;
+        Utils::backChoice();
         return;
     }
 
-    string toId = Utils::inputNonEmtpyString("Nhap ma agent nhan: ");
+    string toId = Utils::inputNonEmptyString("Nhap ma agent nhan (nhap 0 de quay lai): ");
+    if (toId == "0")
+    {
+        return;
+    }
     Agent* to = agentRepository.findById(toId);
     if (to == nullptr)
     {
         cout << "Loi rang buoc: Agent nhan '" << toId << "' khong ton tai!" << endl;
+        Utils::backChoice();
         return;
     }
 
     if (fromId == toId)
     {
         cout << "Loi rang buoc: Agent chuyen va agent nhan khong duoc trung nhau!" << endl;
+        Utils::backChoice();
         return;
     }
     if (!from->isActive() || !to->isActive())
     {
         cout << "Loi rang buoc: Ca hai agent phai dang hoat dong!" << endl;
+        Utils::backChoice();
         return;
     }
 
-    string reason = Utils::inputNonEmtpyString("Nhap ly do chuyen: ");
+    string reason = Utils::inputNonEmptyString("Nhap ly do chuyen: ");
 
     try
     {
@@ -195,6 +221,7 @@ void TransferTicketMenu::add()
     {
         cout << "Loi khi tao phieu chuyen: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -204,17 +231,23 @@ void TransferTicketMenu::add()
 void TransferTicketMenu::update()
 {
     cout << "--- Cap nhat phieu chuyen xu ly ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma phieu chuyen can cap nhat: ");
+    string id = Utils::inputNonEmptyString("Nhap ma phieu chuyen can cap nhat (nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     TransferTicket* t = transferRepository.findById(id);
     if (t == nullptr)
     {
         cout << "Loi: Khong tim thay phieu chuyen voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
     if (t->getStatus() == TransferStatus::COMPLETED)
     {
         cout << "Loi rang buoc: Phieu '" << id << "' da Hoan tat, khong duoc chinh sua!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -240,6 +273,7 @@ void TransferTicketMenu::update()
             if (st < 0 || st > 2)
             {
                 cout << "Loi: Trang thai khong hop le!" << endl;
+                Utils::backChoice();
                 return;
             }
             updated.changeStatus(static_cast<TransferStatus>(st));  // nem loi neu di lui
@@ -258,6 +292,7 @@ void TransferTicketMenu::update()
     {
         cout << "Cap nhat that bai: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -266,18 +301,24 @@ void TransferTicketMenu::update()
 void TransferTicketMenu::remove()
 {
     cout << "--- Xoa phieu chuyen xu ly ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma phieu chuyen can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma phieu chuyen can xoa (nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     TransferTicket* t = transferRepository.findById(id);
     if (t == nullptr)
     {
         cout << "Loi: Khong tim thay phieu chuyen voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
     if (t->getStatus() == TransferStatus::COMPLETED)
     {
         cout << "Loi rang buoc: Khong the xoa phieu '" << id
              << "' vi da Hoan tat (giu lai de truy vet)!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -308,4 +349,5 @@ void TransferTicketMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }

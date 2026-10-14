@@ -83,6 +83,7 @@ void AgentMenu::displayAll() {
   const auto& list = agentRepository.getAll();
   if (list.empty()) {
     cout << "Danh sach dien thoai vien dang trong!" << endl;
+    Utils::backChoice();
     return;
   }
   
@@ -102,17 +103,22 @@ void AgentMenu::displayAll() {
         << setw(14) << ag.getExtensionPhone()
         << setw(15) << (ag.isActive() ? "Hoat dong" : "Tam dung") << endl;
   }
+  Utils::backChoice();
 }
 
 /**
  * @brief Chức năng tìm kiếm điện thoại viên theo mã ID (Read by ID)
  */
 void AgentMenu::findById() {
-  string id = Utils::inputNonEmptyString("Nhap ma so dien thoai vien can tim (vi du AG001): ");
+  string id = Utils::inputNonEmptyString("Nhap ma so dien thoai vien can tim (vi du AG001, nhap 0 de quay lai): ");
+  if (id == "0") {
+    return;
+  }
   Agent* ag = agentRepository.findById(id);
 
   if (ag == nullptr) {
     cout << "Khong tim thay dien thoai vien voi ma: " << id << endl;
+    Utils::backChoice();
     return;
   }
 
@@ -123,6 +129,7 @@ void AgentMenu::findById() {
   cout << "Email          : " << ag->getEmail() << endl;
   cout << "So may le      : " << ag->getExtensionPhone() << endl;
   cout << "Trang thai     : " << (ag->isActive() ? "Hoat dong" : "Tam dung") << endl;
+  Utils::backChoice();
 }
 
 /**
@@ -134,7 +141,10 @@ void AgentMenu::add()
     cout << "--- Them dien thoai vien moi ---" << endl;
     const auto& list = agentRepository.getAll();
 
-    string fullName = Utils::inputNonEmptyString("Nhap ho va ten dien thoai vien: ");
+    string fullName = Utils::inputNonEmptyString("Nhap ho va ten dien thoai vien (nhap 0 de quay lai): ");
+    if (fullName == "0") {
+        return;
+    }
 
     string phoneNumber;
     while (true)
@@ -178,6 +188,7 @@ void AgentMenu::add()
     {
         cout << "Loi khi them dien thoai vien: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -187,12 +198,16 @@ void AgentMenu::add()
 void AgentMenu::update()
 {
   cout << "--- Cap nhat thong tin dien thoai vien ---" << endl;
-  string id = Utils::inputNonEmptyString("Nhap ma dien thoai vien can cap nhat: ");
+  string id = Utils::inputNonEmptyString("Nhap ma dien thoai vien can cap nhat (vi du AG001, nhap 0 de quay lai): ");
+  if (id == "0") {
+    return;
+  }
 
   Agent* ag = agentRepository.findById(id);
   if (ag == nullptr)
   {
       cout << "Loi: Khong tim thay dien thoai vien voi ma: " << id << endl;
+      Utils::backChoice();
       return;
   }
 
@@ -294,6 +309,7 @@ void AgentMenu::update()
   {
     cout << "Loi khi cap nhat dien thoai vien: " << e.what() << endl;
   }
+  Utils::backChoice();
 }
 
 /**
@@ -302,11 +318,15 @@ void AgentMenu::update()
  */
 void AgentMenu::remove() {
   cout << "--- Xoa dien thoai vien ---" << endl;
-  string id = Utils::inputNonEmptyString("Nhap ma dien thoai vien can xoa: ");
+  string id = Utils::inputNonEmptyString("Nhap ma dien thoai vien can xoa (vi du AG001, nhap 0 de quay lai): ");
+  if (id == "0") {
+    return;
+  }
 
   Agent* ag = agentRepository.findById(id);
   if (ag == nullptr) {
     cout << "Loi: Khong tim thay dien thoai vien voi ma: " << id << endl;
+    Utils::backChoice();
     return;
   }
 
@@ -317,6 +337,7 @@ void AgentMenu::remove() {
         cout << "Loi rang buoc toan ven: Khong the xoa dien thoai vien '" << id
              << "' vi dang co cuoc goi tiep nhan lien ket (VD ma " << call.getId() << ")!" << endl;
         cout << "Vui long xu ly hoac go bo phan cong cua DTV nay truoc khi xoa." << endl;
+        Utils::backChoice();
         return;
       }
     }
@@ -340,4 +361,5 @@ void AgentMenu::remove() {
   } else {
     cout << "Da huy thao tac xoa." << endl;
   }
+  Utils::backChoice();
 }

@@ -34,8 +34,8 @@ set(SOURCES
     Entity/ServiceGroup.cpp
     Entity/Ticket.cpp
     Entity/Agent.cpp
-    FileManager/ServiceGroupFileMenuFile.cpp
-    FileManager/TicketMenuFile.cpp
+    FileManager/ServiceGroupFileManager.cpp
+    FileManager/TicketFileManager.cpp
     FileManager/AgentFileManager.cpp
     Utilities/Utilities.cpp
     # [PHẦN THÊM MỚI] Các file thực thể Kênh tiếp nhận và Cuộc gọi tiếp nhận
@@ -60,8 +60,8 @@ set(SOURCES
     # [PHAN MO RONG] Quan ly Khach hang, Danh gia hai long va Tien ich ngay thang
     Entity/Customer.cpp
     Entity/Feedback.cpp
-    FileManager/CustomerFeedbackFileManager.cpp
-    Utilities/DateTimeUtils.cpp
+    FileManager/CustomerFileManager.cpp
+    FileManager/FeedbackFileManager.cpp
     app/CustomerMenu.cpp
     app/FeedbackMenu.cpp
 )

@@ -6,7 +6,6 @@
 namespace Utils {
   std::string trim(const std::string& str);
 
-  std::string inputNonEmtpyString(const std::string& prompt);
   std::string inputNonEmptyString(const std::string& prompt);
 
   std::string formatId(const std::string& prefix, int number, int padding = 3);
@@ -14,6 +13,7 @@ namespace Utils {
   int extractIdNumber(const std::string& id, const std::string& prefix);
 
   bool isValidDate(const std::string& dateStr);
+  std::string today();
   std::string inputDateString(const std::string& prompt);
   double inputDouble(const std::string& prompt, double minVal = 0.0);
   int inputInt(const std::string& prompt, int minVal, int maxVal);

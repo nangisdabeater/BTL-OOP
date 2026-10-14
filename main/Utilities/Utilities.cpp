@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cctype>
+#include <ctime>
 
 namespace Utils {
     std::string trim(const std::string& str) {
@@ -25,10 +26,6 @@ namespace Utils {
             }
             std::cout << "Gia tri khong duoc de trong! Vui long nhap lai." << std::endl;
         }
-    }
-
-    std::string inputNonEmtpyString(const std::string& prompt) {
-        return inputNonEmptyString(prompt);
     }
 
     std::string formatId(const std::string& prefix, int number, int padding) {
@@ -88,6 +85,16 @@ namespace Utils {
         }
     }
 
+    std::string today() {
+        std::time_t t = std::time(nullptr);
+        std::tm* p = std::localtime(&t);
+        std::ostringstream o;
+        o << std::setfill('0') << std::setw(2) << p->tm_mday << '/'
+          << std::setw(2) << p->tm_mon + 1 << '/'
+          << p->tm_year + 1900;
+        return o.str();
+    }
+
     std::string inputDateString(const std::string& prompt) {
         while (true) {
             std::string date = inputNonEmptyString(prompt);
@@ -138,24 +145,24 @@ namespace Utils {
     }
 
     void backChoice() {
-    int backChoice;
-    while (true) {
-        std::cout << "0. Quay lai menu chinh" << std::endl;
-        std::cout << "Moi nhap lua chon: ";
+        int backChoice;
+        while (true) {
+            std::cout << "\n0. Quay lai menu" << std::endl;
+            std::cout << "Moi nhap lua chon: ";
 
-        if (!(std::cin >> backChoice)) {
-            std::cin.clear();
+            if (!(std::cin >> backChoice)) {
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+                std::cout << "Loi: Vui long nhap so 0!" << std::endl;
+                continue;
+            }
             std::cin.ignore(10000, '\n');
-            std::cout << "Loi: Vui long nhap so 0!" << std::endl;
-            continue;
-        }
-        std::cin.ignore(10000, '\n');
 
-        if (backChoice == 0) {
-            break;
-        } else {
-            std::cout << "Loi: Chuc nang khong ton tai!" << std::endl;
+            if (backChoice == 0) {
+                break;
+            } else {
+                std::cout << "Loi: Chuc nang khong ton tai! Vui long nhap 0 de quay lai." << std::endl;
+            }
         }
     }
-}
 }

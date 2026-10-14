@@ -19,6 +19,12 @@ vector<AgentShift> FileManager<AgentShift>::load(const string& filePath) {
   vector<AgentShift> result;
   ifstream inFile(filePath);
   if (!inFile.is_open()) {
+    filesystem::path p(filePath);
+    if (p.has_parent_path()) {
+      filesystem::create_directories(p.parent_path());
+    }
+    ofstream outFile(filePath);
+    outFile.close();
     return result;
   }
 
@@ -26,7 +32,7 @@ vector<AgentShift> FileManager<AgentShift>::load(const string& filePath) {
   while (getline(inFile, line)) {
     if (line.empty()) continue;
     size_t firstChar = line.find_first_not_of(" \t\r\n");
-    if (firstChar == string::npos || line[firstChar] == '-') continue;
+    if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
     stringstream ss(line);
     string id, shiftName, shiftDate, shiftStart, shiftEnd, agentStrs, status;
@@ -43,6 +49,7 @@ vector<AgentShift> FileManager<AgentShift>::load(const string& filePath) {
           shiftDate = Utils::trim(shiftDate);
           shiftStart = Utils::trim(shiftStart);
           shiftEnd = Utils::trim(shiftEnd);
+          agentStrs = Utils::trim(agentStrs);
           status = Utils::trim(status);
 
           if (id == "Ma ID") {
@@ -50,31 +57,41 @@ vector<AgentShift> FileManager<AgentShift>::load(const string& filePath) {
           }
 
           if (Utils::extractIdNumber(id, "AS") == -1) {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             continue;
           }
 
-          AgentShift as(shiftName, shiftDate, shiftStart, shiftEnd);
-          as.setId(id);
-          if (status == "0") {
-            as.deactivate();
-          } else {
-            as.activate();
-          }
-
-          vector<string> parsedIds;
-          if (!agentStrs.empty()) {
-            stringstream idStream(agentStrs);
-            string singleId;
-            while (getline(idStream, singleId, ',')) {
-              parsedIds.push_back(Utils::trim(singleId));
+          try {
+            AgentShift as(shiftName, shiftDate, shiftStart, shiftEnd);
+            as.setId(id);
+            if (status == "0") {
+              as.deactivate();
+            } else {
+              as.activate();
             }
-          }
 
-          if (!parsedIds.empty()) {
-            as.setAgentIds(parsedIds);
+            vector<string> parsedIds;
+            if (!agentStrs.empty()) {
+              stringstream idStream(agentStrs);
+              string singleId;
+              while (getline(idStream, singleId, ',')) {
+                string trimmedId = Utils::trim(singleId);
+                if (!trimmedId.empty()) {
+                  parsedIds.push_back(trimmedId);
+                }
+              }
+            }
+
+            if (!parsedIds.empty()) {
+              as.setAgentIds(parsedIds);
+            }
+            result.push_back(as);
+          } catch (...) {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
           }
-          result.push_back(as);
-        }
+    } else {
+      cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+    }
   }
 
   return result;

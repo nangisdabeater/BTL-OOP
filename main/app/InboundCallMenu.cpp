@@ -105,6 +105,7 @@ void InboundCallMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach cuoc goi tiep nhan dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -131,6 +132,7 @@ void InboundCallMenu::displayAll()
              << setw(12) << call.getStatus()
              << call.getNote() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -138,12 +140,17 @@ void InboundCallMenu::displayAll()
  */
 void InboundCallMenu::findById()
 {
-    string id = Utils::inputNonEmtpyString("Nhap ma cuoc goi can tim (vi du CA001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma cuoc goi can tim (vi du CA001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     InboundCall* call = callRepository.findById(id);
 
     if (call == nullptr)
     {
         cout << "Khong tim thay cuoc goi voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -172,6 +179,7 @@ void InboundCallMenu::findById()
     cout << "Thoi luong    : " << call->getDuration() << " giay" << endl;
     cout << "Trang thai    : " << call->getStatus() << endl;
     cout << "Ghi chu       : " << call->getNote() << endl;
+    Utils::backChoice();
 }
 
 /**
@@ -187,16 +195,25 @@ void InboundCallMenu::add()
     if (channelRepository.getAll().empty())
     {
         cout << "Loi: Chua co kenh tiep nhan nao trong he thong! Vui long them kenh tiep nhan truoc." << endl;
+        Utils::backChoice();
         return;
     }
 
-    string phone = Utils::inputNonEmtpyString("Nhap so dien thoai nguoi goi: ");
+    string phone = Utils::inputNonEmptyString("Nhap so dien thoai nguoi goi (nhap 0 de quay lai): ");
+    if (phone == "0")
+    {
+        return;
+    }
 
     // Nhập và kiểm tra mã kênh tiếp nhận
     string chId;
     while (true)
     {
-        chId = Utils::inputNonEmtpyString("Nhap ma kenh tiep nhan (VD: CN001): ");
+        chId = Utils::inputNonEmptyString("Nhap ma kenh tiếp nhận (VD: CN001, nhap 0 de quay lai): ");
+        if (chId == "0")
+        {
+            return;
+        }
         ReceptionChannel* ch = channelRepository.findById(chId);
         if (ch == nullptr)
         {
@@ -244,7 +261,7 @@ void InboundCallMenu::add()
         }
     }
 
-    string callTime = Utils::inputNonEmtpyString("Nhap thoi gian cuoc goi (VD: 2026-10-11 14:30): ");
+    string callTime = Utils::inputNonEmptyString("Nhap thoi gian cuoc goi (VD: 2026-10-11 14:30): ");
 
     int duration = 0;
     cout << "Nhap thoi luong cuoc goi (tinh theo giay): ";
@@ -290,6 +307,7 @@ void InboundCallMenu::add()
     {
         cout << "Loi khi them cuoc goi tiep nhan: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -298,12 +316,17 @@ void InboundCallMenu::add()
 void InboundCallMenu::update()
 {
     cout << "--- Cap nhat thong tin cuoc goi ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma cuoc goi can cap nhat: ");
+    string id = Utils::inputNonEmptyString("Nhap ma cuoc goi can cap nhat (vi du CA001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     InboundCall* call = callRepository.findById(id);
     if (call == nullptr)
     {
         cout << "Khong tim thay cuoc goi voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -361,6 +384,7 @@ void InboundCallMenu::update()
     {
         cout << "Loi khi cap nhat cuoc goi: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -368,7 +392,11 @@ void InboundCallMenu::update()
  */
 void InboundCallMenu::filterByChannel()
 {
-    string chId = Utils::inputNonEmtpyString("Nhap ma kenh tiep nhan can loc (VD: CN001): ");
+    string chId = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan can loc (VD: CN001, nhap 0 de quay lai): ");
+    if (chId == "0")
+    {
+        return;
+    }
 
     int count = 0;
     cout << "\n--- Danh sach cuoc goi thuoc kenh: " << chId << " ---" << endl;
@@ -389,6 +417,7 @@ void InboundCallMenu::filterByChannel()
     {
         cout << "Tong so cuoc goi: " << count << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -397,12 +426,17 @@ void InboundCallMenu::filterByChannel()
 void InboundCallMenu::remove()
 {
     cout << "--- Xoa thong tin cuoc goi ---" << endl;
-    string id = Utils::inputNonEmtpyString("Nhap ma cuoc goi can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma cuoc goi can xoa (vi du CA001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     InboundCall* call = callRepository.findById(id);
     if (call == nullptr)
     {
         cout << "Khong tim thay cuoc goi voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -431,4 +465,5 @@ void InboundCallMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }

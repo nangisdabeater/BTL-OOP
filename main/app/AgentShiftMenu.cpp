@@ -1,7 +1,7 @@
 #include "AgentShiftMenu.h"
 #include <iostream>
 #include <iomanip>
-#include <Utilities.h>
+#include "../Utilities/Utilities.h"
 
 using namespace std;
 
@@ -116,7 +116,11 @@ void AgentShiftMenu::displayAll() {
  * @brief Chức năng tìm kiếm ca truc theo mã ID (Read by ID)
  */
 void AgentShiftMenu::findById() {
-  string id = Utils:: inputNonEmtpyString("Nhap ma ca truc can tim (vi du AS001): ");
+  string id = Utils::inputNonEmptyString("Nhap ma ca truc can tim (vi du AS001, nhap 0 de quay lai): ");
+  if (id == "0")
+  {
+    return;
+  }
   AgentShift* as = agentShiftRepository.findById(id);
 
   if (as == nullptr) {
@@ -145,14 +149,18 @@ void AgentShiftMenu::add()
     cout << "--- Them ca truc moi ---" << endl;
     const auto& list = agentShiftRepository.getAll();
 
-    string shiftName = Utils::inputNonEmtpyString("Nhap ten ca truc: ");
+    string shiftName = Utils::inputNonEmptyString("Nhap ten ca truc (nhap 0 de quay lai): ");
+    if (shiftName == "0")
+    {
+      return;
+    }
 
-    string shiftDate = Utils::inputNonEmtpyString("Nhap ngay truc: ");
+    string shiftDate = Utils::inputNonEmptyString("Nhap ngay truc: ");
     
     string shiftStart;
     while (true)
     {
-      shiftStart = Utils::inputNonEmtpyString("Nhap gio bat dau: ");
+      shiftStart = Utils::inputNonEmptyString("Nhap gio bat dau: ");
       bool isShiftStartExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
       return as.getShiftStart() == shiftStart && as.getShiftDate() == shiftDate;
       });
@@ -166,7 +174,7 @@ void AgentShiftMenu::add()
     string shiftEnd;
     while (true)
     {
-      shiftEnd = Utils::inputNonEmtpyString("Nhap gio ket thuc: ");
+      shiftEnd = Utils::inputNonEmptyString("Nhap gio ket thuc: ");
       bool isShiftEndExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
       return as.getShiftEnd() == shiftEnd && as.getShiftDate() == shiftDate;
       });
@@ -199,7 +207,11 @@ void AgentShiftMenu::add()
 void AgentShiftMenu::update()
 {
   cout << "--- Cap nhat thong tin ca truc ---" << endl;
-  string id = Utils::inputNonEmtpyString("Nhap ma ca truc can cap nhat: ");
+  string id = Utils::inputNonEmptyString("Nhap ma ca truc can cap nhat (nhap 0 de quay lai): ");
+  if (id == "0")
+  {
+    return;
+  }
 
   AgentShift* as = agentShiftRepository.findById(id);
   if (as == nullptr)
@@ -245,7 +257,7 @@ void AgentShiftMenu::update()
     getline(cin, newShiftStart);
     newShiftStart = Utils::trim(newShiftStart); 
 
-    if (newShiftDate.empty()) {
+    if (newShiftStart.empty()) {
       break;
     }
     bool isShiftStartExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
@@ -274,7 +286,7 @@ void AgentShiftMenu::update()
     if (isShiftEndExisted) {
       cout << "Gio ket thuc truc '" << newShiftEnd << "' da ton tai! Vui long nhap gio truc khac!" << endl;
     } else {
-      updated.setShiftStart(newShiftEnd);
+      updated.setShiftEnd(newShiftEnd);
       break;
     }
   }
@@ -317,7 +329,11 @@ void AgentShiftMenu::update()
  */
 void AgentShiftMenu::remove() {
   cout << "--- Xoa ca truc ---" << endl;
-  string id = Utils::inputNonEmtpyString("Nhap ma ca truc can xoa: ");
+  string id = Utils::inputNonEmptyString("Nhap ma ca truc can xoa (nhap 0 de quay lai): ");
+  if (id == "0")
+  {
+    return;
+  }
 
   AgentShift* as = agentShiftRepository.findById(id);
   if (as == nullptr) {
@@ -346,7 +362,7 @@ void AgentShiftMenu::remove() {
       if (agentShiftRepository.remove(id)) {
         cout << "Da xoa ca truc thanh cong!" << endl;
       } else {
-        cout << "Loi: Khong the xoa ca truc!";
+        cout << "Loi: Khong the xoa ca truc!" << endl;
       }
     }
     catch (const exception& e) {
@@ -361,7 +377,11 @@ void AgentShiftMenu::remove() {
 
 void AgentShiftMenu::manageAgentShift() {
   cout << "--- Quan ly phan cong nhan vien trong ca truc ---" << endl;
-  string shiftId = Utils::inputNonEmtpyString("Nhap ma ca truc can quan ly (VD: AS001): ");
+  string shiftId = Utils::inputNonEmptyString("Nhap ma ca truc can quan ly (VD: AS001, nhap 0 de quay lai): ");
+  if (shiftId == "0")
+  {
+    return;
+  }
 
   AgentShift* as = agentShiftRepository.findById(shiftId);
 
@@ -406,7 +426,8 @@ void AgentShiftMenu::manageAgentShift() {
     {
     case 1:
       {
-        string agentId = Utils::inputNonEmtpyString("Nhap ma nhan vien can them (VD: AG001): ");
+        string agentId = Utils::inputNonEmptyString("Nhap ma nhan vien can them (VD: AG001, nhap 0 de quay lai): ");
+        if (agentId == "0") break;
 
         if (agentRepository.findById(agentId) ==  nullptr) {
           cout << "Loi: Nhan vien " << agentId << " khong ton tai trong he thong!" << endl;
@@ -430,7 +451,8 @@ void AgentShiftMenu::manageAgentShift() {
       }
     case 2:
       {
-        string agentId = Utils::inputNonEmtpyString("Nhap ma nhan vien can xoa (VD:AG001): ");
+        string agentId = Utils::inputNonEmptyString("Nhap ma nhan vien can xoa (VD: AG001, nhap 0 de quay lai): ");
+        if (agentId == "0") break;
 
         try
         {

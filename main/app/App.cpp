@@ -193,7 +193,7 @@ void Application::serviceGroupMenu()
  */
 void Application::ticketMenu()
 {
-    TicketMenu menu(ticketRepository, serviceGroupRepository);
+    TicketMenu menu(ticketRepository, serviceGroupRepository, customerRepository);
     menu.run();
 }
 

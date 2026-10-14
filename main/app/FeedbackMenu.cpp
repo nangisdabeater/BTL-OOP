@@ -1,6 +1,5 @@
 #include "FeedbackMenu.h"
 #include "../Utilities/Utilities.h"
-#include "../Utilities/DateTimeUtils.h"
 #include <iostream>
 #include <iomanip>
 
@@ -37,6 +36,7 @@ void FeedbackMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach phieu danh gia dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -59,6 +59,7 @@ void FeedbackMenu::displayAll()
              << setw(14) << x.getDate()
              << x.getComment() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -66,7 +67,11 @@ void FeedbackMenu::displayAll()
  */
 void FeedbackMenu::findById()
 {
-    string id = Utils::inputNonEmptyString("Nhap ma danh gia can tim (VD: DG001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma danh gia can tim (VD: DG001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     auto* x = repo.findById(id);
     if (x)
     {
@@ -82,6 +87,7 @@ void FeedbackMenu::findById()
     {
         cout << "Khong tim thay phieu danh gia voi ma: " << id << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -90,10 +96,15 @@ void FeedbackMenu::findById()
 void FeedbackMenu::add()
 {
     cout << "--- Them phieu danh gia moi ---" << endl;
-    string kh = Utils::inputNonEmptyString("Nhap ma khach hang (VD: KH001): ");
+    string kh = Utils::inputNonEmptyString("Nhap ma khach hang (VD: KH001, nhap 0 de quay lai): ");
+    if (kh == "0")
+    {
+        return;
+    }
     if (!customers.findById(kh))
     {
         cout << "Loi rang buoc: Khach hang voi ma '" << kh << "' khong ton tai!" << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -113,6 +124,7 @@ void FeedbackMenu::add()
     {
         cout << "Loi khi them danh gia: " << ex.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -121,11 +133,16 @@ void FeedbackMenu::add()
 void FeedbackMenu::update()
 {
     cout << "--- Cap nhat phieu danh gia ---" << endl;
-    string id = Utils::inputNonEmptyString("Nhap ma danh gia can sua: ");
+    string id = Utils::inputNonEmptyString("Nhap ma danh gia can sua (nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     auto* x = repo.findById(id);
     if (!x)
     {
         cout << "Khong tim thay phieu danh gia voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -162,6 +179,7 @@ void FeedbackMenu::update()
     {
         cout << "Loi khi luu: " << ex.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -170,11 +188,16 @@ void FeedbackMenu::update()
 void FeedbackMenu::remove()
 {
     cout << "--- Xoa phieu danh gia ---" << endl;
-    string id = Utils::inputNonEmptyString("Nhap ma danh gia can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma danh gia can xoa (nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     auto* x = repo.findById(id);
     if (!x)
     {
         cout << "Khong tim thay phieu danh gia voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -197,6 +220,7 @@ void FeedbackMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }
 
 /**

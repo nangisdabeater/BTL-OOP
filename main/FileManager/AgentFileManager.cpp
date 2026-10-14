@@ -19,6 +19,12 @@ vector<Agent> FileManager<Agent>::load(const string& filePath) {
   vector<Agent> result;
   ifstream inFile(filePath);
   if (!inFile.is_open()) {
+    filesystem::path p(filePath);
+    if (p.has_parent_path()) {
+      filesystem::create_directories(p.parent_path());
+    }
+    ofstream outFile(filePath);
+    outFile.close();
     return result;
   }
 
@@ -26,10 +32,10 @@ vector<Agent> FileManager<Agent>::load(const string& filePath) {
   while (getline(inFile, line)) {
     if (line.empty()) continue;
     size_t firstChar = line.find_first_not_of(" \t\r\n");
-    if (firstChar == string::npos || line[firstChar] == '-') continue;
+    if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
     stringstream ss(line);
-    string id, fullName, phoneNumber, email,extensionPhone, status;
+    string id, fullName, phoneNumber, email, extensionPhone, status;
 
     if (getline(ss, id, '|') &&
         getline(ss, fullName, '|') &&
@@ -49,19 +55,26 @@ vector<Agent> FileManager<Agent>::load(const string& filePath) {
           }
 
           if (Utils::extractIdNumber(id, "AG") == -1) {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             continue;
           }
 
-          Agent ag(fullName, phoneNumber, email, extensionPhone);
-          ag.setId(id);
-          if (status == "0") {
-            ag.deactivate();
-          } else {
-            ag.activate();
-          }
+          try {
+            Agent ag(fullName, phoneNumber, email, extensionPhone);
+            ag.setId(id);
+            if (status == "0") {
+              ag.deactivate();
+            } else {
+              ag.activate();
+            }
 
-          result.push_back(ag);
-        }
+            result.push_back(ag);
+          } catch (...) {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+          }
+    } else {
+      cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+    }
   }
 
   return result;

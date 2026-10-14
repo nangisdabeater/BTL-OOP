@@ -90,6 +90,7 @@ void ServiceGroupMenu::displayAll()
     if (list.empty())
     {
         cout << "Danh sach dich vu dang trong!" << endl;
+        Utils::backChoice();
         return;
     }
     cout << left
@@ -113,6 +114,7 @@ void ServiceGroupMenu::displayAll()
              << setw(15) << sg.getCreatedDate()
              << setw(14) << (sg.isActive() ? "Hoat dong" : "Tam dung") << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -120,12 +122,17 @@ void ServiceGroupMenu::displayAll()
  */
 void ServiceGroupMenu::findById()
 {
-    string id = Utils::inputNonEmptyString("Nhap ma dich vu can tim (vi du SM001): ");
+    string id = Utils::inputNonEmptyString("Nhap ma dich vu can tim (vi du SM001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
     ServiceGroup* sg = serviceGroupRepository.findById(id);
 
     if (sg == nullptr)
     {
         cout << "Khong tim thay dich vu voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -138,6 +145,7 @@ void ServiceGroupMenu::findById()
     cout << "Phi co ban   : " << fixed << setprecision(2) << sg->getBaseFee() << " VND" << endl;
     cout << "Ngay ban hanh: " << sg->getCreatedDate() << endl;
     cout << "Trang thai   : " << (sg->isActive() ? "Hoat dong" : "Tam dung") << endl;
+    Utils::backChoice();
 }
 
 /**
@@ -153,7 +161,11 @@ void ServiceGroupMenu::findById()
 void ServiceGroupMenu::add()
 {
     cout << "--- Them dich vu moi ---" << endl;
-    string name = Utils::inputNonEmptyString("Nhap ten dich vu: ");
+    string name = Utils::inputNonEmptyString("Nhap ten dich vu (nhap 0 de quay lai): ");
+    if (name == "0")
+    {
+        return;
+    }
 
     // Ràng buộc: Tên dịch vụ không được trùng lặp trong hệ thống
     for (const auto& existing : serviceGroupRepository.getAll())
@@ -161,6 +173,7 @@ void ServiceGroupMenu::add()
         if (existing.getName() == name)
         {
             cout << "Loi rang buoc: Ten dich vu '" << name << "' da ton tai tren he thong!" << endl;
+            Utils::backChoice();
             return;
         }
     }
@@ -182,6 +195,7 @@ void ServiceGroupMenu::add()
     {
         cout << "Loi khi them dich vu: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -191,12 +205,17 @@ void ServiceGroupMenu::add()
 void ServiceGroupMenu::update()
 {
     cout << "--- Cap nhat thong tin dich vu ---" << endl;
-    string id = Utils::inputNonEmptyString("Nhap ma dich vu can cap nhat: ");
+    string id = Utils::inputNonEmptyString("Nhap ma dich vu can cap nhat (vi du SM001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     ServiceGroup* sg = serviceGroupRepository.findById(id);
     if (sg == nullptr)
     {
         cout << "Loi: Khong tim thay dich vu voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -307,6 +326,7 @@ void ServiceGroupMenu::update()
     {
         cout << "Loi khi cap nhat dich vu: " << e.what() << endl;
     }
+    Utils::backChoice();
 }
 
 /**
@@ -316,12 +336,17 @@ void ServiceGroupMenu::update()
 void ServiceGroupMenu::remove()
 {
     cout << "--- Xoa dich vu ---" << endl;
-    string id = Utils::inputNonEmptyString("Nhap ma dich vu can xoa: ");
+    string id = Utils::inputNonEmptyString("Nhap ma dich vu can xoa (vi du SM001, nhap 0 de quay lai): ");
+    if (id == "0")
+    {
+        return;
+    }
 
     ServiceGroup* sg = serviceGroupRepository.findById(id);
     if (sg == nullptr)
     {
         cout << "Loi: Khong tim thay dich vu voi ma: " << id << endl;
+        Utils::backChoice();
         return;
     }
 
@@ -333,6 +358,7 @@ void ServiceGroupMenu::remove()
             cout << "Loi rang buoc toan ven: Khong the xoa dich vu '" << id
                  << "' vi dang co ticket lien ket (Ma ticket: " << ticket.getId() << ")!" << endl;
             cout << "Vui long xu ly hoac xoa cac ticket lien quan truoc khi xoa dich vu nay." << endl;
+            Utils::backChoice();
             return;
         }
     }
@@ -364,4 +390,5 @@ void ServiceGroupMenu::remove()
     {
         cout << "Da huy thao tac xoa." << endl;
     }
+    Utils::backChoice();
 }

@@ -1,4 +1,5 @@
 #include "FileManager.h"
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
@@ -19,14 +20,22 @@ vector<SLALevel> FileManager<SLALevel>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
+        filesystem::path p(filePath);
+        if (p.has_parent_path())
+        {
+            filesystem::create_directories(p.parent_path());
+        }
+        ofstream outFile(filePath);
+        outFile.close();
         return result;
     }
 
     string line;
     while (getline(inFile, line))
     {
+        if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
-        if (firstChar == string::npos || line[firstChar] == '-') continue;
+        if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, name, resp, resolve, prio;
@@ -42,8 +51,13 @@ vector<SLALevel> FileManager<SLALevel>::load(const string& filePath)
             resolve = Utils::trim(resolve);
             prio = Utils::trim(prio);
 
-            if (id == "Ma ID") continue;                           // dong tieu de
-            if (Utils::extractIdNumber(id, "SL") == -1) continue;  // ID sai dinh dang
+            if (id == "Ma ID") continue; // dong tieu de
+
+            if (Utils::extractIdNumber(id, "SL") == -1)
+            {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
+            }
 
             try
             {
@@ -53,9 +67,12 @@ vector<SLALevel> FileManager<SLALevel>::load(const string& filePath)
             }
             catch (...)
             {
-                // Sai kieu so hoac vi pham rang buoc -> bo qua dong nay
-                continue;
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
+        }
+        else
+        {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;

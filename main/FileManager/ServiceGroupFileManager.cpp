@@ -21,7 +21,15 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-        return result; // Nếu file chưa tồn tại thì trả về danh sách rỗng
+        // Tự tạo file rỗng nếu chưa tồn tại
+        filesystem::path p(filePath);
+        if (p.has_parent_path())
+        {
+            filesystem::create_directories(p.parent_path());
+        }
+        ofstream outFile(filePath);
+        outFile.close();
+        return result;
     }
 
     string line;
@@ -29,11 +37,11 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
     {
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
-        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách (bắt đầu bằng '-')
-        if (firstChar == string::npos || line[firstChar] == '-') continue;
+        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách (bắt đầu bằng '-' hoặc '+')
+        if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
-        string id, name, desc, dept, slaStr, feeStr, dateStr, activeStr;
+        string id, name, desc;
 
         // Đọc các trường dữ liệu ngăn cách bằng ký tự '|'
         if (getline(ss, id, '|') &&
@@ -53,7 +61,8 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
             // Kiểm tra định dạng ID với tiền tố "SM" (SMxxx)
             if (Utils::extractIdNumber(id, "SM") == -1) 
             {
-                continue; // Bỏ qua dữ liệu không hợp lệ
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
             }
 
             // Đọc các cột tiếp theo (hỗ trợ cả định dạng mới 8 cột và định dạng cũ 4 cột)
@@ -88,18 +97,34 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
                 // Định dạng cũ: chỉ có activeStr
                 isActive = (remainingCols[0] != "0");
             }
-
-            ServiceGroup sg(name, desc, department, slaHours, baseFee, createdDate);
-            sg.setId(id);
-            if (isActive)
-            {
-                sg.activate();
-            }
             else
             {
-                sg.deactivate();
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+                continue;
             }
-            result.push_back(sg);
+
+            try
+            {
+                ServiceGroup sg(name, desc, department, slaHours, baseFee, createdDate);
+                sg.setId(id);
+                if (isActive)
+                {
+                    sg.activate();
+                }
+                else
+                {
+                    sg.deactivate();
+                }
+                result.push_back(sg);
+            }
+            catch (...)
+            {
+                cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
+            }
+        }
+        else
+        {
+            cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;
@@ -134,7 +159,7 @@ void FileManager<ServiceGroup>::save(const string& filePath, const vector<Servic
             << setw(10) << "SLA(gio)"         << " | "
             << setw(12) << "Phi co ban"       << " | "
             << setw(14) << "Ngay ban hanh"    << " | "
-            << "Trang thai" << "\n";
+            << "Trang thai"                    << "\n";
     outFile << string(137, '-') << "\n";
 
     for (const auto& sg : data)
