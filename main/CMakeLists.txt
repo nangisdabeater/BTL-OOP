@@ -53,8 +53,10 @@ set(SOURCES
     Entity/AgentShift.cpp
     FileManager/SLALevelFileManager.cpp
     FileManager/TransferTicketFileManager.cpp
+    FileManager/AgentShiftFileManager.cpp
     app/SLALevelMenu.cpp
     app/TransferTicketMenu.cpp
+    app/AgentShiftMenu.cpp
     # [PHAN MO RONG] Quan ly Khach hang, Danh gia hai long va Tien ich ngay thang
     Entity/Customer.cpp
     Entity/Feedback.cpp

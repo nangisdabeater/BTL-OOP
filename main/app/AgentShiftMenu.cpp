@@ -1,0 +1,457 @@
+#include "AgentShiftMenu.h"
+#include <iostream>
+#include <iomanip>
+#include <Utilities.h>
+
+using namespace std;
+
+/**
+ * @brief Khởi tạo đối tượng AgentShiftMenu
+ * @param asRepo Tham chiếu tới kho lưu trữ Ca trực
+ * @param agRepo Tham chiếu tới kho lưu trữ Agent (để kiểm tra ràng buộc toàn vẹn)
+ */
+
+AgentShiftMenu::AgentShiftMenu(Repository<AgentShift>& asRepo, Repository<Agent>& agRepo)
+  : agentRepository(agRepo), agentShiftRepository(asRepo)
+{}
+
+/**
+ * @brief Hiển thị bảng danh mục các chức năng quản lý Ca trực.
+ */
+
+void AgentShiftMenu::showMenu()
+{
+    cout << "========================================" << endl;
+    cout << "        QUAN LY CA TRUC" << endl;
+    cout << "========================================" << endl;
+    cout << "1. Hien thi danh sach cac ca truc" << endl;
+    cout << "2. Tim kiem ca truc theo ID" << endl;
+    cout << "3. Them ca truc moi" << endl;
+    cout << "4. Cap nhat thong tin ca truc" << endl;
+    cout << "5. Xoa thong tin ca truc" << endl;
+    cout << "6. Quan ly phan cong nhan vien cho ca truc" << endl;
+    cout << "0. Quay lai menu chinh" << endl;
+    cout << "========================================" << endl;
+}
+
+/**
+ * @brief Điều phối vòng lặp xử lý các lựa chọn trong menu Ca trực.
+ */
+void AgentShiftMenu::run() {
+  bool inMenu = true;
+  while (inMenu) {
+    showMenu();
+
+    int choice;
+    cout << "Nhap lua chon: ";
+    if (!(cin >> choice)) {
+      cin.clear();
+      cin.ignore(1000, '\n');
+      cout << "Lua chon khong hop le!" << endl << endl;
+      continue;
+    }
+    cin.ignore(10000, '\n');
+    
+    switch (choice)
+    {
+    case 1:
+      displayAll();
+      break;
+    case 2:
+      findById();
+      break;
+    case 3:
+      add();
+      break;
+    case 4:
+      update();
+      break;
+    case 5:
+      remove();
+      break;
+    case 6:
+      manageAgentShift();
+      break;
+    case 0:
+      inMenu = false;
+      break;
+    default:
+      cout << "Lua chon khong hop le!" << endl;
+    }
+  }
+}
+
+/**
+ * @brief Chức năng hiển thị danh sách tất cả ca trực (Read All)
+ * Hiển thị đầy đủ 5 thuộc tính: Mã ID, Tên ca trực, ngày trực, giờ bắt đầu, giờ kết thúc.
+ */
+void AgentShiftMenu::displayAll() {
+  const auto& list = agentShiftRepository.getAll();
+  if (list.empty()) {
+    cout << "Danh sach ca truc dang trong!" << endl;
+  } else {
+    cout << left << setw(8) << "Ma ID" 
+       << setw(25) << "Ca truc"
+       << setw(25) << "Ngay"
+       << setw(25) << "Bat dau"
+       << setw(25) << "Ket thuc"
+       << setw(25) << "Nhan vien dam nhan"
+       << setw(15) << "Trang thai" << endl;
+    cout << string(140, '-') << endl;
+
+    for (const auto& as : list) {
+    cout << left << setw(8) << as.getId() 
+        << setw(25) << as.getShiftName()
+        << setw(25) << as.getShiftDate()
+        << setw(25) << as.getShiftStart()
+        << setw(25) << as.getShiftEnd()
+        << setw(25) << Utils::join(as.getAgentIds())
+        << setw(15) << (as.isActive() ? "Hoat dong" : "Tam dung") << endl;
+    }
+  }
+  Utils::backChoice();
+}
+
+/**
+ * @brief Chức năng tìm kiếm ca truc theo mã ID (Read by ID)
+ */
+void AgentShiftMenu::findById() {
+  string id = Utils:: inputNonEmtpyString("Nhap ma ca truc can tim (vi du AS001): ");
+  AgentShift* as = agentShiftRepository.findById(id);
+
+  if (as == nullptr) {
+    cout << "Ca truc voi id ban nhap khong ton tai!" << endl;
+    Utils::backChoice();
+    return;
+  }
+
+  cout << "--- Thong tin ca truc ---" << endl;
+  cout << "Ma dinh danh  : " << as->getId() << endl;
+  cout << "Ca truc       : " << as->getShiftName() << endl;
+  cout << "Ngay          : " << as->getShiftDate() << endl;
+  cout << "Bat dau       : " << as->getShiftStart() << endl;
+  cout << "Ket thuc      : " << as->getShiftEnd() << endl;
+  cout << "Trang thai    : " << (as->isActive() ? "Hoat dong" : "Tam dung") << endl;
+    
+  Utils::backChoice();
+}
+
+/**
+ * @brief Chức năng thêm mới ca trực (Create)
+ * Ràng buộc: Tên và mô tả không được rỗng, Ngày trực, giờ bắt đầu, thúc không được trùng lặp
+ */
+void AgentShiftMenu::add()
+{
+    cout << "--- Them ca truc moi ---" << endl;
+    const auto& list = agentShiftRepository.getAll();
+
+    string shiftName = Utils::inputNonEmtpyString("Nhap ten ca truc: ");
+
+    string shiftDate = Utils::inputNonEmtpyString("Nhap ngay truc: ");
+    
+    string shiftStart;
+    while (true)
+    {
+      shiftStart = Utils::inputNonEmtpyString("Nhap gio bat dau: ");
+      bool isShiftStartExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
+      return as.getShiftStart() == shiftStart && as.getShiftDate() == shiftDate;
+      });
+      if (isShiftStartExisted) {
+        cout << "Gio bat dau luc '" << shiftStart << "' da duoc tao! Vui long nhap gio truc khac!" << endl;
+      } else {
+        break;
+      }
+    }
+
+    string shiftEnd;
+    while (true)
+    {
+      shiftEnd = Utils::inputNonEmtpyString("Nhap gio ket thuc: ");
+      bool isShiftEndExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
+      return as.getShiftEnd() == shiftEnd && as.getShiftDate() == shiftDate;
+      });
+      if (isShiftEndExisted) {
+        cout << "Gio ket thuc luc '" << shiftEnd << "' da duoc tao! Vui long nhap gio truc khac!" << endl;
+      } else {
+        break;
+      }
+    }
+    
+    AgentShift newAs(shiftName, shiftDate, shiftStart, shiftEnd);
+
+    try
+    {
+        agentShiftRepository.add(newAs);
+        const auto& list = agentShiftRepository.getAll();
+        cout << "Tao ca truc thanh cong! Ma duoc cap: " << list.back().getId() << endl;
+    }
+    catch (const exception& e)
+    {
+        cout << "Loi khi them ca truc: " << e.what() << endl;
+    }
+    Utils::backChoice();
+}
+
+/**
+ * @brief Chức năng cập nhật thông tin ca trực (Update)
+ * Ràng buộc: ID phải tồn tại, ngày trực, giờ bắt đầu, kết thúc không được trùng lặp.
+ */
+void AgentShiftMenu::update()
+{
+  cout << "--- Cap nhat thong tin ca truc ---" << endl;
+  string id = Utils::inputNonEmtpyString("Nhap ma ca truc can cap nhat: ");
+
+  AgentShift* as = agentShiftRepository.findById(id);
+  if (as == nullptr)
+  {
+      cout << "Loi: Khong tim thay ca truc voi ma: " << id << endl;
+      Utils::backChoice();
+      return;
+  }
+
+  AgentShift updated = *as;
+  const auto& list = agentShiftRepository.getAll();
+
+  cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getShiftName()
+        << " | " << updated.getShiftDate()
+        << " | " << updated.getShiftStart()
+        << " | " << updated.getShiftEnd()
+        << " | " << (updated.isActive() ? "Hoat dong" : "Tam dung") << endl;
+
+  // Cập nhật tên ca trực
+  cout << "Nhap ten moi (nhan Enter de giu nguyen): ";
+  string newName;
+  getline(cin, newName);
+  newName = Utils::trim(newName);
+  if (!newName.empty())
+  {
+    updated.setShiftName(newName);
+  }
+
+  // Cập nhật ngày trực
+  cout << "Nhap ngay truc (nhan Enter de giu nguyen): ";
+  string newShiftDate;
+  getline(cin, newShiftDate);
+  newShiftDate = Utils::trim(newShiftDate);
+  if (!newShiftDate.empty())
+  {
+    updated.setShiftDate(newShiftDate);
+  }
+
+  // Cập nhật giờ bắt đầu
+  string newShiftStart;
+  while (true) {
+    cout << "Nhap gio bat dau moi (nhan Enter de giu nguyen): ";
+    getline(cin, newShiftStart);
+    newShiftStart = Utils::trim(newShiftStart); 
+
+    if (newShiftDate.empty()) {
+      break;
+    }
+    bool isShiftStartExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
+    return as.getId() != updated.getId() && as.getShiftDate() == updated.getShiftDate() && as.getShiftStart() == newShiftStart;
+    });
+    if (isShiftStartExisted) {
+      cout << "Gio bat dau truc '" << newShiftStart << "' da ton tai! Vui long nhap gio truc khac!" << endl;
+    } else {
+      updated.setShiftStart(newShiftStart);
+      break;
+    }
+  }
+  // Cập nhật giờ kết thúc
+  string newShiftEnd;
+  while (true) {
+    cout << "Nhap gio ket thuc moi (nhan Enter de giu nguyen): ";
+    getline(cin, newShiftEnd);
+    newShiftEnd = Utils::trim(newShiftEnd); 
+
+    if (newShiftEnd.empty()) {
+      break;
+    }
+    bool isShiftEndExisted = ValidationUtils::isDuplicate(list, [&](const AgentShift& as) {
+    return as.getId() != updated.getId() && as.getShiftDate() == updated.getShiftDate() && as.getShiftEnd() == newShiftEnd;
+    });
+    if (isShiftEndExisted) {
+      cout << "Gio ket thuc truc '" << newShiftEnd << "' da ton tai! Vui long nhap gio truc khac!" << endl;
+    } else {
+      updated.setShiftStart(newShiftEnd);
+      break;
+    }
+  }
+
+  // Cập nhật trạng thái hoạt động
+  cout << "Doi trang thai (1: Hoat dong, 0: Tam dung, Enter: Giu nguyen): ";
+  string statusChoice;
+  getline(cin, statusChoice);
+  statusChoice = Utils::trim(statusChoice);
+  if (statusChoice == "1")
+  {
+      updated.activate();
+  }
+  else if (statusChoice == "0")
+  {
+      updated.deactivate();
+  }
+
+  try
+  {
+    if (agentShiftRepository.update(updated))
+    {
+      cout << "Cap nhat ca truc thanh cong!" << endl;
+    }
+    else
+    {
+      cout << "Loi khi cap nhat ca truc!" << endl;
+    }
+  }
+  catch (const exception& e)
+  {
+    cout << "Loi khi cap nhat ca truc: " << e.what() << endl;
+  }
+  Utils::backChoice();
+}
+
+/**
+ * @brief Chức năng xóa ca trực (Delete)
+ * Ràng buộc: ID phải tồn tại, kiểm tra toàn vẹn dữ liệu (không xóa khi còn Agent liên kết)
+ */
+void AgentShiftMenu::remove() {
+  cout << "--- Xoa ca truc ---" << endl;
+  string id = Utils::inputNonEmtpyString("Nhap ma ca truc can xoa: ");
+
+  AgentShift* as = agentShiftRepository.findById(id);
+  if (as == nullptr) {
+    cout << "Loi: Khong tim thay ca truc voi ma: " << id << endl;
+    Utils::backChoice();
+    return;
+  }
+
+  const vector<string>& agentIds = as->getAgentIds();
+
+  if (!(agentIds.empty())) {
+    cout << "Loi rang buoc toan ven: Khong the xoa ca truc " << as->getShiftName() << "!" << endl;
+    cout << "Ly do: Ca truc da co nhan vien dang ky!" << endl;
+    cout << "Vui long vao menu Ca Truc -> Xoa nhan vien khoi ca truoc khi xoa ho so ho!" << endl;
+    Utils::backChoice();
+    return;
+  }
+
+  cout << "Ban co chac chan muon xoa ca truc: " << id  << " (" << as->getShiftName() << ")? (Y/N): ";
+  string confirm;
+  getline(cin, confirm);
+  confirm = Utils::trim(confirm);
+
+  if (confirm == "y" || confirm == "Y") {
+    try {
+      if (agentShiftRepository.remove(id)) {
+        cout << "Da xoa ca truc thanh cong!" << endl;
+      } else {
+        cout << "Loi: Khong the xoa ca truc!";
+      }
+    }
+    catch (const exception& e) {
+      cout << "Loi khi xoa ca truc: " << e.what() << endl;
+    }
+  } else {
+    cout << "Da huy thao tac xoa." << endl;
+  }
+
+  Utils::backChoice();
+}
+
+void AgentShiftMenu::manageAgentShift() {
+  cout << "--- Quan ly phan cong nhan vien trong ca truc ---" << endl;
+  string shiftId = Utils::inputNonEmtpyString("Nhap ma ca truc can quan ly (VD: AS001): ");
+
+  AgentShift* as = agentShiftRepository.findById(shiftId);
+
+  if (as == nullptr) {
+    cout << "Loi: Khong tim thay ca truc voi ma: " << shiftId << endl;
+    Utils::backChoice();
+    return;
+  }
+
+  bool inSubMenu = true;
+  while (inSubMenu) {
+    AgentShift* currentShift = agentShiftRepository.findById(shiftId);
+
+    cout << "Ca truc: " << currentShift->getShiftName() << " | Ngay: " << currentShift->getShiftDate() << endl;
+    cout << "Nhan vien hien tai: ";
+
+    const vector<string>& agentIds = currentShift->getAgentIds();
+    if (agentIds.empty()) {
+      cout << "Chua phan cong";
+    } else {
+      for (size_t i = 0; i < agentIds.size(); ++i) {
+        cout << agentIds[i] << (i < agentIds.size() - 1 ? ", " : "");
+      }
+    }
+    cout << "\n========================================" << endl;
+    cout << "1. Them nhan vien vao ca" << endl;
+    cout << "2. Xoa nhan vien khoi ca" << endl;
+    cout << "0. Quay lai" << endl;
+    cout << "========================================" << endl;
+
+    int choice;
+    cout << "Nhap lua chon: ";
+    if (!(cin >> choice)) {
+      cin.clear();
+      cin.ignore(10000, '\n');
+      cout << "Lua chon khong hop le!" << endl;
+      continue;
+    }
+    cin.ignore(10000, '\n');
+
+    switch (choice)
+    {
+    case 1:
+      {
+        string agentId = Utils::inputNonEmtpyString("Nhap ma nhan vien can them (VD: AG001): ");
+
+        if (agentRepository.findById(agentId) ==  nullptr) {
+          cout << "Loi: Nhan vien " << agentId << " khong ton tai trong he thong!" << endl;
+          break;
+        }
+
+        try
+        {
+          AgentShift copyShift = *currentShift;
+          copyShift.addAgentId(agentId);
+
+          if (agentShiftRepository.update(copyShift)) {
+            cout << "-> Da them thanh cong!" << endl;
+          }
+        }
+        catch(const std::exception& e)
+        {
+          std::cerr << e.what() << '\n';
+        }
+        break;
+      }
+    case 2:
+      {
+        string agentId = Utils::inputNonEmtpyString("Nhap ma nhan vien can xoa (VD:AG001): ");
+
+        try
+        {
+        AgentShift copyShift = *currentShift;
+        copyShift.removeAgentId(agentId);
+
+        if (agentShiftRepository.update(copyShift)) {
+          cout << "-> Da xoa nhan vien khoi ca!" << endl;
+        }
+        }
+        catch(const std::exception& e)
+        {
+          std::cerr << e.what() << '\n';
+        }
+        break;
+      }
+    case 0: 
+      inSubMenu = false;
+      break;
+    default:
+      cout << "Lua chon khong hop le!" << endl;
+    }
+  }
+}

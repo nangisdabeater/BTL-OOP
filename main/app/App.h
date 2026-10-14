@@ -12,6 +12,7 @@
 #include "../Entity/TransferTicket.h"
 #include "../Entity/Customer.h"
 #include "../Entity/Feedback.h"
+#include "../Entity/AgentShift.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ private:
     Repository<TransferTicket> transferRepository;   // Kho lưu trữ Phiếu chuyển (file: data/transfer_tickets.txt, prefix TF)
     Repository<Customer> customerRepository;         // Kho lưu trữ Khách hàng (file: data/customers.txt, prefix KH)
     Repository<Feedback> feedbackRepository;         // Kho lưu trữ Đánh giá (file: data/feedback.txt, prefix DG)
+    Repository<AgentShift> agentShiftRepository;     // Kho lưu trữ Đánh giá (file: data/agent_shifts.txt, prefix AS)
 
 public:
     // Khởi tạo ứng dụng và nạp dữ liệu từ các file tương ứng
@@ -65,4 +67,7 @@ private:
 
     // Menu quản lý Đánh giá hài lòng (điều hướng sang FeedbackMenu)
     void feedbackMenu();
+
+    // Menu quản lý Ca trực (điều hướng sang AgentShiftMenu)
+    void agentShiftMenu();
 };

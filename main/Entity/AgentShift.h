@@ -1,10 +1,10 @@
 #pragma once 
 
 /**
- * @file AgentShift.h
- * @brief Định nghĩa thực thể Ca trực (AgentShift)
- * Đại diện cho 1 ca trực với các thuộc tính: mã ID (ASxxx), tên ca trực, 
- * ngày trực, giờ bắt đầu, giờ kết thúc, danh sách ID nhân viên trực.
+ * @file ServiceGroup.h
+ * @brief Định nghĩa thực thể Ca trực (Agent Shift)
+ * Đại diện cho 1 nhóm dịch vụ với các thuộc tính: mã ID, tên ca trực, 
+ * ngày trực, giờ bắt đầu, giờ kết thúc, id nhân viên trực.
  */
 
 #include <string>
@@ -21,10 +21,10 @@ class AgentShift : public BaseEntity {
     bool status;
   public:
     AgentShift(
-      const string& shiftName = "",
-      const string& shiftDate = "",
-      const string& shiftStart = "",
-      const string& shiftEnd = ""
+      const string& shiftName,
+      const string& shiftDate,
+      const string& shiftStart,
+      const string& shiftEnd
     );
     // Getter
     const string& getShiftName() const;
@@ -39,7 +39,9 @@ class AgentShift : public BaseEntity {
     void setShiftDate(const string& shiftDate);
     void setShiftStart(const string& shiftStart);
     void setShiftEnd(const string& shiftEnd);
+    void setAgentIds(const vector<string>& agentIds);
     void addAgentId(const string& agentId);
+    void removeAgentId(const string& agentId);
 
     void printInfo() const override;
 

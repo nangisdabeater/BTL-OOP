@@ -8,6 +8,7 @@
 #include "TransferTicketMenu.h"
 #include "CustomerMenu.h"
 #include "FeedbackMenu.h"
+#include "AgentShiftMenu.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -42,7 +43,8 @@ Application::Application()
       slaRepository("SL", "data/sla_levels.txt"),
       transferRepository("TF", "data/transfer_tickets.txt"),
       customerRepository("KH", "data/customers.txt"),
-      feedbackRepository("DG", "data/feedback.txt")
+      feedbackRepository("DG", "data/feedback.txt"),
+      agentShiftRepository("AS", "data/agent_shifts.txt")
 {
     serviceGroupRepository.load();
     ticketRepository.load();
@@ -53,6 +55,7 @@ Application::Application()
     transferRepository.load();
     customerRepository.load();
     feedbackRepository.load();
+    agentShiftRepository.load();
 }
 
 /**
@@ -107,6 +110,9 @@ void Application::run()
         case 9:
             feedbackMenu();
             break;
+        case 10:
+            agentShiftMenu();
+            break;
         case 0:
             running = false;
             cout << "Dang luu du lieu va thoat chuong trinh..." << endl;
@@ -136,6 +142,9 @@ void Application::run()
 
             try { feedbackRepository.save(); }
             catch (const exception& e) { cout << "Loi khi luu danh gia: " << e.what() << endl; }
+
+            try { agentShiftRepository.save(); }
+            catch (const exception& e) { cout << "Loi khi luu ca truc: " << e.what() << endl; }
             break;
 
         default:
@@ -164,6 +173,7 @@ void Application::showMainMenu()
     cout << "7. Quan ly phieu chuyen xu ly (Transfer Ticket)" << endl;
     cout << "8. Quan ly khach hang" << endl;
     cout << "9. Quan ly danh gia hai long (Feedback)" << endl;
+    cout << "10. Quan ly ca truc" << endl;
     cout << "0. Thoat" << endl;
 
     cout << "==============================" << endl;
@@ -246,6 +256,15 @@ void Application::customerMenu()
 void Application::feedbackMenu()
 {
     FeedbackMenu menu(feedbackRepository, customerRepository);
+    menu.run();
+}
+
+/**
+ * @brief Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
+ */
+void Application::agentShiftMenu()
+{
+    AgentShiftMenu menu(agentShiftRepository, agentRepository);
     menu.run();
 }
 
