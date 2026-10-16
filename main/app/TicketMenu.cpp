@@ -174,23 +174,7 @@ void TicketMenu::findById()
         return;
     }
 
-    string sgName = "(Chua xac dinh)";
-    ServiceGroup* sg = serviceGroupRepository.findById(t->getServiceGroupId());
-    if (sg != nullptr)
-    {
-        sgName = sg->getName();
-    }
-
-    cout << "--- Thong tin chi tiet Ticket ---" << endl;
-    cout << "Ma Ticket      : " << t->getId() << endl;
-    cout << "Tieu de        : " << t->getTitle() << endl;
-    cout << "Mo ta chi tiet : " << t->getDescription() << endl;
-    cout << "Ma khach hang  : " << t->getCustomerId() << endl;
-    cout << "Dich vu        : [" << t->getServiceGroupId() << "] " << sgName << endl;
-    cout << "Muc do uu tien : " << priorityToString(t->getPriority()) << " (" << t->getPriority() << ")" << endl;
-    cout << "Chi phi uoc tinh: " << fixed << setprecision(2) << t->getEstimatedFee() << " VND" << endl;
-    cout << "Ngay tao       : " << t->getCreatedDate() << endl;
-    cout << "Trang thai     : " << ticketStatusToString(t->getStatus()) << endl;
+    Utils::printEntityDetails(*t);
     Utils::backChoice();
 }
 
@@ -301,10 +285,8 @@ void TicketMenu::update()
 
     Ticket updated = *t;
 
-    cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getTitle()
-         << " | Uu tien: " << priorityToString(updated.getPriority())
-         << " | Chi phi: " << fixed << setprecision(2) << updated.getEstimatedFee()
-         << " | Trang thai: " << ticketStatusToString(updated.getStatus()) << endl;
+    cout << "Thong tin hien tai:" << endl;
+    updated.printInfo();
 
     // Cập nhật tiêu đề
     cout << "Nhap tieu de moi (nhan Enter de giu nguyen): ";

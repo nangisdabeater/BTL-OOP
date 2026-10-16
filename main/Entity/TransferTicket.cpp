@@ -47,10 +47,18 @@ void TransferTicket::setReason(const string& reason)
 
 void TransferTicket::printInfo() const
 {
+    string stStr;
+    switch (status) {
+        case TransferStatus::PENDING: stStr = "PENDING"; break;
+        case TransferStatus::ACCEPTED: stStr = "ACCEPTED"; break;
+        case TransferStatus::COMPLETED: stStr = "COMPLETED"; break;
+    }
     cout << "TransferTicket ID: " << id
-         << ", Ticket: " << ticketId
-         << ", From: " << fromAgentId
-         << ", To: " << toAgentId << endl;
+         << " | Ticket: " << ticketId
+         << " | Tu DTV: " << fromAgentId
+         << " | Sang DTV: " << toAgentId
+         << " | Ly do: " << reason
+         << " | Trang thai: " << stStr << endl;
 }
 
 void TransferTicket::changeStatus(TransferStatus newStatus)

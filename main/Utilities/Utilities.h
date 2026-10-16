@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+class BaseEntity;
+
 namespace Utils {
   std::string trim(const std::string& str);
 
@@ -21,6 +23,10 @@ namespace Utils {
   std::string join(const std::vector<std::string>& vec, const std::string& delemiter = ", ");
 
   void backChoice();
+
+  void printEntityDetails(const BaseEntity& entity);
+
+  std::string resolveDataPath(const std::string& relativePath);
 }
 
 namespace ValidationUtils 

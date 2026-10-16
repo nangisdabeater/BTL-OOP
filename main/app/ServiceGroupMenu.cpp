@@ -136,15 +136,7 @@ void ServiceGroupMenu::findById()
         return;
     }
 
-    cout << "--- Thong tin chi tiet dich vu ---" << endl;
-    cout << "Ma ID        : " << sg->getId() << endl;
-    cout << "Ten dich vu  : " << sg->getName() << endl;
-    cout << "Mo ta        : " << sg->getDescription() << endl;
-    cout << "Phong ban    : " << sg->getDepartment() << endl;
-    cout << "SLA cam ket  : " << sg->getSlaHours() << " gio" << endl;
-    cout << "Phi co ban   : " << fixed << setprecision(2) << sg->getBaseFee() << " VND" << endl;
-    cout << "Ngay ban hanh: " << sg->getCreatedDate() << endl;
-    cout << "Trang thai   : " << (sg->isActive() ? "Hoat dong" : "Tam dung") << endl;
+    Utils::printEntityDetails(*sg);
     Utils::backChoice();
 }
 
@@ -221,11 +213,8 @@ void ServiceGroupMenu::update()
 
     ServiceGroup updated = *sg;
 
-    cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getName()
-         << " | Phong ban: " << updated.getDepartment()
-         << " | SLA: " << updated.getSlaHours() << "h"
-         << " | Phi: " << fixed << setprecision(2) << updated.getBaseFee()
-         << " | " << (updated.isActive() ? "Hoat dong" : "Tam dung") << endl;
+    cout << "Thong tin hien tai:" << endl;
+    updated.printInfo();
 
     // Cập nhật tên
     cout << "Nhap ten moi (nhan Enter de giu nguyen): ";

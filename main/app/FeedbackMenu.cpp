@@ -75,13 +75,7 @@ void FeedbackMenu::findById()
     auto* x = repo.findById(id);
     if (x)
     {
-        cout << "--- Thong tin phieu danh gia ---" << endl;
-        cout << "Ma ID        : " << x->getId() << endl;
-        cout << "Ma khach hang: " << x->getCustomerId() << endl;
-        cout << "Ma ticket    : " << x->getTicketId() << endl;
-        cout << "Diem danh gia: " << x->getScore() << " / 5" << endl;
-        cout << "Ngay danh gia: " << x->getDate() << endl;
-        cout << "Noi dung     : " << x->getComment() << endl;
+        Utils::printEntityDetails(*x);
     }
     else
     {
@@ -145,6 +139,9 @@ void FeedbackMenu::update()
         Utils::backChoice();
         return;
     }
+
+    cout << "Thong tin hien tai:" << endl;
+    x->printInfo();
 
     cout << "Diem hien tai: " << x->getScore() << ". Nhap diem moi (1-5, Enter de giu nguyen): ";
     string v;

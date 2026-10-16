@@ -141,11 +141,7 @@ void ReceptionChannelMenu::findById()
         return;
     }
 
-    cout << "--- Thong tin kenh tiep nhan ---" << endl;
-    cout << "Ma ID      : " << ch->getId() << endl;
-    cout << "Ten kenh   : " << ch->getName() << endl;
-    cout << "Mo ta      : " << ch->getDescription() << endl;
-    cout << "Trang thai : " << (ch->isActive() ? "Hoat dong" : "Ngung hoat dong") << endl;
+    Utils::printEntityDetails(*ch);
     Utils::backChoice();
 }
 

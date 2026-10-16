@@ -72,5 +72,9 @@ void Customer::setAddress(const string& v) {
  * @brief Hiển thị thông tin tóm tắt khách hàng
  */
 void Customer::printInfo() const {
-    cout << id << " | " << fullName << " | " << phone << " | " << email << " | " << address << '\n';
+    cout << "Customer ID: " << id
+         << " | Ho ten: " << fullName
+         << " | SDT: " << phone
+         << " | Email: " << email
+         << " | Dia chi: " << address << endl;
 }

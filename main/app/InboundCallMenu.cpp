@@ -154,31 +154,7 @@ void InboundCallMenu::findById()
         return;
     }
 
-    cout << "--- Thong tin chi tiet cuoc goi ---" << endl;
-    cout << "Ma ID         : " << call->getId() << endl;
-    cout << "So dien thoai : " << call->getPhoneNumber() << endl;
-    cout << "Ma kenh       : " << call->getChannelId();
-
-    // Hiển thị tên kênh tương ứng nếu tìm thấy
-    ReceptionChannel* ch = channelRepository.findById(call->getChannelId());
-    if (ch != nullptr)
-    {
-        cout << " (" << ch->getName() << ")";
-    }
-    cout << endl;
-
-    cout << "DTV tiep nhan : " << (call->getAgentId().empty() ? "(Chua gan)" : call->getAgentId());
-    Agent* ag = agentRepository.findById(call->getAgentId());
-    if (ag != nullptr)
-    {
-        cout << " (" << ag->getFullName() << ")";
-    }
-    cout << endl;
-
-    cout << "Thoi gian     : " << call->getCallTime() << endl;
-    cout << "Thoi luong    : " << call->getDuration() << " giay" << endl;
-    cout << "Trang thai    : " << call->getStatus() << endl;
-    cout << "Ghi chu       : " << call->getNote() << endl;
+    Utils::printEntityDetails(*call);
     Utils::backChoice();
 }
 

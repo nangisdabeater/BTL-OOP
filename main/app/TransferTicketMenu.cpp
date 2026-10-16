@@ -128,13 +128,7 @@ void TransferTicketMenu::findById()
         return;
     }
 
-    cout << "--- Thong tin phieu chuyen xu ly ---" << endl;
-    cout << "Ma ID        : " << t->getId() << endl;
-    cout << "Ticket       : " << t->getTicketId() << endl;
-    cout << "Agent chuyen : [" << t->getFromAgentId() << "] " << agentNameOf(t->getFromAgentId()) << endl;
-    cout << "Agent nhan   : [" << t->getToAgentId() << "] " << agentNameOf(t->getToAgentId()) << endl;
-    cout << "Ly do        : " << t->getReason() << endl;
-    cout << "Trang thai   : " << statusToString(t->getStatus()) << endl;
+    Utils::printEntityDetails(*t);
     Utils::backChoice();
 }
 
@@ -252,8 +246,8 @@ void TransferTicketMenu::update()
     }
 
     TransferTicket updated = *t;
-    cout << "Thong tin hien tai: [" << updated.getId() << "] ly do: " << updated.getReason()
-         << " | trang thai: " << statusToString(updated.getStatus()) << endl;
+    cout << "Thong tin hien tai:" << endl;
+    updated.printInfo();
 
     try
     {

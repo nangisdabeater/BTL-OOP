@@ -30,9 +30,9 @@ private:
     void saveOrRollback(const std::vector<T>& backup, int backupCounter);
 
 public:
-    // Cập nhật constructor để bắt buộc truyền prefix
+    // Cập nhật constructor để bắt buộc truyền prefix và tự động chuẩn hóa đường dẫn về thư mục data gốc
     explicit Repository(const std::string& prefix, const std::string& filePath = "") 
-        : idPrefix(prefix), filePath(filePath) {}
+        : idPrefix(prefix), filePath(Utils::resolveDataPath(filePath)) {}
 
     // Nap du lieu tu file (qua FileManager), khoi phuc bo dem id
     void load();

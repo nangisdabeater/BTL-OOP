@@ -73,12 +73,7 @@ void CustomerMenu::findById()
     auto* x = repo.findById(id);
     if (x)
     {
-        cout << "--- Thong tin khach hang ---" << endl;
-        cout << "Ma ID     : " << x->getId() << endl;
-        cout << "Ho va ten : " << x->getFullName() << endl;
-        cout << "Dien thoai: " << x->getPhone() << endl;
-        cout << "Email     : " << x->getEmail() << endl;
-        cout << "Dia chi   : " << x->getAddress() << endl;
+        Utils::printEntityDetails(*x);
     }
     else
     {
@@ -140,6 +135,9 @@ void CustomerMenu::update()
         Utils::backChoice();
         return;
     }
+
+    cout << "Thong tin hien tai:" << endl;
+    x->printInfo();
 
     string v;
     cout << "Ho ten [" << x->getFullName() << "] (Enter de giu): ";

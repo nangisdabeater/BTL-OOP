@@ -102,12 +102,7 @@ void SLALevelMenu::findById()
         Utils::backChoice();
         return;
     }
-    cout << "--- Thong tin muc SLA ---" << endl;
-    cout << "Ma ID         : " << s->getId() << endl;
-    cout << "Ten muc SLA   : " << s->getName() << endl;
-    cout << "TG phan hoi   : " << s->getResponseMinutes() << " phut" << endl;
-    cout << "TG xu ly      : " << s->getResolveHours() << " gio" << endl;
-    cout << "Muc uu tien   : " << s->getPriority() << endl;
+    Utils::printEntityDetails(*s);
     Utils::backChoice();
 }
 
@@ -172,10 +167,8 @@ void SLALevelMenu::update()
     }
 
     SLALevel updated = *s;
-    cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getName()
-         << " | " << updated.getResponseMinutes() << " phut"
-         << " | " << updated.getResolveHours() << " gio"
-         << " | uu tien " << updated.getPriority() << endl;
+    cout << "Thong tin hien tai:" << endl;
+    updated.printInfo();
 
     try
     {

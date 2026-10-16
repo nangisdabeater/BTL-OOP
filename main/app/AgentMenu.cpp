@@ -122,13 +122,7 @@ void AgentMenu::findById() {
     return;
   }
 
-  cout << "--- Thong tin dien thoai vien ---" << endl;
-  cout << "Ma dinh danh   : " << ag->getId() << endl;
-  cout << "Ho va ten      : " << ag->getFullName() << endl;
-  cout << "So dien thoai  : " << ag->getPhoneNumber() << endl;
-  cout << "Email          : " << ag->getEmail() << endl;
-  cout << "So may le      : " << ag->getExtensionPhone() << endl;
-  cout << "Trang thai     : " << (ag->isActive() ? "Hoat dong" : "Tam dung") << endl;
+  Utils::printEntityDetails(*ag);
   Utils::backChoice();
 }
 
@@ -214,11 +208,8 @@ void AgentMenu::update()
   Agent updated = *ag;
   const auto& list = agentRepository.getAll();
 
-  cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getFullName()
-        << " | " << updated.getPhoneNumber()
-        << " | " << updated.getEmail()
-        << " | " << updated.getExtensionPhone()
-        << " | " << (updated.isActive() ? "Hoat dong" : "Tam dung") << endl;
+  cout << "Thong tin hien tai:" << endl;
+  updated.printInfo();
 
   // Cập nhật họ và tên điện thoại viên
   cout << "Nhap ten moi (nhan Enter de giu nguyen): ";

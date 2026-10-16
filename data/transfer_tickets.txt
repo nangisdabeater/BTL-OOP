@@ -1,12 +1,12 @@
-Ma ID    | Ma Ticket  | Agent chuyen | Agent nhan | Ly do                              | Trang thai
-----------------------------------------------------------------------------------------------------------
-TF001    | TK001      | AG001        | AG002      | Chuyen xu ly ky thuat mang         | 0
-TF002    | TK002      | AG001        | AG003      | Chuyen xu ly loi ket noi Internet  | 0
-TF003    | TK003      | AG002        | AG004      | Chuyen xu ly loi truyen hinh       | 0
-TF004    | TK004      | AG003        | AG005      | Chuyen ho tro kich hoat SIM        | 0
-TF005    | TK005      | AG002        | AG006      | Chuyen kiem tra modem hong         | 0
-TF006    | TK006      | AG004        | AG001      | Chuyen tiep nhan yeu cau bao hanh  | 1
-TF007    | TK007      | AG005        | AG003      | Chuyen xu ly loi thanh toan        | 0
-TF008    | TK008      | AG006        | AG002      | Chuyen xu ly khieu nai cuoc phi    | 0
-TF009    | TK009      | AG003        | AG004      | Chuyen lap dat Internet            | 1
-TF010    | TK010      | AG001        | AG005      | Chuyen tu van goi cuoc             | 0
+Ma ID    | Ma Ticket  | Agent chuyen | Agent nhan | Ly do                          | Trang thai
+------------------------------------------------------------------------------------------
+TF001    | TK001      | AG001      | AG002      | Chuyen xu ly ky thuat mang     | 0
+TF002    | TK002      | AG001      | AG003      | Chuyen xu ly loi ket noi Internet | 0
+TF003    | TK003      | AG002      | AG004      | Chuyen xu ly loi truyen hinh   | 0
+TF004    | TK004      | AG003      | AG005      | Chuyen ho tro kich hoat SIM    | 0
+TF005    | TK005      | AG002      | AG006      | Chuyen kiem tra modem hong     | 0
+TF006    | TK006      | AG004      | AG001      | Chuyen tiep nhan yeu cau bao hanh | 1
+TF007    | TK007      | AG005      | AG003      | Chuyen xu ly loi thanh toan    | 0
+TF008    | TK008      | AG006      | AG002      | Chuyen xu ly khieu nai cuoc phi | 0
+TF009    | TK009      | AG003      | AG004      | Chuyen lap dat Internet        | 1
+TF010    | TK010      | AG001      | AG005      | Chuyen tu van goi cuoc         | 0

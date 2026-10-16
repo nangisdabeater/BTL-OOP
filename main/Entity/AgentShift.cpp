@@ -104,7 +104,20 @@ void AgentShift::removeAgentId(const string& agentId) {
 }
 
 void AgentShift::printInfo() const {
-  cout << "Print Info";
+  cout << "Ca truc ID: " << id
+       << " | Ten ca: " << shiftName
+       << " | Ngay: " << shiftDate
+       << " | Bat dau: " << shiftStart
+       << " | Ket thuc: " << shiftEnd
+       << " | Trang thai: " << (status ? "Hoat dong" : "Tam ngung")
+       << " | So DTV: " << agentIds.size() << endl;
+  if (!agentIds.empty()) {
+    cout << "  -> DS ma nhan vien: ";
+    for (size_t i = 0; i < agentIds.size(); ++i) {
+      cout << agentIds[i] << (i + 1 < agentIds.size() ? ", " : "");
+    }
+    cout << endl;
+  }
 }
 
 // Business methods

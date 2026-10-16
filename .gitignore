@@ -13,7 +13,6 @@ cmake-build-*/
 *.idb
 
 # Cau hinh IDE
-.vscode/
 .idea/
 *.suo
 *.user

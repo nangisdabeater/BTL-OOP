@@ -4,6 +4,14 @@
 #include <sstream>
 #include <cctype>
 #include <ctime>
+#include <filesystem>
+#if defined(_WIN32)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
+#include "../Entity/BaseEntity.h"
 
 namespace Utils {
     std::string trim(const std::string& str) {
@@ -164,5 +172,56 @@ namespace Utils {
                 std::cout << "Loi: Chuc nang khong ton tai! Vui long nhap 0 de quay lai." << std::endl;
             }
         }
+    }
+
+    void printEntityDetails(const BaseEntity& entity) {
+        std::cout << "\n--- Thong tin chi tiet thuc the ---" << std::endl;
+        entity.printInfo();
+        std::cout << "-----------------------------------" << std::endl;
+    }
+
+    std::string resolveDataPath(const std::string& relativePath) {
+        if (relativePath.empty()) return "";
+
+        std::filesystem::path p(relativePath);
+        if (p.is_absolute()) {
+            return p.lexically_normal().string();
+        }
+
+#if defined(_WIN32)
+        // 1. Uu tien tim thu muc goc du an tu duong dan file thuc thi (.exe)
+        char exePathBuf[MAX_PATH];
+        if (GetModuleFileNameA(NULL, exePathBuf, MAX_PATH) > 0) {
+            std::filesystem::path currExe = std::filesystem::path(exePathBuf).parent_path();
+            for (int i = 0; i < 6; ++i) {
+                std::filesystem::path dataDir = currExe / "data";
+                if (std::filesystem::exists(dataDir) && std::filesystem::is_directory(dataDir) &&
+                    (std::filesystem::exists(currExe / "CMakeLists.txt") || std::filesystem::exists(currExe / "main"))) {
+                    return (currExe / relativePath).lexically_normal().string();
+                }
+                if (!currExe.has_parent_path() || currExe == currExe.parent_path()) break;
+                currExe = currExe.parent_path();
+            }
+        }
+#endif
+
+        // 2. Tim thu muc goc tu thu muc lam viec hien tai (current_path)
+        std::filesystem::path curr = std::filesystem::current_path();
+        for (int i = 0; i < 6; ++i) {
+            std::filesystem::path dataDir = curr / "data";
+            if (std::filesystem::exists(dataDir) && std::filesystem::is_directory(dataDir) &&
+                (std::filesystem::exists(curr / "CMakeLists.txt") || std::filesystem::exists(curr / "main"))) {
+                return (curr / relativePath).lexically_normal().string();
+            }
+            if (!curr.has_parent_path() || curr == curr.parent_path()) break;
+            curr = curr.parent_path();
+        }
+
+        // 3. Fallback: kiem tra truc tiep o thu muc cha
+        if (std::filesystem::exists("../data") && std::filesystem::is_directory("../data")) {
+            return std::filesystem::absolute("../" + relativePath).lexically_normal().string();
+        }
+
+        return std::filesystem::absolute(relativePath).lexically_normal().string();
     }
 }

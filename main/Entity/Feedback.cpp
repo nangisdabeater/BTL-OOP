@@ -87,6 +87,10 @@ void Feedback::setScore(int v) {
  * @brief Hiển thị thông tin tóm tắt phiếu đánh giá
  */
 void Feedback::printInfo() const {
-    cout << id << " | " << customerId << " | " << ticketId << " | "
-         << score << " | " << date << " | " << comment << '\n';
+    cout << "Feedback ID: " << id
+         << " | Ma KH: " << customerId
+         << " | Ma Ticket: " << ticketId
+         << " | Diem: " << score << "/5"
+         << " | Ngay: " << date
+         << " | Nhan xet: " << comment << endl;
 }

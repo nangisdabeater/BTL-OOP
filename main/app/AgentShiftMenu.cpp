@@ -129,14 +129,7 @@ void AgentShiftMenu::findById() {
     return;
   }
 
-  cout << "--- Thong tin ca truc ---" << endl;
-  cout << "Ma dinh danh  : " << as->getId() << endl;
-  cout << "Ca truc       : " << as->getShiftName() << endl;
-  cout << "Ngay          : " << as->getShiftDate() << endl;
-  cout << "Bat dau       : " << as->getShiftStart() << endl;
-  cout << "Ket thuc      : " << as->getShiftEnd() << endl;
-  cout << "Trang thai    : " << (as->isActive() ? "Hoat dong" : "Tam dung") << endl;
-    
+  Utils::printEntityDetails(*as);
   Utils::backChoice();
 }
 
@@ -224,11 +217,8 @@ void AgentShiftMenu::update()
   AgentShift updated = *as;
   const auto& list = agentShiftRepository.getAll();
 
-  cout << "Thong tin hien tai: [" << updated.getId() << "] " << updated.getShiftName()
-        << " | " << updated.getShiftDate()
-        << " | " << updated.getShiftStart()
-        << " | " << updated.getShiftEnd()
-        << " | " << (updated.isActive() ? "Hoat dong" : "Tam dung") << endl;
+  cout << "Thong tin hien tai:" << endl;
+  updated.printInfo();
 
   // Cập nhật tên ca trực
   cout << "Nhap ten moi (nhan Enter de giu nguyen): ";

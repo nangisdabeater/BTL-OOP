@@ -59,8 +59,8 @@ void SLALevel::setPriority(int priority)
 void SLALevel::printInfo() const
 {
     cout << "SLALevel ID: " << id
-         << ", Name: " << name
-         << ", Response: " << responseMinutes << " phut"
-         << ", Resolve: " << resolveHours << " gio"
-         << ", Priority: " << priority << endl;
+         << " | Ten: " << name
+         << " | TG phan hoi: " << responseMinutes << " phut"
+         << " | TG xu ly: " << resolveHours << " gio"
+         << " | Uu tien: " << priority << endl;
 }
