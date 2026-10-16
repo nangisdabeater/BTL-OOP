@@ -4,11 +4,11 @@
 ---
 
 ## 1. GIỚI THIỆU DỰ ÁN
-Dự án phần mềm quản lý trung tâm chăm sóc khách hàng được xây dựng bằng ngôn ngữ C++ (chuẩn C++17), áp dụng đầy đủ 4 tính chất cốt lõi của **Lập trình Hướng đối tượng (OOP)**:
-- **Đóng gói (Encapsulation):** Toàn bộ thuộc tính khai báo `protected`/`private`, truy cập và biến đổi qua getter/setter có kiểm tra tính hợp lệ dữ liệu.
-- **Kế thừa (Inheritance):** Tất cả các thực thể nghiệp vụ đều kế thừa từ lớp cơ sở chung `BaseEntity`.
-- **Trừu tượng (Abstraction):** Lớp `BaseEntity` chứa phương thức thuần ảo `virtual void printInfo() const = 0`, ép buộc các lớp dẫn xuất phải triển khai chi tiết thông tin thực thể.
-- **Đa hình (Polymorphism):** Sử dụng đa hình qua con trỏ/tham chiếu `BaseEntity` để hiển thị thông tin (`Utils::printEntityDetails`).
+Dự án phần mềm quản lý trung tâm chăm sóc khách hàng được xây dựng bằng ngôn ngữ C++ (chuẩn C++17), áp dụng đầy đủ 4 tính chất lập trình (OOP)**:
+- **Đóng gói:** Toàn bộ thuộc tính khai báo `protected`/`private`, truy cập và biến đổi qua getter/setter có kiểm tra tính hợp lệ dữ liệu.
+- **Kế thừa:** Tất cả các thực thể nghiệp vụ đều kế thừa từ lớp cơ sở chung `BaseEntity`.
+- **Trừu tượng:** Lớp `BaseEntity` chứa phương thức thuần ảo `virtual void printInfo() const = 0`, ép buộc các lớp dẫn xuất phải triển khai chi tiết thông tin thực thể.
+- **Đa hình:** Sử dụng đa hình qua con trỏ/tham chiếu `BaseEntity` để hiển thị thông tin (`Utils::printEntityDetails`).
 
 Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp dữ liệu từ thư mục `data/`, đảm bảo tính toàn vẹn và độc lập với vị trí thực thi chương trình.
 
@@ -16,9 +16,9 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 
 ## 2. PHÂN CHIA NHIỆM VỤ THÀNH VIÊN
 
-### Bảng 1: Phân chia nghiệp vụ (Use Cases)
+### Bảng 1: Use Cases
 
-| STT | Thành viên | Nghiệp vụ phụ trách (Use Case 1) | Nghiệp vụ phụ trách (Use Case 2) | Vai trò chính |
+| STT | Thành viên | Use Case 1 | Use Case 2 | Vai trò chính |
 | :---: | :--- | :--- | :--- | :--- |
 | 1 | **Năng** *(Trưởng nhóm)* | **Nhóm dịch vụ** (*ServiceGroup*) | **Ticket yêu cầu** (*Ticket*) | Kiến trúc hệ thống + Tích hợp |
 | 2 | **Quang Hiếu** | **Kênh tiếp nhận** (*ReceptionChannel*) | **Cuộc gọi tiếp nhận** (*InboundCall*) | Nghiệp vụ tiếp nhận & Cuộc gọi |
@@ -28,9 +28,9 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 
 ---
 
-### Bảng 2: Chi tiết nhiệm vụ kỹ thuật và Module phụ trách
+### Bảng 2: Chi tiết nhiệm vụ thiết kế chung
 
-#### 1. Năng (Trưởng nhóm) - Kiến trúc + Tích hợp
+#### 1. Năng (Trưởng nhóm)
 - **Xây dựng kiến trúc OOP cốt lõi:**
   - Thiết kế lớp cơ sở trừu tượng `BaseEntity` và phương thức thuần ảo `printInfo()`.
   - Thiết kế và cài đặt lớp khuôn mẫu Generic `Repository<T>` hỗ trợ đầy đủ thao tác CRUD (Create, Read, Update, Delete) và tự động sinh mã ID theo tiền tố (`SM`, `TK`,...).
@@ -40,18 +40,18 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 - **Tích hợp & Quản trị Git:**
   - Thiết lập dự án với CMake, quản trị nhánh Git, giải quyết xung đột mã nguồn và tích hợp toàn hệ thống.
 
-#### 2. Quang Hiếu - Tiện ích nhập liệu & Kiểm tra dữ liệu (Validator)
+#### 2. Quang Hiếu - Tiện ích nhập liệu & Kiểm tra dữ liệu 
 - **Xây dựng bộ công cụ nhập liệu an toàn (`Utilities`):**
   - Hàm nhập chuỗi không rỗng (`Utils::inputNonEmptyString`).
   - Hàm nhập số nguyên (`Utils::inputInt`) và số thực (`Utils::inputDouble`) có giới hạn khoảng giá trị.
-- **Bộ kiểm tra hợp lệ dữ liệu (Validator):**
+- **Bộ kiểm tra hợp lệ dữ liệu :**
   - Kiểm tra và định dạng mã định danh (`Utils::formatId`, `Utils::extractIdNumber`).
   - Xử lý cắt tỉa khoảng trắng chuỗi (`Utils::trim`).
   - Hàm mẫu kiểm tra trùng lặp tổng quát (`ValidationUtils::isDuplicate`).
-- **Xử lý ngoại lệ nhập liệu (Exception Handling):**
+- **Xử lý ngoại lệ nhập liệu :**
   - Sử dụng `try/catch/throw` để bắt lỗi nhập liệu sai kiểu từ người dùng, làm sạch bộ đệm `cin` tránh lặp vô tận.
 
-#### 3. Cường - Quản lý File (FileManager & Data Parsing)
+#### 3. Cường - Quản lý File
 - **Thiết kế hệ thống lưu trữ dữ liệu (`FileManager`):**
   - Chuyên biệt hóa lớp mẫu `FileManager<T>` (Template Specialization) cho từng thực thể.
   - Xây dựng các hàm nạp dữ liệu (`load`) và lưu dữ liệu (`save`).
@@ -69,7 +69,7 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
   - Sử dụng thư viện `<iomanip>` (`setw`, `left`, `setfill`, `setprecision`) để căn chỉnh các cột dữ liệu thẳng hàng, phân cách rõ ràng.
   - Hàm nối danh sách chuỗi (`Utils::join`).
 
-#### 5. Thành - Dữ liệu mẫu, Ràng buộc nghiệp vụ & Kiểm thử
+#### 5. Thành - Dữ liệu mẫu, Ràng buộc & Kiểm thử
 - **Xây dựng bộ dữ liệu mẫu:**
   - Chuẩn bị đầy đủ 10 file dữ liệu chuẩn định dạng ban đầu trong thư mục `data/` (`agents.txt`, `customers.txt`, `tickets.txt`,...).
 - **Kiểm tra ràng buộc và quan hệ giữa các thực thể:**
