@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 #include <iomanip>
 #include <stdexcept>
 
@@ -28,10 +27,7 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
     vector<Feedback> out;
     ifstream f(path);
     if (!f.is_open()) {
-        filesystem::path p(path);
-        if (p.has_parent_path()) {
-            filesystem::create_directories(p.parent_path());
-        }
+
         ofstream outFile(path);
         outFile.close();
         return out;
@@ -79,10 +75,7 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
  * @param data Danh sách đối tượng Feedback cần lưu
  */
 void FileManager<Feedback>::save(const string& path, const vector<Feedback>& data) {
-    filesystem::path p(path);
-    if (p.has_parent_path()) {
-        filesystem::create_directories(p.parent_path());
-    }
+
     ofstream f(path);
     if (!f) throw runtime_error("Khong the mo file de ghi: " + path);
 

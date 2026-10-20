@@ -9,8 +9,8 @@ cmake_minimum_required(VERSION 3.15)
 # Tên dự án và ngôn ngữ sử dụng
 project(BTL_OOP VERSION 1.0 LANGUAGES CXX)
 
-# Thiết lập chuẩn C++17 cho trình biên dịch
-set(CMAKE_CXX_STANDARD 17)
+# Thiết lập chuẩn C++11 cho trình biên dịch
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

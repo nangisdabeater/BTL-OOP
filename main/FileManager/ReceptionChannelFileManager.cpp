@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 #include <iomanip>
 #include <stdexcept>
 #include "Utilities.h"
@@ -28,11 +27,7 @@ vector<ReceptionChannel> FileManager<ReceptionChannel>::load(const string& fileP
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-        filesystem::path p(filePath);
-        if (p.has_parent_path())
-        {
-            filesystem::create_directories(p.parent_path());
-        }
+
         ofstream outFile(filePath);
         outFile.close();
         return result;
@@ -107,11 +102,7 @@ vector<ReceptionChannel> FileManager<ReceptionChannel>::load(const string& fileP
 void FileManager<ReceptionChannel>::save(const string& filePath, const vector<ReceptionChannel>& data)
 {
     // Đảm bảo thư mục cha data/ tồn tại
-    filesystem::path p(filePath);
-    if (p.has_parent_path())
-    {
-        filesystem::create_directories(p.parent_path());
-    }
+
 
     ofstream outFile(filePath);
     if (!outFile.is_open())

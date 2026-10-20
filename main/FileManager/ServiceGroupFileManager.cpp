@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 #include <iomanip>
 #include <stdexcept>
 #include "Utilities.h"
@@ -20,10 +19,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
     ifstream inFile(filePath);
     if (!inFile.is_open()){
         // Tự tạo file rỗng nếu chưa tồn tại
-        filesystem::path p(filePath);
-        if (p.has_parent_path()){
-            filesystem::create_directories(p.parent_path());
-        }
+
         ofstream outFile(filePath);
         outFile.close();
         return result;
@@ -120,11 +116,7 @@ Ghi toàn bộ danh sách Dịch vụ ra file văn bản kẻ hàng cột ngay n
 Tham số đầu vào: data (Dữ liệu cần ghi)
  */
 void FileManager<ServiceGroup>::save(const string& filePath, const vector<ServiceGroup>& data){
-    // Đảm bảo thư mục cha tồn tại trước khi tạo file
-    filesystem::path p(filePath);
-    if (p.has_parent_path()){
-        filesystem::create_directories(p.parent_path());
-    }
+
 
     ofstream outFile(filePath);
     if (!outFile.is_open()){

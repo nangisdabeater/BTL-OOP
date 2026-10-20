@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 #include <iomanip>
 #include <stdexcept>
 #include "Utilities.h"
@@ -19,10 +18,7 @@ vector<AgentShift> FileManager<AgentShift>::load(const string& filePath) {
   vector<AgentShift> result;
   ifstream inFile(filePath);
   if (!inFile.is_open()) {
-    filesystem::path p(filePath);
-    if (p.has_parent_path()) {
-      filesystem::create_directories(p.parent_path());
-    }
+
     ofstream outFile(filePath);
     outFile.close();
     return result;
@@ -103,10 +99,7 @@ vector<AgentShift> FileManager<AgentShift>::load(const string& filePath) {
  * @param data Dữ liệu cần ghi
  */
 void FileManager<AgentShift>::save(const string& filePath, const vector<AgentShift>& data) {
-  filesystem::path p(filePath);
-  if (p.has_parent_path()) {
-    filesystem::create_directories(p.parent_path());
-  }
+
 
   ofstream outFile(filePath);
   if (!outFile.is_open()) {

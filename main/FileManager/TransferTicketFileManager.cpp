@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 #include <iomanip>
 #include <stdexcept>
 #include "Utilities.h"
@@ -18,11 +17,7 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-        filesystem::path p(filePath);
-        if (p.has_parent_path())
-        {
-            filesystem::create_directories(p.parent_path());
-        }
+
         ofstream outFile(filePath);
         outFile.close();
         return result;
@@ -91,11 +86,7 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
  */
 void FileManager<TransferTicket>::save(const string& filePath, const vector<TransferTicket>& data)
 {
-    filesystem::path p(filePath);
-    if (p.has_parent_path())
-    {
-        filesystem::create_directories(p.parent_path());
-    }
+
 
     ofstream outFile(filePath);
     if (!outFile.is_open())

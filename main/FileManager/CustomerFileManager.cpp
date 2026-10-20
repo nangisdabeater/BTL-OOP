@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 #include <iomanip>
 #include <stdexcept>
 
@@ -28,10 +27,7 @@ vector<Customer> FileManager<Customer>::load(const string& path) {
     vector<Customer> out;
     ifstream f(path);
     if (!f.is_open()) {
-        filesystem::path p(path);
-        if (p.has_parent_path()) {
-            filesystem::create_directories(p.parent_path());
-        }
+
         ofstream outFile(path);
         outFile.close();
         return out;
@@ -78,10 +74,7 @@ vector<Customer> FileManager<Customer>::load(const string& path) {
  * @param data Danh sách đối tượng Customer cần lưu
  */
 void FileManager<Customer>::save(const string& path, const vector<Customer>& data) {
-    filesystem::path p(path);
-    if (p.has_parent_path()) {
-        filesystem::create_directories(p.parent_path());
-    }
+
     ofstream f(path);
     if (!f) throw runtime_error("Khong the mo file de ghi: " + path);
 

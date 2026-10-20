@@ -4,7 +4,7 @@
 ---
 
 ## 1. GIỚI THIỆU DỰ ÁN
-Dự án phần mềm quản lý trung tâm chăm sóc khách hàng được xây dựng bằng ngôn ngữ C++ (chuẩn C++17), áp dụng đầy đủ 4 tính chất lập trình (OOP)**:
+Dự án phần mềm quản lý trung tâm chăm sóc khách hàng được xây dựng bằng ngôn ngữ C++ (chuẩn C++11 trở lên), áp dụng đầy đủ 4 tính chất lập trình (OOP)**:
 - **Đóng gói:** Toàn bộ thuộc tính khai báo `protected`/`private`, truy cập và biến đổi qua getter/setter có kiểm tra tính hợp lệ dữ liệu.
 - **Kế thừa:** Tất cả các thực thể nghiệp vụ đều kế thừa từ lớp cơ sở chung `BaseEntity`.
 - **Trừu tượng:** Lớp `BaseEntity` chứa phương thức thuần ảo `virtual void printInfo() const = 0`, ép buộc các lớp dẫn xuất phải triển khai chi tiết thông tin thực thể.
@@ -132,21 +132,28 @@ BTL-OOP/
 ## 4. HƯỚNG DẪN BIÊN DỊCH VÀ CHẠY CHƯƠNG TRÌNH
 
 ### Yêu cầu môi trường
-- Trình biên dịch C++ hỗ trợ C++17 (GCC / MinGW-w64, Clang hoặc MSVC).
-- Công cụ CMake (phiên bản >= 3.15).
+- Trình biên dịch C++ hỗ trợ chuẩn **C++11** trở lên (GCC / MinGW-w64, Clang hoặc MSVC).
+- Công cụ **CMake** (phiên bản >= 3.15).
 
-### Các bước thực hiện qua dòng lệnh (Terminal):
+---
 
-1. **Tạo cấu hình build với CMake:**
+### Cách 1: Chạy nhanh bằng VS Code (Khuyên dùng)
+Dự án đã được cấu hình sẵn trong thư mục `.vscode/settings.json`, bạn chỉ cần:
+1. Tải code về và mở thư mục gốc `BTL-OOP` bằng **Visual Studio Code**.
+2. Đảm bảo đã cài đặt extension **CMake Tools** và **C/C++**.
+3. Nhấn vào **nút tam giác Play ▶️** (hoặc phím tắt `Shift + F5`) trên thanh trạng thái dưới cùng của VS Code để chạy chương trình ngay lập tức.
+
+---
+
+### Cách 2: Chạy qua dòng lệnh (Terminal)
+Nếu không dùng VS Code, bạn có thể chạy bằng dòng lệnh từ thư mục gốc:
+
+1. **Biên dịch dự án:**
    ```bash
-   cmake -S main -B build -G "MinGW Makefiles"
-   ```
-2. **Biên dịch dự án:**
-   ```bash
+   cmake -B build
    cmake --build build
    ```
-3. **Chạy chương trình:**
+2. **Chạy chương trình:**
    ```bash
    ./build/myprogram.exe
    ```
-*(Lưu ý: Nhờ cơ chế tự động tìm gốc dự án, bạn có thể thực thi file từ bất cứ thư mục nào mà dữ liệu vẫn được đọc/ghi chính xác vào `data/`).*
