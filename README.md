@@ -138,7 +138,7 @@ BTL-OOP/
 ---
 
 ### Cách 1: Chạy nhanh bằng VS Code (Khuyên dùng)
-Dự án đã được cấu hình sẵn trong thư mục `.vscode/settings.json`, bạn chỉ cần:
+Dự án đã được cấu hình sẵn trong thư mục `.vscode/settings.json`, chỉ cần:
 1. Tải code về và mở thư mục gốc `BTL-OOP` bằng **Visual Studio Code**.
 2. Đảm bảo đã cài đặt extension **CMake Tools** và **C/C++**.
 3. Nhấn vào **nút tam giác Play ▶️** (hoặc phím tắt `Shift + F5`) trên thanh trạng thái dưới cùng của VS Code để chạy chương trình ngay lập tức.
