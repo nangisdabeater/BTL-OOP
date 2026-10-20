@@ -16,8 +16,7 @@
 
 using namespace std;
 
-class Application
-{
+class Application{
 private:
     Repository<ServiceGroup> serviceGroupRepository; // Kho lưu trữ Dịch vụ / ServiceManager (file: data/service_groups.txt, prefix SM)
     Repository<Ticket> ticketRepository;             // Kho lưu trữ Ticket (file: data/tickets.txt, prefix TK)

@@ -1,9 +1,8 @@
 #pragma once
 
 /**
- * @file ServiceGroup.h
- * @brief Định nghĩa thực thể Nhóm dịch vụ (ServiceGroup)
- * Đại diện cho 1 nhóm dịch vụ với các thuộc tính: mã ID, tên, mô tả và trạng thái hoạt động.
+Định nghĩa thực thể Nhóm dịch vụ (ServiceGroup)
+Đại diện cho 1 nhóm dịch vụ với các thuộc tính: mã ID, tên, mô tả và trạng thái hoạt động.
  */
 
 #include <string>

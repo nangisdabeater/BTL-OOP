@@ -10,21 +10,18 @@
 using namespace std;
 
 /**
- * @brief Nạp danh sách Dịch vụ (ServiceManager / ServiceGroup) từ file văn bản
- * Định dạng ID yêu cầu: SM001, SM002,...
- * @param filePath Đường dẫn file (data/service_groups.txt)
- * @return Danh sách vector các đối tượng ServiceGroup
+Nạp danh sách Dịch vụ (ServiceManager / ServiceGroup) từ file văn bản
+Định dạng ID yêu cầu: SM001, SM002,...
+Đường dẫn file (data/service_groups.txt)
+Trả về danh sách vector các đối tượng ServiceGroup
  */
-vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
-{
+vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
     vector<ServiceGroup> result;
     ifstream inFile(filePath);
-    if (!inFile.is_open())
-    {
+    if (!inFile.is_open()){
         // Tự tạo file rỗng nếu chưa tồn tại
         filesystem::path p(filePath);
-        if (p.has_parent_path())
-        {
+        if (p.has_parent_path()){
             filesystem::create_directories(p.parent_path());
         }
         ofstream outFile(filePath);
@@ -33,8 +30,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
     }
 
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)){
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
         // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách (bắt đầu bằng '-' hoặc '+')
@@ -44,23 +40,18 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
         string id, name, desc;
 
         // Đọc các trường dữ liệu ngăn cách bằng ký tự '|'
-        if (getline(ss, id, '|') &&
-            getline(ss, name, '|') &&
-            getline(ss, desc, '|'))
-        {
+        if (getline(ss, id, '|') &&getline(ss, name, '|') &&getline(ss, desc, '|')){
             id = Utils::trim(id);
             name = Utils::trim(name);
             desc = Utils::trim(desc);
 
             // Bỏ qua dòng tiêu đề cột
-            if (id == "Ma ID")
-            {
+            if (id == "Ma ID"){
                 continue;
             }
 
             // Kiểm tra định dạng ID với tiền tố "SM" (SMxxx)
-            if (Utils::extractIdNumber(id, "SM") == -1) 
-            {
+            if (Utils::extractIdNumber(id, "SM") == -1) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
@@ -68,8 +59,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
             // Đọc các cột tiếp theo (hỗ trợ cả định dạng mới 8 cột và định dạng cũ 4 cột)
             string nextCol;
             vector<string> remainingCols;
-            while (getline(ss, nextCol, '|'))
-            {
+            while (getline(ss, nextCol, '|')){
                 remainingCols.push_back(Utils::trim(nextCol));
             }
 
@@ -79,8 +69,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
             string createdDate = "01/01/2026";
             bool isActive = true;
 
-            if (remainingCols.size() >= 5)
-            {
+            if (remainingCols.size() >= 5){
                 // Định dạng mới: dept | sla | baseFee | createdDate | active
                 department = remainingCols[0];
                 try { slaHours = stoi(remainingCols[1]); } catch (...) { slaHours = 24; }
@@ -92,19 +81,16 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
                 }
                 isActive = (remainingCols[4] != "0");
             }
-            else if (!remainingCols.empty())
-            {
+            else if (!remainingCols.empty()){
                 // Định dạng cũ: chỉ có activeStr
                 isActive = (remainingCols[0] != "0");
             }
-            else
-            {
+            else{
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
 
-            try
-            {
+            try{
                 ServiceGroup sg(name, desc, department, slaHours, baseFee, createdDate);
                 sg.setId(id);
                 if (isActive)
@@ -117,13 +103,11 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
                 }
                 result.push_back(sg);
             }
-            catch (...)
-            {
+            catch (...){
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
         }
-        else
-        {
+        else{
             cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
@@ -131,22 +115,19 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath)
 }
 
 /**
- * @brief Ghi toàn bộ danh sách Dịch vụ ra file văn bản kẻ hàng cột ngay ngắn
- * @param filePath Đường dẫn file (data/service_groups.txt)
- * @param data Dữ liệu cần ghi
+Ghi toàn bộ danh sách Dịch vụ ra file văn bản kẻ hàng cột ngay ngắn
+Đường dẫn file (data/service_groups.txt)
+Tham số đầu vào: data (Dữ liệu cần ghi)
  */
-void FileManager<ServiceGroup>::save(const string& filePath, const vector<ServiceGroup>& data)
-{
+void FileManager<ServiceGroup>::save(const string& filePath, const vector<ServiceGroup>& data){
     // Đảm bảo thư mục cha tồn tại trước khi tạo file
     filesystem::path p(filePath);
-    if (p.has_parent_path())
-    {
+    if (p.has_parent_path()){
         filesystem::create_directories(p.parent_path());
     }
 
     ofstream outFile(filePath);
-    if (!outFile.is_open())
-    {
+    if (!outFile.is_open()){
         throw runtime_error("Khong the mo file de ghi: " + filePath);
     }
 
@@ -162,8 +143,7 @@ void FileManager<ServiceGroup>::save(const string& filePath, const vector<Servic
             << "Trang thai"                    << "\n";
     outFile << string(137, '-') << "\n";
 
-    for (const auto& sg : data)
-    {
+    for (const auto& sg : data){
         outFile << left
                 << setw(8)  << sg.getId()          << " | "
                 << setw(25) << sg.getName()        << " | "
@@ -176,8 +156,7 @@ void FileManager<ServiceGroup>::save(const string& filePath, const vector<Servic
     }
 
     outFile.flush();
-    if (!outFile)
-    {
+    if (!outFile){
         throw runtime_error("Khong the ghi du lieu vao file: " + filePath);
     }
 }

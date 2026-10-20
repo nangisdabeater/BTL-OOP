@@ -10,21 +10,19 @@
 using namespace std;
 
 /**
- * @brief Nạp danh sách Ticket từ file văn bản có kẻ hàng cột
- * Định dạng ID yêu cầu: TK001, TK002,...
- * @param filePath Đường dẫn file (data/tickets.txt)
- * @return Danh sách vector các đối tượng Ticket đã đọc được
+Nạp danh sách Ticket từ file văn bản có kẻ hàng cột
+Định dạng ID yêu cầu: TK001, TK002,...
+Đầu vào: Đường dẫn file (data/tickets.txt)
+Trả về danh sách vector các đối tượng Ticket đã đọc được
  */
 vector<Ticket> FileManager<Ticket>::load(const string& filePath)
 {
     vector<Ticket> result;
     ifstream inFile(filePath);
-    if (!inFile.is_open())
-    {
+    if (!inFile.is_open()){
         // Tự tạo file rỗng nếu chưa tồn tại
         filesystem::path p(filePath);
-        if (p.has_parent_path())
-        {
+        if (p.has_parent_path()){
             filesystem::create_directories(p.parent_path());
         }
         ofstream outFile(filePath);
@@ -33,8 +31,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
     }
 
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)){
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
         // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách (bắt đầu bằng '-' hoặc '+')
@@ -48,8 +45,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             getline(ss, title, '|') &&
             getline(ss, desc, '|') &&
             getline(ss, customerId, '|') &&
-            getline(ss, sgId, '|'))
-        {
+            getline(ss, sgId, '|')){
             id = Utils::trim(id);
             title = Utils::trim(title);
             desc = Utils::trim(desc);
@@ -57,14 +53,12 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             sgId = Utils::trim(sgId);
 
             // Bỏ qua dòng tiêu đề cột
-            if (id == "Ma ID")
-            {
+            if (id == "Ma ID"){
                 continue;
             }
 
             // Kiểm tra định dạng ID với tiền tố "TK" (TKxxx)
-            if (Utils::extractIdNumber(id, "TK") == -1)
-            {
+            if (Utils::extractIdNumber(id, "TK") == -1){
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
@@ -72,8 +66,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             // Đọc các cột tiếp theo
             string nextCol;
             vector<string> remainingCols;
-            while (getline(ss, nextCol, '|'))
-            {
+            while (getline(ss, nextCol, '|')){
                 remainingCols.push_back(Utils::trim(nextCol));
             }
 
@@ -82,8 +75,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             string createdDate = "01/01/2026";
             int statusCode = 0;
 
-            if (remainingCols.size() >= 4)
-            {
+            if (remainingCols.size() >= 4){
                 // Định dạng mới: priority | estimatedFee | createdDate | status
                 try { priority = stoi(remainingCols[0]); } catch (...) { priority = 2; }
                 try { estimatedFee = stod(remainingCols[1]); } catch (...) { estimatedFee = 0.0; }
@@ -94,19 +86,16 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
                 }
                 try { statusCode = stoi(remainingCols[3]); } catch (...) { statusCode = 0; }
             }
-            else if (!remainingCols.empty())
-            {
+            else if (!remainingCols.empty()){
                 // Định dạng cũ: chỉ có status
                 try { statusCode = stoi(remainingCols[0]); } catch (...) { statusCode = 0; }
             }
-            else
-            {
+            else{
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
 
-            try
-            {
+            try{
                 Ticket t(title, desc, customerId, sgId, priority, estimatedFee, createdDate);
                 t.setId(id);
                 if (statusCode >= 0 && statusCode <= 3)
@@ -119,13 +108,11 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
                 }
                 result.push_back(t);
             }
-            catch (...)
-            {
+            catch (...){
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
         }
-        else
-        {
+        else{
             cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
@@ -133,22 +120,18 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
 }
 
 /**
- * @brief Ghi toàn bộ danh sách Ticket ra file văn bản kẻ hàng cột ngay ngắn
- * @param filePath Đường dẫn file (data/tickets.txt)
- * @param data Dữ liệu cần ghi
+Ghi toàn bộ danh sách Ticket ra file văn bản kẻ hàng cột ngay ngắn
+Đầu vào: filePath là  Đường dẫn file (data/tickets.txt) và data là  Dữ liệu cần ghi
  */
-void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& data)
-{
+void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& data){
     // Đảm bảo thư mục cha tồn tại trước khi tạo file
     filesystem::path p(filePath);
-    if (p.has_parent_path())
-    {
+    if (p.has_parent_path()){
         filesystem::create_directories(p.parent_path());
     }
 
     ofstream outFile(filePath);
-    if (!outFile.is_open())
-    {
+    if (!outFile.is_open()){
         throw runtime_error("Khong the mo file de ghi: " + filePath);
     }
 
@@ -165,8 +148,7 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
             << "Trang thai" << "\n";
     outFile << string(140, '-') << "\n";
 
-    for (const auto& t : data)
-    {
+    for (const auto& t : data){
         outFile << left
                 << setw(8)  << t.getId()             << " | "
                 << setw(24) << t.getTitle()          << " | "
@@ -180,8 +162,7 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
     }
 
     outFile.flush();
-    if (!outFile)
-    {
+    if (!outFile){
         throw runtime_error("Khong the ghi du lieu vao file: " + filePath);
     }
 }

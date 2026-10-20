@@ -1,7 +1,4 @@
-/**
- * @file Ticket.cpp
- * @brief Triển khai các phương thức của lớp thực thể Ticket
- */
+//Triển khai các phương thức của lớp thực thể Ticket
 
 #include "Ticket.h"
 #include <iostream>
@@ -26,56 +23,45 @@ Ticket::Ticket(
       priority(priority),
       estimatedFee(estimatedFee),
       createdDate(createdDate),
-      status(TicketStatus::OPEN)
-{
-}
+      status(TicketStatus::OPEN){}
 
 // Getter
 
-const string& Ticket::getTitle() const
-{
+const string& Ticket::getTitle() const{
     return title;
 }
 
-const string& Ticket::getDescription() const
-{
+const string& Ticket::getDescription() const{
     return description;
 }
 
-const string& Ticket::getCustomerId() const
-{
+const string& Ticket::getCustomerId() const{
     return customerId;
 }
 
-const string& Ticket::getServiceGroupId() const
-{
+const string& Ticket::getServiceGroupId() const{
     return serviceGroupId;
 }
 
-int Ticket::getPriority() const
-{
+int Ticket::getPriority() const{
     return priority;
 }
 
-double Ticket::getEstimatedFee() const
-{
+double Ticket::getEstimatedFee() const{
     return estimatedFee;
 }
 
-const string& Ticket::getCreatedDate() const
-{
+const string& Ticket::getCreatedDate() const{
     return createdDate;
 }
 
-TicketStatus Ticket::getStatus() const
-{
+TicketStatus Ticket::getStatus() const{
     return status;
 }
 
 // Setter
 
-void Ticket::setTitle(const string& title)
-{
+void Ticket::setTitle(const string& title){
     if (title.empty()) {
         throw invalid_argument("Tieu de ticket khong duoc de trong!");
     }
@@ -85,56 +71,49 @@ void Ticket::setTitle(const string& title)
     this->title = title;
 }
 
-void Ticket::setDescription(const string& description)
-{
+void Ticket::setDescription(const string& description){
     if (description.empty()) {
         throw invalid_argument("Mo ta ticket khong duoc de trong!");
     }
     this->description = description;
 }
 
-void Ticket::setCustomerId(const string& customerId)
-{
+void Ticket::setCustomerId(const string& customerId){
     if (customerId.empty()) {
         throw invalid_argument("Ma khach hang khong duoc de trong!");
     }
     this->customerId = customerId;
 }
 
-void Ticket::setServiceGroupId(const string& serviceGroupId)
-{
+void Ticket::setServiceGroupId(const string& serviceGroupId){
     if (serviceGroupId.empty()) {
         throw invalid_argument("Ma dich vu khong duoc de trong!");
     }
     this->serviceGroupId = serviceGroupId;
 }
 
-void Ticket::setPriority(int priority)
-{
+void Ticket::setPriority(int priority){
     if (priority < 1 || priority > 4) {
         throw invalid_argument("Muc do uu tien phai tu 1 (Thap) den 4 (Khan cap)!");
     }
     this->priority = priority;
 }
 
-void Ticket::setEstimatedFee(double fee)
-{
+void Ticket::setEstimatedFee(double fee){
     if (fee < 0.0) {
         throw invalid_argument("Chi phi xu ly uoc tinh phai lon hon hoac bang 0!");
     }
     this->estimatedFee = fee;
 }
 
-void Ticket::setCreatedDate(const string& date)
-{
+void Ticket::setCreatedDate(const string& date){
     if (date.empty()) {
         throw invalid_argument("Ngay tao ticket khong duoc de trong!");
     }
     this->createdDate = date;
 }
 
-void Ticket::printInfo() const
-{
+void Ticket::printInfo() const{
     string prioStr;
     switch (priority) {
         case 1: prioStr = "Thap"; break;
@@ -164,7 +143,6 @@ void Ticket::printInfo() const
 
 // Business method
 
-void Ticket::changeStatus(TicketStatus status)
-{
+void Ticket::changeStatus(TicketStatus status){
     this->status = status;
 }

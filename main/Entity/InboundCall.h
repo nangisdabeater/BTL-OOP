@@ -1,8 +1,6 @@
 #pragma once
-
 /**
- * @file InboundCall.h
- * @brief Định nghĩa thực thể Cuộc gọi tiếp nhận (InboundCall)
+    Định nghĩa thực thể Cuộc gọi tiếp nhận (InboundCall)
  * [PHẦN THÊM MỚI]
  * Đại diện cho 1 cuộc gọi đến từ khách hàng tới trung tâm CSKH.
  * Thuộc tính:
@@ -21,16 +19,15 @@
 
 using namespace std;
 
-class InboundCall : public BaseEntity
-{
+class InboundCall : public BaseEntity{
 private:
-    string phoneNumber;  // Số điện thoại người gọi
-    string channelId;    // Mã kênh tiếp nhận (VD: CN001)
-    string agentId;      // Mã điện thoại viên tiếp nhận (VD: AG001)
-    string callTime;     // Thời điểm cuộc gọi (VD: "2026-10-11 14:30")
-    int duration;        // Thời lượng cuộc gọi (giây)
+    string phoneNumber;  
+    string channelId;    
+    string agentId;      
+    string callTime;     
+    int duration;        
     string status;       // Trạng thái cuộc gọi: ANSWERED (Thành công), MISSED (Nhỡ), BUSY (Bận máy)
-    string note;         // Ghi chú nội dung cuộc gọi
+    string note;         
 
 public:
     // Constructor (ID sẽ được Repository cấp tự động dạng CAxxx khi gọi add)

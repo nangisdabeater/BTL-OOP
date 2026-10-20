@@ -1,7 +1,4 @@
-/**
- * @file InboundCall.cpp
- * @brief Triển khai các phương thức của lớp thực thể Cuộc gọi tiếp nhận (InboundCall)
- * [PHẦN THÊM MỚI]
+/**    Triển khai các phương thức của lớp thực thể Cuộc gọi tiếp nhận (InboundCall)
  */
 
 #include "InboundCall.h"
@@ -28,16 +25,13 @@ InboundCall::InboundCall(
 {
 }
 
-// ==============================
 // GETTER
-// ==============================
-const string& InboundCall::getPhoneNumber() const
-{
+
+const string& InboundCall::getPhoneNumber() const{
     return phoneNumber;
 }
 
-const string& InboundCall::getChannelId() const
-{
+const string& InboundCall::getChannelId() const{
     return channelId;
 }
 
@@ -66,9 +60,8 @@ const string& InboundCall::getNote() const
     return note;
 }
 
-// ==============================
 // SETTER (Có kiểm tra tính hợp lệ)
-// ==============================
+
 void InboundCall::setPhoneNumber(const string& phoneNumber)
 {
     if (phoneNumber.empty()) {
@@ -119,9 +112,8 @@ void InboundCall::setNote(const string& note)
     this->note = note;
 }
 
-// ==============================
 // PHƯƠNG THỨC HIỂN THỊ THÔNG TIN
-// ==============================
+
 void InboundCall::printInfo() const
 {
     cout << "Cuoc goi ID: " << id

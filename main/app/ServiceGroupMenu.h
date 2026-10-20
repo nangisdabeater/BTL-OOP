@@ -1,8 +1,7 @@
 #pragma once
 
 /**
- * @file ServiceGroupMenu.h
- * @brief Lớp điều khiển giao diện Menu và các thao tác CRUD cho Nhóm Dịch Vụ (ServiceGroup)
+Lớp điều khiển giao diện Menu và các thao tác CRUD cho Nhóm Dịch Vụ (ServiceGroup)
  * Quản lý các thuộc tính: Mã ID, Tên nhóm dịch vụ, Mô tả, Trạng thái hoạt động.
  * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra trùng tên, kiểm tra toàn vẹn dữ liệu khi xóa.
  */
@@ -13,8 +12,7 @@
 
 using namespace std;
 
-class ServiceGroupMenu
-{
+class ServiceGroupMenu{
 private:
     Repository<ServiceGroup>& serviceGroupRepository; // Tham chiếu đến kho lưu trữ Nhóm dịch vụ
     Repository<Ticket>& ticketRepository;             // Tham chiếu đến kho Ticket để kiểm tra ràng buộc khóa ngoại

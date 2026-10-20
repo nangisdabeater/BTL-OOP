@@ -2,4 +2,7 @@
     "cmake.sourceDirectory": "${workspaceFolder}/main",
     "cmake.generator": "MinGW Makefiles",
     "cmake.configureOnOpen": true,
+    "cmake.debugConfig": {
+        "cwd": "${workspaceFolder}"
+    }
 }

@@ -1,9 +1,8 @@
 #pragma once
 
 /**
- * @file Ticket.h
- * @brief Định nghĩa thực thể Ticket (phiếu hỗ trợ khách hàng)
- * Đại diện cho 1 ticket với các thuộc tính: mã ID, tiêu đề, mô tả, mã khách hàng, mã nhóm dịch vụ và trạng thái.
+Định nghĩa thực thể Ticket (phiếu hỗ trợ khách hàng)
+Đại diện cho 1 ticket với các thuộc tính: mã ID, tiêu đề, mô tả, mã khách hàng, mã nhóm dịch vụ và trạng thái.
  */
 
 #include <string>
@@ -11,16 +10,14 @@
 
 using namespace std;
 
-enum class TicketStatus
-{
+enum class TicketStatus{
     OPEN,
     IN_PROGRESS,
     RESOLVED,
     CLOSED
 };
 
-class Ticket : public BaseEntity
-{
+class Ticket : public BaseEntity{
 private:
     string title;            // Tieu de ticket (khong rong, toi da 100 ky tu)
     string description;      // Mo ta chi tiet

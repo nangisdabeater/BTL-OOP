@@ -15,7 +15,6 @@ namespace Utils {
   int extractIdNumber(const std::string& id, const std::string& prefix);
 
   bool isValidDate(const std::string& dateStr);
-  std::string today();
   std::string inputDateString(const std::string& prompt);
   double inputDouble(const std::string& prompt, double minVal = 0.0);
   int inputInt(const std::string& prompt, int minVal, int maxVal);
@@ -26,23 +25,19 @@ namespace Utils {
 
   void printEntityDetails(const BaseEntity& entity);
 
-  std::string resolveDataPath(const std::string& relativePath);
+
 }
 
-namespace ValidationUtils 
-{
+namespace ValidationUtils {
     /**
-     * Hàm kiểm tra trùng lặp tổng quát (Generic)
-     * @param list: Danh sách bất kỳ (vector<ServiceGroup>, vector<User>, vector<Ticket>...)
-     * @param condition: Điều kiện kiểm tra trùng lặp (Lambda function)
+     * Hàm kiểm tra trùng lặp
+     * list: Danh sách bất kỳ (vector<ServiceGroup>, vector<User>, vector<Ticket>...)
+     * Điều kiện kiểm tra trùng lặp : hàm Lambda
      */
     template <typename T, typename Predicate>
-    bool isDuplicate(const std::vector<T>& list, Predicate condition)
-    {
-        for (const auto& item : list)
-        {
-            if (condition(item))
-            {
+    bool isDuplicate(const std::vector<T>& list, Predicate condition){
+        for (const auto& item : list){
+            if (condition(item)){
                 return true; // Tìm thấy phần tử trùng lặp
             }
         }

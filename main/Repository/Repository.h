@@ -1,8 +1,7 @@
 #pragma once
 
 /**
- * @file Repository.h
- * @brief Lớp khuôn mẫu (Template Class) quản lý kho lưu trữ dữ liệu dạng CRUD
+ * Lớp khuôn mẫu (Template Class) quản lý kho lưu trữ dữ liệu dạng CRUD
  */
 
 #include <vector>
@@ -15,11 +14,10 @@
 
 // T phai ke thua Entity, co constructor mac dinh
 template <typename T>
-class Repository
-{
+class Repository{
 private:
     std::vector<T> data;
-    int counter = 1;         // bo dem id: 1 -> 999
+    int count = 1;         // bo dem id: 1 -> 999
     std::string idPrefix;    // Tien to ID, vd: "SG" cho ServiceGroup, "TK" cho Ticket
     std::string filePath;    // duong dan file du lieu (rong = khong luu file)
 
@@ -31,14 +29,15 @@ private:
 
 public:
     // Cập nhật constructor để bắt buộc truyền prefix và tự động chuẩn hóa đường dẫn về thư mục data gốc
-    explicit Repository(const std::string& prefix, const std::string& filePath = "") 
-        : idPrefix(prefix), filePath(Utils::resolveDataPath(filePath)) {}
-
+    Repository(const std::string& prefix, const std::string& filePath = "") {
+    idPrefix = prefix;
+    this->filePath = filePath;
+}
     // Nap du lieu tu file (qua FileManager), khoi phuc bo dem id
     void load();
 
     // Ghi toan bo du lieu ra file (qua FileManager)
-    void save() const;
+    void save();
 
     // Them entity
     void add(const T& entity);
@@ -58,39 +57,30 @@ public:
     bool update(const T& entity);
 };
 
-// ==============================
 // SINH ID TU DONG
-// ==============================
+
 template <typename T>
-std::string Repository<T>::generateId()
-{
-    if (counter > 999)
+std::string Repository<T>::generateId(){
+    if (count > 999)
     {
         throw std::overflow_error("Da het ID!");
     }
     // Sử dụng Utils để gen ID
-    return Utils::formatId(idPrefix, counter++);
+    return Utils::formatId(idPrefix, count++);
 }
 
-// ==============================
 // NAP / GHI FILE (qua FileManager)
-// ==============================
-template <typename T>
-void Repository<T>::load()
-{
-    data.clear();
-    counter = 1;
 
-    if (filePath.empty())
-    {
-        return;
-    }
+template <typename T>
+void Repository<T>::load(){
+    data.clear();
+    count = 1;
 
     std::vector<T> loaded = FileManager<T>::load(filePath);
 
     for (const T& entity : loaded)
     {
-        // Sử dụng Utils để trích xuất số và validate
+        // Sử dụng Utils để trích xuất số và xác thực ID (để ktra nguồn nhập từ bên ngoài).
         int number = Utils::extractIdNumber(entity.getId(), idPrefix);
 
         if (number == -1 || findById(entity.getId()) != nullptr)
@@ -103,20 +93,16 @@ void Repository<T>::load()
         data.push_back(entity);
 
         // Khoi phuc bo dem de id moi khong trung id da co
-        if (number >= counter)
+        if (number >= count)
         {
-            counter = number + 1;
+            count = number + 1;
         }
     }
 }
 
 template <typename T>
-void Repository<T>::save() const
-{
-    if (filePath.empty())
-    {
-        return;
-    }
+void Repository<T>::save(){
+
     FileManager<T>::save(filePath, data);
 }
 
@@ -130,7 +116,7 @@ void Repository<T>::saveOrRollback(const std::vector<T>& backup, int backupCount
     catch (...)
     {
         data = backup;
-        counter = backupCounter;
+        count = backupCounter;
         throw;
     }
 }
@@ -139,13 +125,13 @@ void Repository<T>::saveOrRollback(const std::vector<T>& backup, int backupCount
 // THEM ENTITY
 // ==============================
 template <typename T>
-void Repository<T>::add(const T& entity)
-{
+void Repository<T>::add(const T& entity){
+    //Gọi danh sách và ID ra để xử lí
     std::vector<T> backup = data;
-    int backupCounter = counter;
+    int backupCounter = count;
 
     T newEntity = entity;
-    newEntity.setId(generateId());   // cap id moi cho entity
+    newEntity.setId(generateId());   // cấp id mới cho entity
 
     data.push_back(newEntity);
 
@@ -156,66 +142,58 @@ void Repository<T>::add(const T& entity)
 // TIM ENTITY THEO ID
 // ==============================
 template <typename T>
-T* Repository<T>::findById(const std::string& id)
-{
-    for (T& entity : data)
-    {
-        if (entity.getId() == id)
-        {
+//Dùng T* để tìm ID thông qua 2 trạng thái , có thì trả về địa chỉ entity,không thì nullptr
+//Nếu dùng T& bắt buộc phải dùng throw, mà throw cần try catch lằng nhằng hơn
+
+T* Repository<T>::findById(const std::string& id){
+    for (T& entity : data){
+        if (entity.getId() == id){
             return &entity;
         }
     }
     return nullptr;
 }
 
-// ==============================
 // XOA ENTITY THEO ID
-// ==============================
+
 template <typename T>
-bool Repository<T>::remove(const std::string& id)
-{
+bool Repository<T>::remove(const std::string& id){
     std::vector<T> backup = data;
 
-    auto it = std::remove_if(
+    auto it = std::remove_if(       //auto tự gán kiểu dữ liệu
         data.begin(),
-        data.end(),
-        [id](const T& entity)
-        {
-            return entity.getId() == id;
+        data.end(),             //quét từng entity
+        [id](const T& entity){      //ktra ID cần xóa, dùng lambda để tránh viết thêm hàm ở bên ngoài(chỉ dùng duy nhất cho 1 hàm)
+        return entity.getId() == id;
         }
     );
 
-    if (it == data.end())
-    {
+    if (it == data.end()){  //K có ID trùng thì báo k có
         return false;
     }
 
     data.erase(it, data.end());
 
-    saveOrRollback(backup, counter);
+    saveOrRollback(backup, count); //Cập nhật lại danh sách
 
     return true;
 }
 
-// ==============================
 // LAY TAT CA ENTITY
-// ==============================
+
 template <typename T>
-const std::vector<T>& Repository<T>::getAll() const
-{
+const std::vector<T>& Repository<T>::getAll() const{
     return data;
 }
 
-// ==============================
+
 // CAP NHAT ENTITY
-// ==============================
+
 template <typename T>
-bool Repository<T>::update(const T& entity)
-{
+bool Repository<T>::update(const T& entity){
     T* existingEntity = findById(entity.getId());
 
-    if (existingEntity == nullptr)
-    {
+    if (existingEntity == nullptr){
         return false;
     }
 
@@ -223,7 +201,7 @@ bool Repository<T>::update(const T& entity)
 
     *existingEntity = entity;
 
-    saveOrRollback(backup, counter);
+    saveOrRollback(backup, count);
 
     return true;
 }

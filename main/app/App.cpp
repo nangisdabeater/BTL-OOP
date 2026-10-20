@@ -17,12 +17,10 @@
 
 using namespace std;
 
-// ============================================================================
 // TRIỂN KHAI LỚP APPLICATION
-// ============================================================================
 
 /**
- * @brief Hàm khởi tạo Application
+ *Hàm khởi tạo Application
  * Gán file dữ liệu riêng trong thư mục 'data/' cho mỗi Repository và tự động nạp dữ liệu cũ (nếu có).
  * - ServiceManager / ServiceGroup: Tiền tố SM (SMxxx)
  * - Ticket: Tiền tố TK (TKxxx)
@@ -44,8 +42,8 @@ Application::Application()
       transferRepository("TF", "data/transfer_tickets.txt"),
       customerRepository("KH", "data/customers.txt"),
       feedbackRepository("DG", "data/feedback.txt"),
-      agentShiftRepository("AS", "data/agent_shifts.txt")
-{
+      agentShiftRepository("AS", "data/agent_shifts.txt"){
+    
     serviceGroupRepository.load();
     ticketRepository.load();
     agentRepository.load();
@@ -58,11 +56,9 @@ Application::Application()
     agentShiftRepository.load();
 }
 
-/**
- * @brief Vòng lặp chính của chương trình
- */
-void Application::run()
-{
+//Vòng lặp chính của chương trình
+
+void Application::run(){
     bool running = true;
 
     while (running)
@@ -155,11 +151,9 @@ void Application::run()
     }
 }
 
-/**
- * @brief Hiển thị giao diện Menu chính
- */
-void Application::showMainMenu()
-{
+//Hiển thị giao diện Menu chính
+
+void Application::showMainMenu(){
     cout << "==============================" << endl;
     cout << "   QUAN LY TRUNG TAM CSKH" << endl;
     cout << "==============================" << endl;
@@ -179,91 +173,74 @@ void Application::showMainMenu()
     cout << "==============================" << endl;
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Dịch vụ (ServiceGroupMenu)
- */
-void Application::serviceGroupMenu()
-{
+
+//Điều hướng sang giao diện quản lý Dịch vụ (ServiceGroupMenu)
+
+void Application::serviceGroupMenu(){
     ServiceGroupMenu menu(serviceGroupRepository, ticketRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Ticket (TicketMenu)
- */
-void Application::ticketMenu()
-{
+
+//Điều hướng sang giao diện quản lý Ticket (TicketMenu)
+
+void Application::ticketMenu(){
     TicketMenu menu(ticketRepository, serviceGroupRepository, customerRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Điện thoại viên (AgentMenu)
- */
+//Điều hướng sang giao diện quản lý Điện thoại viên (AgentMenu)
+
 void Application::agentMenu() {
     AgentMenu menu(agentRepository, &inboundCallRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Kênh tiếp nhận (ReceptionChannelMenu)
- */
-void Application::receptionChannelMenu()
-{
+//Điều hướng sang giao diện quản lý Kênh tiếp nhận (ReceptionChannelMenu)
+
+void Application::receptionChannelMenu(){
     ReceptionChannelMenu menu(channelRepository, inboundCallRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Cuộc gọi tiếp nhận (InboundCallMenu)
- */
-void Application::inboundCallMenu()
-{
+//Điều hướng sang giao diện quản lý Cuộc gọi tiếp nhận (InboundCallMenu)
+
+void Application::inboundCallMenu(){
     InboundCallMenu menu(inboundCallRepository, channelRepository, agentRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Mức SLA (SLALevelMenu)
- */
-void Application::slaLevelMenu()
-{
+//Điều hướng sang giao diện quản lý Mức SLA (SLALevelMenu)
+ 
+void Application::slaLevelMenu(){
     SLALevelMenu menu(slaRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Phiếu chuyển xử lý (TransferTicketMenu)
- */
-void Application::transferTicketMenu()
-{
+//Điều hướng sang giao diện quản lý Phiếu chuyển xử lý (TransferTicketMenu)
+
+void Application::transferTicketMenu(){
     TransferTicketMenu menu(transferRepository, ticketRepository, agentRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Khách hàng (CustomerMenu)
- */
-void Application::customerMenu()
-{
+//Điều hướng sang giao diện quản lý Khách hàng (CustomerMenu)
+
+void Application::customerMenu(){
     CustomerMenu menu(customerRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
- */
-void Application::feedbackMenu()
-{
+//Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
+
+void Application::feedbackMenu(){
     FeedbackMenu menu(feedbackRepository, customerRepository);
     menu.run();
 }
 
-/**
- * @brief Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
- */
-void Application::agentShiftMenu()
-{
+//Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
+
+void Application::agentShiftMenu(){
     AgentShiftMenu menu(agentShiftRepository, agentRepository);
     menu.run();
 }

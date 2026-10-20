@@ -1,6 +1,5 @@
 /**
- * @file ServiceGroup.cpp
- * @brief Triển khai các phương thức của lớp thực thể Nhóm dịch vụ (ServiceGroup)
+Triển khai các phương thức của lớp thực thể Nhóm dịch vụ (ServiceGroup)
  */
 
 #include "ServiceGroup.h"

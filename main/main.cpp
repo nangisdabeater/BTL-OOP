@@ -1,6 +1,5 @@
 /**
- * @file main.cpp
- * @brief Điểm khởi đầu của chương trình Quản lý Trung tâm CSKH
+ * Điểm khởi đầu của chương trình Quản lý Trung tâm CSKH
  * Khởi tạo đối tượng Application và kích hoạt luồng chạy ứng dụng.
  */
 

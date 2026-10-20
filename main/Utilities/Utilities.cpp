@@ -4,15 +4,10 @@
 #include <sstream>
 #include <cctype>
 #include <ctime>
-#include <filesystem>
-#if defined(_WIN32)
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <windows.h>
-#endif
+
 #include "../Entity/BaseEntity.h"
 
+//Loại bỏ khoảng trắng thừa
 namespace Utils {
     std::string trim(const std::string& str) {
         size_t first = str.find_first_not_of(" \t\r\n");
@@ -36,6 +31,7 @@ namespace Utils {
         }
     }
 
+//Thêm số 0 để nó ra dạng ABxxx   
     std::string formatId(const std::string& prefix, int number, int padding) {
         std::stringstream ss;
         // setfill('0') và setw(3) sẽ tự động thêm các số 0 ở trước (VD: 1 -> 001)
@@ -67,23 +63,23 @@ namespace Utils {
             return -1;
         }
     }
-
-    bool isValidDate(const std::string& dateStr) {
+//Xử lí ngày tháng (năm từ 1900)
+    bool isValidDate(const std::string& dateStr) { //Ktra chuỗi thứ ngày tháng hợp lệ
         // Định dạng DD/MM/YYYY (10 ký tự)
         if (dateStr.length() != 10) return false;
         if (dateStr[2] != '/' || dateStr[5] != '/') return false;
         for (int i = 0; i < 10; ++i) {
-            if (i == 2 || i == 5) continue;
+            if (i == 2 || i == 5) continue;   //Ktra dấu "/"
             if (!isdigit(static_cast<unsigned char>(dateStr[i]))) return false;
         }
         try {
             int d = std::stoi(dateStr.substr(0, 2));
             int m = std::stoi(dateStr.substr(3, 2));
             int y = std::stoi(dateStr.substr(6, 4));
-            if (y < 1900 || y > 2100) return false;
+            if (y < 1900) return false;
             if (m < 1 || m > 12) return false;
             int maxDays[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-            if ((y % 4 == 0 && y % 100 != 0) || (y % 400 == 0)) {
+            if ((y % 4 == 0 && y % 100 != 0) || (y % 400 == 0)) {  //Ktra năm nhuận 
                 maxDays[1] = 29;
             }
             if (d < 1 || d > maxDays[m - 1]) return false;
@@ -91,16 +87,6 @@ namespace Utils {
         } catch (...) {
             return false;
         }
-    }
-
-    std::string today() {
-        std::time_t t = std::time(nullptr);
-        std::tm* p = std::localtime(&t);
-        std::ostringstream o;
-        o << std::setfill('0') << std::setw(2) << p->tm_mday << '/'
-          << std::setw(2) << p->tm_mon + 1 << '/'
-          << p->tm_year + 1900;
-        return o.str();
     }
 
     std::string inputDateString(const std::string& prompt) {
@@ -141,7 +127,7 @@ namespace Utils {
                       << minVal << " - " << maxVal << "]." << std::endl;
         }
     }
-
+//Ktra xem có thực thể nào đang hoạt động chưa
     std::string join(const std::vector<std::string>& vec, const std::string& delemiter) {
     std::string result = "";
     for (size_t i = 0; i < vec.size(); i++) {
@@ -180,48 +166,4 @@ namespace Utils {
         std::cout << "-----------------------------------" << std::endl;
     }
 
-    std::string resolveDataPath(const std::string& relativePath) {
-        if (relativePath.empty()) return "";
-
-        std::filesystem::path p(relativePath);
-        if (p.is_absolute()) {
-            return p.lexically_normal().string();
-        }
-
-#if defined(_WIN32)
-        // 1. Uu tien tim thu muc goc du an tu duong dan file thuc thi (.exe)
-        char exePathBuf[MAX_PATH];
-        if (GetModuleFileNameA(NULL, exePathBuf, MAX_PATH) > 0) {
-            std::filesystem::path currExe = std::filesystem::path(exePathBuf).parent_path();
-            for (int i = 0; i < 6; ++i) {
-                std::filesystem::path dataDir = currExe / "data";
-                if (std::filesystem::exists(dataDir) && std::filesystem::is_directory(dataDir) &&
-                    (std::filesystem::exists(currExe / "CMakeLists.txt") || std::filesystem::exists(currExe / "main"))) {
-                    return (currExe / relativePath).lexically_normal().string();
-                }
-                if (!currExe.has_parent_path() || currExe == currExe.parent_path()) break;
-                currExe = currExe.parent_path();
-            }
-        }
-#endif
-
-        // 2. Tim thu muc goc tu thu muc lam viec hien tai (current_path)
-        std::filesystem::path curr = std::filesystem::current_path();
-        for (int i = 0; i < 6; ++i) {
-            std::filesystem::path dataDir = curr / "data";
-            if (std::filesystem::exists(dataDir) && std::filesystem::is_directory(dataDir) &&
-                (std::filesystem::exists(curr / "CMakeLists.txt") || std::filesystem::exists(curr / "main"))) {
-                return (curr / relativePath).lexically_normal().string();
-            }
-            if (!curr.has_parent_path() || curr == curr.parent_path()) break;
-            curr = curr.parent_path();
-        }
-
-        // 3. Fallback: kiem tra truc tiep o thu muc cha
-        if (std::filesystem::exists("../data") && std::filesystem::is_directory("../data")) {
-            return std::filesystem::absolute("../" + relativePath).lexically_normal().string();
-        }
-
-        return std::filesystem::absolute(relativePath).lexically_normal().string();
-    }
 }
