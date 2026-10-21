@@ -25,9 +25,6 @@ private:
     void update();
     void remove();
 
-    // Nhap so nguyen trong khoang [minValue, maxValue]; Enter (khi allowKeep) = giu nguyen
-    static int inputInt(const string& prompt, int minValue, int maxValue);
-
 public:
     SLALevelMenu(Repository<SLALevel>& repo, Repository<TransferTicket>& tfRepo);
     void run();

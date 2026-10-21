@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <climits>
 
 class BaseEntity;
 
@@ -16,8 +17,7 @@ namespace Utils {
 
   bool isValidDate(const std::string& dateStr);
   std::string inputDateString(const std::string& prompt);
-  int inputInt(const std::string& prompt, int minVal, int maxVal);
-  int inputInt(const std::string& prompt, int minVal = 0);
+  int inputInt(const std::string& prompt, int minVal = 0, int maxVal = INT_MAX);
 
   std::string join(const std::vector<std::string>& vec, const std::string& delemiter = ", ");
 

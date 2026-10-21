@@ -22,12 +22,6 @@ void SLALevelMenu::showMenu()
     cout << "========================================" << endl;
 }
 
-// Nhap 1 so nguyen hop le, su dung chung ham tien ich Utils::inputInt
-int SLALevelMenu::inputInt(const string& prompt, int minValue, int maxValue)
-{
-    return Utils::inputInt(prompt, minValue, maxValue);
-}
-
 void SLALevelMenu::run()
 {
     bool inMenu = true;
@@ -129,9 +123,9 @@ void SLALevelMenu::add()
         }
     }
 
-    int resp = inputInt("Nhap thoi gian phan hoi toi da (phut, >0): ", 1, 100000);
-    int resolve = inputInt("Nhap thoi gian xu ly toi da (gio, >0): ", 1, 100000);
-    int prio = inputInt("Nhap muc do uu tien (1 = cao nhat ... 5 = thap nhat): ", 1, 5);
+    int resp = Utils::inputInt("Nhap thoi gian phan hoi toi da (phut, >0): ", 1, 100000);
+    int resolve = Utils::inputInt("Nhap thoi gian xu ly toi da (gio, >0): ", 1, 100000);
+    int prio = Utils::inputInt("Nhap muc do uu tien (1 = cao nhat ... 5 = thap nhat): ", 1, 5);
 
     try
     {

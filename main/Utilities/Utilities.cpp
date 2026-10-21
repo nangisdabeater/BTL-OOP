@@ -98,20 +98,6 @@ namespace Utils {
         }
     }
 
-    int inputInt(const std::string& prompt, int minVal) {
-        while (true) {
-            std::string s = inputNonEmptyString(prompt);
-            try {
-                size_t pos = 0;
-                int val = std::stoi(s, &pos);
-                if (pos == s.length() && val >= minVal) {
-                    return val;
-                }
-            } catch (...) {}
-            std::cout << "Gia tri khong hop le! Vui long nhap so nguyen >= " << minVal << "." << std::endl;
-        }
-    }
-
     int inputInt(const std::string& prompt, int minVal, int maxVal) {
         while (true) {
             std::string s = inputNonEmptyString(prompt);
@@ -122,8 +108,12 @@ namespace Utils {
                     return val;
                 }
             } catch (...) {}
-            std::cout << "Gia tri khong hop le! Vui long nhap so nguyen trong khoang [" 
-                      << minVal << " - " << maxVal << "]." << std::endl;
+            if (maxVal == INT_MAX) {
+                std::cout << "Gia tri khong hop le! Vui long nhap so nguyen >= " << minVal << "." << std::endl;
+            } else {
+                std::cout << "Gia tri khong hop le! Vui long nhap so nguyen trong khoang [" 
+                          << minVal << " - " << maxVal << "]." << std::endl;
+            }
         }
     }
 //Ktra xem có thực thể nào đang hoạt động chưa

@@ -121,9 +121,8 @@ void Repository<T>::saveOrRollback(const std::vector<T>& backup, int backupCount
     }
 }
 
-// ==============================
 // THEM ENTITY
-// ==============================
+
 template <typename T>
 void Repository<T>::add(const T& entity){
     //Gọi danh sách và ID ra để xử lí
@@ -138,9 +137,8 @@ void Repository<T>::add(const T& entity){
     saveOrRollback(backup, backupCounter);
 }
 
-// ==============================
 // TIM ENTITY THEO ID
-// ==============================
+
 template <typename T>
 //Dùng T* để tìm ID thông qua 2 trạng thái , có thì trả về địa chỉ entity,không thì nullptr
 //Nếu dùng T& bắt buộc phải dùng throw, mà throw cần try catch lằng nhằng hơn
