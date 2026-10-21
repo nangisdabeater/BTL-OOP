@@ -63,7 +63,6 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 #### 4. Chí Linh - Tiện ích Ngày tháng & Định dạng Hiển thị
 - **Xử lý Ngày tháng (`Date/Time Utilities`):**
   - Kiểm tra tính hợp lệ của ngày tháng theo định dạng `DD/MM/YYYY` (`Utils::isValidDate`), xử lý năm nhuận và số ngày chuẩn của từng tháng.
-  - Lấy ngày tháng hiện tại của hệ thống (`Utils::today`).
   - Hàm nhập ngày tháng có kiểm tra hợp lệ (`Utils::inputDateString`).
 - **Định dạng hiển thị giao diện bảng:**
   - Sử dụng thư viện `<iomanip>` (`setw`, `left`, `setfill`, `setprecision`) để căn chỉnh các cột dữ liệu thẳng hàng, phân cách rõ ràng.
@@ -72,9 +71,10 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 #### 5. Thành - Dữ liệu mẫu, Ràng buộc & Kiểm thử
 - **Xây dựng bộ dữ liệu mẫu:**
   - Chuẩn bị đầy đủ 10 file dữ liệu chuẩn định dạng ban đầu trong thư mục `data/` (`agents.txt`, `customers.txt`, `tickets.txt`,...).
+  - Đảm bảo mỗi file có ít nhất 10 bản ghi dữ liệu hợp lệ.
 - **Kiểm tra ràng buộc và quan hệ giữa các thực thể:**
-  - Kiểm tra tính tồn tại của Dịch vụ (`ServiceGroup`) và Khách hàng (`Customer`) khi tạo Ticket.
-  - Kiểm tra sự tồn tại của Điện thoại viên (`Agent`) khi tiếp nhận cuộc gọi, phân công xử lý ticket hoặc xếp ca trực.
+  - Xây dựng cơ chế kiểm tra ràng buộc khóa ngoại và toàn vẹn tham chiếu giữa các cặp thực thể của từng thành viên trước khi thực hiện xóa (Delete cascade/restrict).
+  - Kiểm tra tính tồn tại và hợp lệ của thực thể cha khi tạo thực thể con phụ thuộc (ví dụ: `AgentShift` phụ thuộc `Agent`, `TransferTicket` phụ thuộc `SLALevel`, `Ticket` phụ thuộc `ServiceGroup`, `InboundCall` phụ thuộc `ReceptionChannel`, `Feedback` phụ thuộc `Customer`).
 - **Kiểm thử tổng hợp & Hỗ trợ tích hợp:**
   - Kiểm thử toàn bộ các kịch bản CRUD trên cả 10 phân hệ menu.
   - Đảm bảo cơ chế tự động đồng bộ dữ liệu giữa bộ nhớ và file văn bản hoạt động chính xác.
@@ -85,8 +85,6 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 
 ```text
 BTL-OOP/
-├── .vscode/               # Cấu hình biên dịch và môi trường VS Code
-│   └── settings.json
 ├── data/                  # Thư mục lưu trữ dữ liệu văn bản (.txt)
 │   ├── agents.txt
 │   ├── agent_shifts.txt
@@ -138,7 +136,6 @@ BTL-OOP/
 ---
 
 ### Cách 1: Chạy nhanh bằng VS Code (Khuyên dùng)
-Dự án đã được cấu hình sẵn trong thư mục `.vscode/settings.json`, chỉ cần:
 1. Tải code về và mở thư mục gốc `BTL-OOP` bằng **Visual Studio Code**.
 2. Đảm bảo đã cài đặt extension **CMake Tools** và **C/C++**.
 3. Nhấn vào **nút tam giác Play ▶️** (hoặc phím tắt `Shift + F5`) trên thanh trạng thái dưới cùng của VS Code để chạy chương trình ngay lập tức.
@@ -154,6 +151,11 @@ Nếu không dùng VS Code, bạn có thể chạy bằng dòng lệnh từ thư
    cmake --build build
    ```
 2. **Chạy chương trình:**
-   ```bash
-   ./build/myprogram.exe
-   ```
+   - **Windows:**
+     ```powershell
+     .\build\myprogram.exe
+     ```
+   - **Linux / macOS:**
+     ```bash
+     ./build/myprogram
+     ```
