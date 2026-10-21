@@ -61,7 +61,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
 
             string department = "Phong CSKH";
             int slaHours = 24;
-            double baseFee = 0.0;
+            int baseFee = 0;
             string createdDate = "01/01/2026";
             bool isActive = true;
 
@@ -69,7 +69,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
                 // Định dạng mới: dept | sla | baseFee | createdDate | active
                 department = remainingCols[0];
                 try { slaHours = stoi(remainingCols[1]); } catch (...) { slaHours = 24; }
-                try { baseFee = stod(remainingCols[2]); } catch (...) { baseFee = 0.0; }
+                try { baseFee = static_cast<int>(stod(remainingCols[2])); } catch (...) { baseFee = 0; }
                 createdDate = remainingCols[3];
                 if (createdDate.length() == 10 && createdDate[4] == '-' && createdDate[7] == '-')
                 {
@@ -142,7 +142,7 @@ void FileManager<ServiceGroup>::save(const string& filePath, const vector<Servic
                 << setw(35) << sg.getDescription() << " | "
                 << setw(18) << sg.getDepartment()  << " | "
                 << setw(10) << sg.getSlaHours()    << " | "
-                << setw(12) << fixed << setprecision(2) << sg.getBaseFee() << " | "
+                << setw(12) << sg.getBaseFee()     << " | "
                 << setw(14) << sg.getCreatedDate() << " | "
                 << (sg.isActive() ? 1 : 0)         << "\n";
     }

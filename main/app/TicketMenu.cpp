@@ -146,7 +146,7 @@ void TicketMenu::displayAll()
              << setw(26) << t.getTitle()
              << setw(10) << t.getServiceGroupId()
              << setw(12) << priorityToString(t.getPriority())
-             << setw(12) << fixed << setprecision(2) << t.getEstimatedFee()
+             << setw(12) << t.getEstimatedFee()
              << setw(12) << t.getCreatedDate()
              << setw(14) << ticketStatusToString(t.getStatus()) << endl;
     }
@@ -222,7 +222,7 @@ void TicketMenu::add()
     }
 
     int priority = Utils::inputInt("Nhap muc uu tien (1: Thap, 2: Trung binh, 3: Cao, 4: Khan cap): ", 1, 4);
-    double estimatedFee = Utils::inputDouble("Nhap chi phi xu ly uoc tinh (VND, >= 0): ", 0.0);
+    int estimatedFee = Utils::inputInt("Nhap chi phi xu ly uoc tinh (VND, >= 0): ", 0);
     string createdDate = Utils::inputDateString("Nhap ngay tao ticket (DD/MM/YYYY): ");
 
     Ticket newTicket(title, description, serviceGroupId, priority, estimatedFee, createdDate);
@@ -308,8 +308,8 @@ void TicketMenu::update()
     if (!feeInput.empty())
     {
         try {
-            double fee = stod(feeInput);
-            if (fee >= 0.0) updated.setEstimatedFee(fee);
+            int fee = stoi(feeInput);
+            if (fee >= 0) updated.setEstimatedFee(fee);
             else cout << "Chi phi khong hop le, giu nguyen cu." << endl;
         } catch (...) {
             cout << "Chi phi khong hop le, giu nguyen cu." << endl;

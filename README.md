@@ -43,7 +43,7 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 #### 2. Quang Hiếu - Tiện ích nhập liệu & Kiểm tra dữ liệu 
 - **Xây dựng bộ công cụ nhập liệu an toàn (`Utilities`):**
   - Hàm nhập chuỗi không rỗng (`Utils::inputNonEmptyString`).
-  - Hàm nhập số nguyên (`Utils::inputInt`) và số thực (`Utils::inputDouble`) có giới hạn khoảng giá trị.
+  - Hàm nhập số nguyên (`Utils::inputInt`) có kiểm tra khoảng giá trị hợp lệ.
 - **Bộ kiểm tra hợp lệ dữ liệu :**
   - Kiểm tra và định dạng mã định danh (`Utils::formatId`, `Utils::extractIdNumber`).
   - Xử lý cắt tỉa khoảng trắng chuỗi (`Utils::trim`).

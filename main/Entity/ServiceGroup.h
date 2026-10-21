@@ -17,7 +17,7 @@ private:
     string description;     // Mo ta chi tiet
     string department;      // Phong ban phu trach (khong rong, toi da 50 ky tu)
     int slaHours;           // Thoi gian xu ly tieu chuan (gio, > 0)
-    double baseFee;         // Phi dich vu co ban (>= 0)
+    int baseFee;            // Phi dich vu co ban (>= 0)
     string createdDate;     // Ngay ban hanh (DD/MM/YYYY)
     bool active;            // Trang thai hoat dong (true: Hoat dong, false: Tam ngung)
 
@@ -28,7 +28,7 @@ public:
         const string& description = "",
         const string& department = "Phong CSKH",
         int slaHours = 24,
-        double baseFee = 0.0,
+        int baseFee = 0,
         const string& createdDate = "01/01/2026"
     );
 
@@ -37,7 +37,7 @@ public:
     const string& getDescription() const;
     const string& getDepartment() const;
     int getSlaHours() const;
-    double getBaseFee() const;
+    int getBaseFee() const;
     const string& getCreatedDate() const;
     bool isActive() const;
 
@@ -46,7 +46,7 @@ public:
     void setDescription(const string& description);
     void setDepartment(const string& department);
     void setSlaHours(int slaHours);
-    void setBaseFee(double baseFee);
+    void setBaseFee(int baseFee);
     void setCreatedDate(const string& createdDate);
 
     // Implement pure virtual method

@@ -97,7 +97,7 @@ void ServiceGroupMenu::displayAll(){
              << setw(24) << sg.getName()
              << setw(18) << sg.getDepartment()
              << setw(10) << sg.getSlaHours()
-             << setw(14) << fixed << setprecision(2) << sg.getBaseFee()
+             << setw(14) << sg.getBaseFee()
              << setw(15) << sg.getCreatedDate()
              << setw(14) << (sg.isActive() ? "Hoat dong" : "Tam dung") << endl;
     }
@@ -152,7 +152,7 @@ void ServiceGroupMenu::add(){
     string description = Utils::inputNonEmptyString("Nhap mo ta dich vu: ");
     string department = Utils::inputNonEmptyString("Nhap phong ban phu trach: ");
     int slaHours = Utils::inputInt("Nhap thoi gian xu ly tieu chuan SLA (gio, >0): ", 1, 10000);
-    double baseFee = Utils::inputDouble("Nhap phi dich vu co ban (VND, >= 0): ", 0.0);
+    int baseFee = Utils::inputInt("Nhap phi dich vu co ban (VND, >= 0): ", 0);
     string createdDate = Utils::inputDateString("Nhap ngay ban hanh (DD/MM/YYYY): ");
 
     ServiceGroup newSg(name, description, department, slaHours, baseFee, createdDate);
@@ -245,8 +245,8 @@ void ServiceGroupMenu::update(){
     feeInput = Utils::trim(feeInput);
     if (!feeInput.empty()){
         try {
-            double newFee = stod(feeInput);
-            if (newFee >= 0.0) updated.setBaseFee(newFee);
+            int newFee = stoi(feeInput);
+            if (newFee >= 0) updated.setBaseFee(newFee);
             else cout << "Phi khong hop le, giu nguyen gia tri cu." << endl;
         } catch (...) {
             cout << "Phi khong hop le, giu nguyen gia tri cu." << endl;

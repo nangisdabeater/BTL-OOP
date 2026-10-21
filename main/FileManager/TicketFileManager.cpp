@@ -65,14 +65,14 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             }
 
             int priority = 2;
-            double estimatedFee = 0.0;
+            int estimatedFee = 0;
             string createdDate = "01/01/2026";
             int statusCode = 0;
 
             if (remainingCols.size() >= 4){
                 // Định dạng: priority | estimatedFee | createdDate | status
                 try { priority = stoi(remainingCols[0]); } catch (...) { priority = 2; }
-                try { estimatedFee = stod(remainingCols[1]); } catch (...) { estimatedFee = 0.0; }
+                try { estimatedFee = static_cast<int>(stod(remainingCols[1])); } catch (...) { estimatedFee = 0; }
                 createdDate = remainingCols[2];
                 if (createdDate.length() == 10 && createdDate[4] == '-' && createdDate[7] == '-')
                 {
@@ -143,7 +143,7 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
                 << setw(35) << t.getDescription()    << " | "
                 << setw(10) << t.getServiceGroupId() << " | "
                 << setw(10) << t.getPriority()       << " | "
-                << setw(12) << fixed << setprecision(2) << t.getEstimatedFee() << " | "
+                << setw(12) << t.getEstimatedFee()   << " | "
                 << setw(12) << t.getCreatedDate()    << " | "
                 << static_cast<int>(t.getStatus())   << "\n";
     }

@@ -11,7 +11,7 @@ Ticket::Ticket(
     const string& description,
     const string& serviceGroupId,
     int priority,
-    double estimatedFee,
+    int estimatedFee,
     const string& createdDate
 )
     : BaseEntity(),
@@ -41,7 +41,7 @@ int Ticket::getPriority() const{
     return priority;
 }
 
-double Ticket::getEstimatedFee() const{
+int Ticket::getEstimatedFee() const{
     return estimatedFee;
 }
 
@@ -86,8 +86,8 @@ void Ticket::setPriority(int priority){
     this->priority = priority;
 }
 
-void Ticket::setEstimatedFee(double fee){
-    if (fee < 0.0) {
+void Ticket::setEstimatedFee(int fee){
+    if (fee < 0) {
         throw invalid_argument("Chi phi xu ly uoc tinh phai lon hon hoac bang 0!");
     }
     this->estimatedFee = fee;

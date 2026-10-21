@@ -12,7 +12,7 @@ ServiceGroup::ServiceGroup(
     const string& description,
     const string& department,
     int slaHours,
-    double baseFee,
+    int baseFee,
     const string& createdDate
 )
     : BaseEntity(),
@@ -47,7 +47,7 @@ int ServiceGroup::getSlaHours() const
     return slaHours;
 }
 
-double ServiceGroup::getBaseFee() const
+int ServiceGroup::getBaseFee() const
 {
     return baseFee;
 }
@@ -98,9 +98,9 @@ void ServiceGroup::setSlaHours(int slaHours)
     this->slaHours = slaHours;
 }
 
-void ServiceGroup::setBaseFee(double baseFee)
+void ServiceGroup::setBaseFee(int baseFee)
 {
-    if (baseFee < 0.0) {
+    if (baseFee < 0) {
         throw invalid_argument("Phi dich vu co ban phai lon hon hoac bang 0!");
     }
     this->baseFee = baseFee;

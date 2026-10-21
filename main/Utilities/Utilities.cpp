@@ -98,17 +98,17 @@ namespace Utils {
         }
     }
 
-    double inputDouble(const std::string& prompt, double minVal) {
+    int inputInt(const std::string& prompt, int minVal) {
         while (true) {
             std::string s = inputNonEmptyString(prompt);
             try {
                 size_t pos = 0;
-                double val = std::stod(s, &pos);
+                int val = std::stoi(s, &pos);
                 if (pos == s.length() && val >= minVal) {
                     return val;
                 }
             } catch (...) {}
-            std::cout << "Gia tri khong hop le! Vui long nhap so thuc >= " << minVal << "." << std::endl;
+            std::cout << "Gia tri khong hop le! Vui long nhap so nguyen >= " << minVal << "." << std::endl;
         }
     }
 

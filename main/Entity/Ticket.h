@@ -23,7 +23,7 @@ private:
     string description;      // Mo ta chi tiet
     string serviceGroupId;   // Ma dich vu SMxxx (khoa ngoai)
     int priority;            // Muc do uu tien: 1 (Thap), 2 (Trung binh), 3 (Cao), 4 (Khan cap)
-    double estimatedFee;     // Chi phi xu ly uoc tinh (>= 0)
+    int estimatedFee;        // Chi phi xu ly uoc tinh (>= 0)
     string createdDate;      // Ngay tao (DD/MM/YYYY)
     TicketStatus status;     // Trang thai ticket
 
@@ -34,7 +34,7 @@ public:
         const string& description = "",
         const string& serviceGroupId = "",
         int priority = 2,
-        double estimatedFee = 0.0,
+        int estimatedFee = 0,
         const string& createdDate = "01/01/2026"
     );
 
@@ -43,7 +43,7 @@ public:
     const string& getDescription() const;
     const string& getServiceGroupId() const;
     int getPriority() const;
-    double getEstimatedFee() const;
+    int getEstimatedFee() const;
     const string& getCreatedDate() const;
     TicketStatus getStatus() const;
 
@@ -52,7 +52,7 @@ public:
     void setDescription(const string& description);
     void setServiceGroupId(const string& serviceGroupId);
     void setPriority(int priority);
-    void setEstimatedFee(double fee);
+    void setEstimatedFee(int fee);
     void setCreatedDate(const string& date);
 
     // Implement pure virtual method

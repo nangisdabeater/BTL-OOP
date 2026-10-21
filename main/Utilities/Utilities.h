@@ -16,8 +16,8 @@ namespace Utils {
 
   bool isValidDate(const std::string& dateStr);
   std::string inputDateString(const std::string& prompt);
-  double inputDouble(const std::string& prompt, double minVal = 0.0);
   int inputInt(const std::string& prompt, int minVal, int maxVal);
+  int inputInt(const std::string& prompt, int minVal = 0);
 
   std::string join(const std::vector<std::string>& vec, const std::string& delemiter = ", ");
 
