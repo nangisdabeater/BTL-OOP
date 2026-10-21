@@ -30,7 +30,7 @@ Hệ thống cung cấp cơ chế lưu trữ tự động (Auto-save) và nạp 
 
 ### Bảng 2: Chi tiết nhiệm vụ thiết kế chung
 
-#### 1. Năng (Trưởng nhóm)
+#### 1. Năng
 - **Xây dựng kiến trúc OOP cốt lõi:**
   - Thiết kế lớp cơ sở trừu tượng `BaseEntity` và phương thức thuần ảo `printInfo()`.
   - Thiết kế và cài đặt lớp khuôn mẫu Generic `Repository<T>` hỗ trợ đầy đủ thao tác CRUD (Create, Read, Update, Delete) và tự động sinh mã ID theo tiền tố (`SM`, `TK`,...).
