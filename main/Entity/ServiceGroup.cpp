@@ -120,7 +120,7 @@ void ServiceGroup::printInfo() const
          << " | Ten: " << name 
          << " | Phong ban: " << department
          << " | SLA: " << slaHours << "h"
-         << " | Phi co ban: " << fixed << setprecision(2) << baseFee
+         << " | Phi co ban: " << baseFee
          << " | Ngay ban hanh: " << createdDate
          << " | Trang thai: " << (active ? "Hoat dong" : "Tam ngung") << endl;
 }

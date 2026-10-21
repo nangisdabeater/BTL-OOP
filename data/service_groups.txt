@@ -1,12 +1,12 @@
 Ma ID    | Ten dich vu               | Mo ta                               | Phong ban          | SLA(gio)   | Phi co ban   | Ngay ban hanh  | Trang thai
 -----------------------------------------------------------------------------------------------------------------------------------------
-SM001    | Dich vu Internet          | Ho tro mang                         | Phong Ky Thuat     | 24         | 150000    | 15/10/2026     | 1
-SM002    | Dich vu Truyen hinh       | Lap dat va ho tro truyen hinh       | Phong Ky Thuat     | 24         | 100000    | 15/10/2026     | 1
-SM003    | Dich vu Di dong           | Ho tro su dung dich vu di dong      | Phong Ky Thuat     | 12         | 80000     | 15/10/2026     | 1
-SM004    | Dich vu Cap quang         | Tu van va lap dat cap quang         | Phong Ky Thuat     | 48         | 250000    | 15/10/2026     | 1
-SM005    | Dich vu Bao hanh          | Tiep nhan yeu cau bao hanh          | Phong CSKH         | 24         | 0         | 15/10/2026     | 1
-SM006    | Dich vu Sua chua          | Kiem tra va sua chua thiet bi       | Phong Ky Thuat     | 48         | 200000    | 15/10/2026     | 1
-SM007    | Dich vu Thanh toan        | Ho tro cac van de thanh toan        | Phong Ke Toan      | 12         | 0         | 15/10/2026     | 1
-SM008    | Dich vu Tu van            | Tu van goi cuoc va dich vu          | Phong CSKH         | 8          | 50000     | 15/10/2026     | 1
-SM009    | Dich vu Lap dat           | Lap dat thiet bi tai nha            | Phong Ky Thuat     | 72         | 300000    | 15/10/2026     | 1
-SM010    | Dich vu Khieu nai         | Tiep nhan va xu ly khieu nai        | Phong CSKH         | 24         | 0         | 15/10/2026     | 1
+SM001    | Dich vu Internet          | Ho tro mang                         | Phong Ky Thuat     | 24         | 150000       | 15/10/2026     | 1
+SM002    | Dich vu Truyen hinh       | Lap dat va ho tro truyen hinh       | Phong Ky Thuat     | 24         | 100000       | 15/10/2026     | 1
+SM003    | Dich vu Di dong           | Ho tro su dung dich vu di dong      | Phong Ky Thuat     | 12         | 80000        | 15/10/2026     | 1
+SM004    | Dich vu Cap quang         | Tu van va lap dat cap quang         | Phong Ky Thuat     | 48         | 250000       | 15/10/2026     | 1
+SM005    | Dich vu Bao hanh          | Tiep nhan yeu cau bao hanh          | Phong CSKH         | 24         | 0            | 15/10/2026     | 1
+SM006    | Dich vu Sua chua          | Kiem tra va sua chua thiet bi       | Phong Ky Thuat     | 48         | 200000       | 15/10/2026     | 1
+SM007    | Dich vu Thanh toan        | Ho tro cac van de thanh toan        | Phong Ke Toan      | 12         | 0            | 15/10/2026     | 1
+SM008    | Dich vu Tu van            | Tu van goi cuoc va dich vu          | Phong CSKH         | 8          | 50000        | 15/10/2026     | 1
+SM009    | Dich vu Lap dat           | Lap dat thiet bi tai nha            | Phong Ky Thuat     | 72         | 300000       | 15/10/2026     | 1
+SM010    | Dich vu Khieu nai         | Tiep nhan va xu ly khieu nai        | Phong CSKH         | 24         | 0            | 15/10/2026     | 1

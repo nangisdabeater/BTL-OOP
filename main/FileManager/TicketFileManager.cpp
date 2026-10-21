@@ -128,19 +128,19 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
     outFile << left
             << setw(8)  << "Ma ID"          << " | "
             << setw(24) << "Tieu de"        << " | "
-            << setw(35) << "Mo ta chi tiet" << " | "
+            << setw(36) << "Mo ta chi tiet" << " | "
             << setw(10) << "Ma DV"          << " | "
             << setw(10) << "Uu tien"       << " | "
             << setw(12) << "Chi phi"        << " | "
             << setw(12) << "Ngay tao"       << " | "
             << "Trang thai" << "\n";
-    outFile << string(128, '-') << "\n";
+    outFile << string(129, '-') << "\n";
 
     for (const auto& t : data){
         outFile << left
                 << setw(8)  << t.getId()             << " | "
                 << setw(24) << t.getTitle()          << " | "
-                << setw(35) << t.getDescription()    << " | "
+                << setw(36) << t.getDescription()    << " | "
                 << setw(10) << t.getServiceGroupId() << " | "
                 << setw(10) << t.getPriority()       << " | "
                 << setw(12) << t.getEstimatedFee()   << " | "
