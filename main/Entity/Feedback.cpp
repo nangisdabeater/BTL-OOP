@@ -40,12 +40,9 @@ void Feedback::setCustomerId(const string& v) {
 }
 
 /**
- * @brief Cập nhật nội dung nhận xét, yêu cầu không được để trống
+ * @brief Cập nhật nội dung nhận xét (cho phép để trống)
  */
 void Feedback::setComment(const string& v) {
-    if (v.empty()) {
-        throw invalid_argument("Noi dung danh gia khong duoc rong");
-    }
     comment = v;
 }
 

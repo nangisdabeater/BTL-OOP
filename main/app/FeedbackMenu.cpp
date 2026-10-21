@@ -102,7 +102,10 @@ void FeedbackMenu::add()
 
     int score = Utils::inputInt("Nhap diem danh gia (1-5): ", 1, 5);
     string date = Utils::inputDateString("Nhap ngay danh gia (DD/MM/YYYY): ");
-    string msg = Utils::inputNonEmptyString("Nhap noi dung danh gia: ");
+    cout << "Nhap noi dung danh gia (co the de trong, nhan Enter de bo qua): ";
+    string msg;
+    getline(cin, msg);
+    msg = Utils::trim(msg);
 
     Feedback x(kh, score, msg, date);
     try

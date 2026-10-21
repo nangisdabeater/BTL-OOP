@@ -42,8 +42,8 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
         if (firstChar == string::npos || l[firstChar] == '-' || l[firstChar] == '+') continue;
 
         auto v = fields(l);
-        // Kiểm tra số lượng cột dữ liệu (Ma ID, Ma KH, Diem, Ngay ban hanh, Noi dung)
-        if (v.size() != 5) {
+        // Kiểm tra số lượng cột dữ liệu (Ma ID, Ma KH, Diem, Ngay ban hanh [, Noi dung danh gia])
+        if (v.size() != 5 && v.size() != 4) {
             cout << "[Canh bao] Dong sai dinh dang: \"" << l << "\". Bo qua dong nay." << endl;
             continue;
         }
@@ -59,7 +59,8 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
 
         try {
             int score = stoi(v[2]);
-            Feedback x(v[1], score, v[4], v[3]);
+            string comment = (v.size() == 5) ? v[4] : "";
+            Feedback x(v[1], score, comment, v[3]);
             x.setId(v[0]);
             out.push_back(x);
         } catch (...) {
