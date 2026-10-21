@@ -42,8 +42,8 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
         if (firstChar == string::npos || l[firstChar] == '-' || l[firstChar] == '+') continue;
 
         auto v = fields(l);
-        // Kiểm tra số lượng cột dữ liệu (Ma ID, Ma KH, Ma Ticket, Diem, Ngay ban hanh, Noi dung)
-        if (v.size() != 6) {
+        // Kiểm tra số lượng cột dữ liệu (Ma ID, Ma KH, Diem, Ngay ban hanh, Noi dung)
+        if (v.size() != 5) {
             cout << "[Canh bao] Dong sai dinh dang: \"" << l << "\". Bo qua dong nay." << endl;
             continue;
         }
@@ -58,8 +58,8 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
         }
 
         try {
-            int score = stoi(v[3]);
-            Feedback x(v[1], v[2], score, v[5], v[4]);
+            int score = stoi(v[2]);
+            Feedback x(v[1], score, v[4], v[3]);
             x.setId(v[0]);
             out.push_back(x);
         } catch (...) {
@@ -83,18 +83,16 @@ void FileManager<Feedback>::save(const string& path, const vector<Feedback>& dat
     f << left
       << setw(8)  << "Ma ID"         << " | "
       << setw(10) << "Ma KH"         << " | "
-      << setw(12) << "Ma Ticket"     << " | "
       << setw(6)  << "Diem"          << " | "
       << setw(14) << "Ngay ban hanh" << " | "
       << "Noi dung danh gia" << "\n";
-    f << string(101, '-') << "\n";
+    f << string(86, '-') << "\n";
 
     // Ghi từng bản ghi đánh giá hài lòng
     for (const auto& x : data) {
         f << left
           << setw(8)  << x.getId()         << " | "
           << setw(10) << x.getCustomerId() << " | "
-          << setw(12) << x.getTicketId()   << " | "
           << setw(6)  << x.getScore()      << " | "
           << setw(14) << x.getDate()       << " | "
           << x.getComment() << "\n";

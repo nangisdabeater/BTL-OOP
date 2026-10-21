@@ -9,12 +9,12 @@
 
 #include "../Repository/Repository.h"
 #include "../Entity/Agent.h"
-#include "../Entity/InboundCall.h"
+#include "../Entity/AgentShift.h"
 
 class AgentMenu {
   private:
     Repository<Agent>& agentRepository;
-    Repository<InboundCall>* callRepository;
+    Repository<AgentShift>& agentShiftRepository; // Kiểm tra ràng buộc toàn vẹn với Ca trực (cùng phân hệ của Thành)
     
     void showMenu();
     void displayAll();
@@ -24,7 +24,7 @@ class AgentMenu {
     void remove();
 
   public:
-    AgentMenu(Repository<Agent>& agRepo, Repository<InboundCall>* cRepo = nullptr);
+    AgentMenu(Repository<Agent>& agRepo, Repository<AgentShift>& asRepo);
 
     void run();
 

@@ -184,14 +184,14 @@ void Application::serviceGroupMenu(){
 //Điều hướng sang giao diện quản lý Ticket (TicketMenu)
 
 void Application::ticketMenu(){
-    TicketMenu menu(ticketRepository, serviceGroupRepository, customerRepository);
+    TicketMenu menu(ticketRepository, serviceGroupRepository);
     menu.run();
 }
 
 //Điều hướng sang giao diện quản lý Điện thoại viên (AgentMenu)
 
 void Application::agentMenu() {
-    AgentMenu menu(agentRepository, &inboundCallRepository);
+    AgentMenu menu(agentRepository, agentShiftRepository);
     menu.run();
 }
 
@@ -205,28 +205,28 @@ void Application::receptionChannelMenu(){
 //Điều hướng sang giao diện quản lý Cuộc gọi tiếp nhận (InboundCallMenu)
 
 void Application::inboundCallMenu(){
-    InboundCallMenu menu(inboundCallRepository, channelRepository, agentRepository);
+    InboundCallMenu menu(inboundCallRepository, channelRepository);
     menu.run();
 }
 
 //Điều hướng sang giao diện quản lý Mức SLA (SLALevelMenu)
  
 void Application::slaLevelMenu(){
-    SLALevelMenu menu(slaRepository);
+    SLALevelMenu menu(slaRepository, transferRepository);
     menu.run();
 }
 
 //Điều hướng sang giao diện quản lý Phiếu chuyển xử lý (TransferTicketMenu)
 
 void Application::transferTicketMenu(){
-    TransferTicketMenu menu(transferRepository, ticketRepository, agentRepository);
+    TransferTicketMenu menu(transferRepository, slaRepository);
     menu.run();
 }
 
 //Điều hướng sang giao diện quản lý Khách hàng (CustomerMenu)
 
 void Application::customerMenu(){
-    CustomerMenu menu(customerRepository);
+    CustomerMenu menu(customerRepository, feedbackRepository);
     menu.run();
 }
 

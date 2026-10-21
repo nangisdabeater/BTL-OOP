@@ -10,8 +10,8 @@ using namespace std;
  * @param tRepo Tham chiếu tới kho lưu trữ Ticket
  * @param sgRepo Tham chiếu tới kho lưu trữ Dịch vụ (để kiểm tra khóa ngoại)
  */
-TicketMenu::TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo, Repository<Customer>& cRepo)
-    : ticketRepository(tRepo), serviceGroupRepository(sgRepo), customerRepository(cRepo)
+TicketMenu::TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo)
+    : ticketRepository(tRepo), serviceGroupRepository(sgRepo)
 {
 }
 
@@ -131,21 +131,19 @@ void TicketMenu::displayAll()
 
     cout << left
          << setw(8)  << "Ma ID"
-         << setw(22) << "Tieu de"
-         << setw(10) << "Ma KH"
+         << setw(26) << "Tieu de"
          << setw(10) << "Ma DV"
          << setw(12) << "Uu tien"
          << setw(12) << "Chi phi"
          << setw(12) << "Ngay tao"
          << setw(14) << "Trang thai" << endl;
-    cout << string(100, '-') << endl;
+    cout << string(94, '-') << endl;
 
     for (const auto& t : list)
     {
         cout << left
              << setw(8)  << t.getId()
-             << setw(22) << t.getTitle()
-             << setw(10) << t.getCustomerId()
+             << setw(26) << t.getTitle()
              << setw(10) << t.getServiceGroupId()
              << setw(12) << priorityToString(t.getPriority())
              << setw(12) << fixed << setprecision(2) << t.getEstimatedFee()
@@ -196,28 +194,6 @@ void TicketMenu::add()
     }
     string description = Utils::inputNonEmptyString("Nhap mo ta chi tiet van de: ");
     
-    // Ràng buộc khóa ngoại: Kiểm tra tồn tại của khách hàng trong CustomerRepository
-    string customerId;
-    while (true)
-    {
-        customerId = Utils::inputNonEmptyString("Nhap ma khach hang (VD: KH001, nhap 0 de quay lai): ");
-        if (customerId == "0")
-        {
-            cout << "Da huy thao tac tao ticket." << endl;
-            Utils::backChoice();
-            return;
-        }
-        Customer* cust = customerRepository.findById(customerId);
-        if (cust == nullptr)
-        {
-            cout << "Loi rang buoc: Khach hang voi ma '" << customerId << "' khong ton tai! Vui long nhap lai." << endl;
-        }
-        else
-        {
-            break;
-        }
-    }
-    
     // Ràng buộc khóa ngoại: Kiểm tra tồn tại và hoạt động của dịch vụ
     string serviceGroupId;
     while (true)
@@ -249,7 +225,7 @@ void TicketMenu::add()
     double estimatedFee = Utils::inputDouble("Nhap chi phi xu ly uoc tinh (VND, >= 0): ", 0.0);
     string createdDate = Utils::inputDateString("Nhap ngay tao ticket (DD/MM/YYYY): ");
 
-    Ticket newTicket(title, description, customerId, serviceGroupId, priority, estimatedFee, createdDate);
+    Ticket newTicket(title, description, serviceGroupId, priority, estimatedFee, createdDate);
     try
     {
         ticketRepository.add(newTicket);
@@ -405,9 +381,13 @@ void TicketMenu::remove()
 
     if (t->getStatus() == TicketStatus::IN_PROGRESS)
     {
-        cout << "Canh bao nghiep vu: Ticket nay dang trong tien trinh xu ly (IN_PROGRESS)!" << endl;
+        cout << "Loi rang buoc nghiep vu: Ticket '" << id << "' dang trong tien trinh xu ly (IN_PROGRESS), khong the xoa!" << endl;
+        Utils::backChoice();
+        return;
     }
 
+    cout << "Thong tin ticket can xoa:" << endl;
+    t->printInfo();
     cout << "Ban co chac chan muon xoa ticket " << id << " (" << t->getTitle() << ")? (y/n): ";
     string confirm;
     getline(cin, confirm);

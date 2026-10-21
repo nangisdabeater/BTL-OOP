@@ -5,8 +5,8 @@
 
 using namespace std;
 
-CustomerMenu::CustomerMenu(Repository<Customer>& r)
-    : repo(r)
+CustomerMenu::CustomerMenu(Repository<Customer>& r, Repository<Feedback>& fbRepo)
+    : repo(r), feedbackRepo(fbRepo)
 {
 }
 
@@ -136,34 +136,42 @@ void CustomerMenu::update()
         return;
     }
 
+    Customer updated = *x;
+
     cout << "Thong tin hien tai:" << endl;
-    x->printInfo();
+    updated.printInfo();
 
     string v;
-    cout << "Ho ten [" << x->getFullName() << "] (Enter de giu): ";
+    cout << "Ho ten [" << updated.getFullName() << "] (Enter de giu): ";
     getline(cin, v);
-    if (!Utils::trim(v).empty()) x->setFullName(Utils::trim(v));
+    if (!Utils::trim(v).empty()) updated.setFullName(Utils::trim(v));
 
-    cout << "Dien thoai [" << x->getPhone() << "] (Enter de giu): ";
+    cout << "Dien thoai [" << updated.getPhone() << "] (Enter de giu): ";
     getline(cin, v);
-    if (!Utils::trim(v).empty()) x->setPhone(Utils::trim(v));
+    if (!Utils::trim(v).empty()) updated.setPhone(Utils::trim(v));
 
-    cout << "Email [" << x->getEmail() << "] (Enter de giu): ";
+    cout << "Email [" << updated.getEmail() << "] (Enter de giu): ";
     getline(cin, v);
     if (!Utils::trim(v).empty())
     {
-        try { x->setEmail(Utils::trim(v)); }
+        try { updated.setEmail(Utils::trim(v)); }
         catch (const exception& ex) { cout << "Loi email: " << ex.what() << ", giu nguyen email cu." << endl; }
     }
 
-    cout << "Dia chi [" << x->getAddress() << "] (Enter de giu): ";
+    cout << "Dia chi [" << updated.getAddress() << "] (Enter de giu): ";
     getline(cin, v);
-    if (!Utils::trim(v).empty()) x->setAddress(Utils::trim(v));
+    if (!Utils::trim(v).empty()) updated.setAddress(Utils::trim(v));
 
     try
     {
-        repo.save();
-        cout << "Cap nhat thong tin khach hang thanh cong!" << endl;
+        if (repo.update(updated))
+        {
+            cout << "Cap nhat thong tin khach hang thanh cong!" << endl;
+        }
+        else
+        {
+            cout << "Loi khi cap nhat khach hang!" << endl;
+        }
     }
     catch (const exception& ex)
     {
@@ -191,6 +199,20 @@ void CustomerMenu::remove()
         return;
     }
 
+    // Kiểm tra ràng buộc toàn vẹn dữ liệu với Phiếu đánh giá hài lòng (Feedback)
+    for (const auto& fb : feedbackRepo.getAll())
+    {
+        if (fb.getCustomerId() == id)
+        {
+            cout << "Loi rang buoc toan ven: Khong the xoa khach hang '" << id
+                 << "' vi dang co phieu danh gia lien ket (Ma danh gia: " << fb.getId() << ")!" << endl;
+            Utils::backChoice();
+            return;
+        }
+    }
+
+    cout << "Thong tin khach hang can xoa:" << endl;
+    x->printInfo();
     cout << "Ban co chac chan muon xoa khach hang " << id << " (" << x->getFullName() << ")? (y/n): ";
     char y;
     cin >> y;

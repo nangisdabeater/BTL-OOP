@@ -5,7 +5,8 @@
 
 using namespace std;
 
-SLALevelMenu::SLALevelMenu(Repository<SLALevel>& repo) : slaRepository(repo) {}
+SLALevelMenu::SLALevelMenu(Repository<SLALevel>& repo, Repository<TransferTicket>& tfRepo)
+    : slaRepository(repo), transferRepository(tfRepo) {}
 
 void SLALevelMenu::showMenu()
 {
@@ -245,6 +246,20 @@ void SLALevelMenu::remove()
         return;
     }
 
+    // Kiểm tra ràng buộc toàn vẹn dữ liệu với Phiếu chuyển xử lý (TransferTicket)
+    for (const auto& tf : transferRepository.getAll())
+    {
+        if (tf.getSlaId() == id)
+        {
+            cout << "Loi rang buoc toan ven: Khong the xoa muc SLA '" << id
+                 << "' vi dang duoc ap dung cho phieu chuyen xu ly (Ma phieu: " << tf.getId() << ")!" << endl;
+            Utils::backChoice();
+            return;
+        }
+    }
+
+    cout << "Thong tin muc SLA can xoa:" << endl;
+    s->printInfo();
     cout << "Ban co chac chan muon xoa muc SLA " << id << " (" << s->getName() << ")? (y/n): ";
     string confirm;
     getline(cin, confirm);

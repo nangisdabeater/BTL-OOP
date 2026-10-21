@@ -17,7 +17,6 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
     ifstream inFile(filePath);
     if (!inFile.is_open())
     {
-
         ofstream outFile(filePath);
         outFile.close();
         return result;
@@ -31,18 +30,18 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
         if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
-        string id, ticketId, fromId, toId, reason, statusStr;
+        string id, slaId, fromDept, toDept, reason, statusStr;
         if (getline(ss, id, '|') &&
-            getline(ss, ticketId, '|') &&
-            getline(ss, fromId, '|') &&
-            getline(ss, toId, '|') &&
+            getline(ss, slaId, '|') &&
+            getline(ss, fromDept, '|') &&
+            getline(ss, toDept, '|') &&
             getline(ss, reason, '|') &&
             getline(ss, statusStr, '|'))
         {
             id = Utils::trim(id);
-            ticketId = Utils::trim(ticketId);
-            fromId = Utils::trim(fromId);
-            toId = Utils::trim(toId);
+            slaId = Utils::trim(slaId);
+            fromDept = Utils::trim(fromDept);
+            toDept = Utils::trim(toDept);
             reason = Utils::trim(reason);
             statusStr = Utils::trim(statusStr);
 
@@ -63,7 +62,7 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
                     continue;
                 }
 
-                TransferTicket t(ticketId, fromId, toId, reason);
+                TransferTicket t(slaId, fromDept, toDept, reason);
                 t.setId(id);
                 t.restoreStatus(static_cast<TransferStatus>(st));
                 result.push_back(t);
@@ -86,8 +85,6 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
  */
 void FileManager<TransferTicket>::save(const string& filePath, const vector<TransferTicket>& data)
 {
-
-
     ofstream outFile(filePath);
     if (!outFile.is_open())
     {
@@ -95,22 +92,22 @@ void FileManager<TransferTicket>::save(const string& filePath, const vector<Tran
     }
 
     outFile << left
-            << setw(8)  << "Ma ID"      << " | "
-            << setw(10) << "Ma Ticket"  << " | "
-            << setw(10) << "Agent chuyen" << " | "
-            << setw(10) << "Agent nhan" << " | "
-            << setw(30) << "Ly do"      << " | "
+            << setw(8)  << "Ma ID"          << " | "
+            << setw(10) << "Ma SLA"         << " | "
+            << setw(22) << "Bo phan chuyen" << " | "
+            << setw(22) << "Bo phan nhan"   << " | "
+            << setw(36) << "Ly do"          << " | "
             << "Trang thai" << "\n";
-    outFile << string(90, '-') << "\n";
+    outFile << string(117, '-') << "\n";
 
     for (const auto& t : data)
     {
         outFile << left
-                << setw(8)  << t.getId()          << " | "
-                << setw(10) << t.getTicketId()    << " | "
-                << setw(10) << t.getFromAgentId() << " | "
-                << setw(10) << t.getToAgentId()   << " | "
-                << setw(30) << t.getReason()      << " | "
+                << setw(8)  << t.getId()       << " | "
+                << setw(10) << t.getSlaId()    << " | "
+                << setw(22) << t.getFromDept() << " | "
+                << setw(22) << t.getToDept()   << " | "
+                << setw(36) << t.getReason()   << " | "
                 << static_cast<int>(t.getStatus()) << "\n";
     }
 

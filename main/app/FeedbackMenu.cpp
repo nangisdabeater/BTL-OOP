@@ -43,18 +43,16 @@ void FeedbackMenu::displayAll()
     cout << left
          << setw(8)  << "Ma ID"
          << setw(10) << "Ma KH"
-         << setw(12) << "Ma Ticket"
          << setw(8)  << "Diem"
          << setw(14) << "Ngay"
          << "Noi dung danh gia" << endl;
-    cout << string(85, '-') << endl;
+    cout << string(75, '-') << endl;
 
     for (const auto& x : list)
     {
         cout << left
              << setw(8)  << x.getId()
              << setw(10) << x.getCustomerId()
-             << setw(12) << x.getTicketId()
              << setw(8)  << x.getScore()
              << setw(14) << x.getDate()
              << x.getComment() << endl;
@@ -102,12 +100,11 @@ void FeedbackMenu::add()
         return;
     }
 
-    string tk = Utils::inputNonEmptyString("Nhap ma ticket (VD: TK001): ");
     int score = Utils::inputInt("Nhap diem danh gia (1-5): ", 1, 5);
     string date = Utils::inputDateString("Nhap ngay danh gia (DD/MM/YYYY): ");
     string msg = Utils::inputNonEmptyString("Nhap noi dung danh gia: ");
 
-    Feedback x(kh, tk, score, msg, date);
+    Feedback x(kh, score, msg, date);
     try
     {
         repo.add(x);
@@ -140,10 +137,12 @@ void FeedbackMenu::update()
         return;
     }
 
-    cout << "Thong tin hien tai:" << endl;
-    x->printInfo();
+    Feedback updated = *x;
 
-    cout << "Diem hien tai: " << x->getScore() << ". Nhap diem moi (1-5, Enter de giu nguyen): ";
+    cout << "Thong tin hien tai:" << endl;
+    updated.printInfo();
+
+    cout << "Diem hien tai: " << updated.getScore() << ". Nhap diem moi (1-5, Enter de giu nguyen): ";
     string v;
     getline(cin, v);
     v = Utils::trim(v);
@@ -151,26 +150,32 @@ void FeedbackMenu::update()
     {
         try {
             int sc = stoi(v);
-            if (sc >= 1 && sc <= 5) x->setScore(sc);
+            if (sc >= 1 && sc <= 5) updated.setScore(sc);
             else cout << "Diem khong hop le, giu nguyen diem cu." << endl;
         } catch (...) {
             cout << "Diem khong hop le, giu nguyen diem cu." << endl;
         }
     }
 
-    cout << "Noi dung hien tai: " << x->getComment() << endl;
+    cout << "Noi dung hien tai: " << updated.getComment() << endl;
     cout << "Nhap noi dung moi (Enter de giu nguyen): ";
     getline(cin, v);
     v = Utils::trim(v);
     if (!v.empty())
     {
-        x->setComment(v);
+        updated.setComment(v);
     }
 
     try
     {
-        repo.save();
-        cout << "Cap nhat phieu danh gia thanh cong!" << endl;
+        if (repo.update(updated))
+        {
+            cout << "Cap nhat phieu danh gia thanh cong!" << endl;
+        }
+        else
+        {
+            cout << "Loi khi cap nhat phieu danh gia!" << endl;
+        }
     }
     catch (const exception& ex)
     {
@@ -198,6 +203,8 @@ void FeedbackMenu::remove()
         return;
     }
 
+    cout << "Thong tin phieu danh gia can xoa:" << endl;
+    x->printInfo();
     cout << "Ban co chac chan muon xoa phieu danh gia " << id << "? (y/n): ";
     char y;
     cin >> y;

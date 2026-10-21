@@ -9,7 +9,6 @@ using namespace std;
 Ticket::Ticket(
     const string& title,
     const string& description,
-    const string& customerId,
     const string& serviceGroupId,
     int priority,
     double estimatedFee,
@@ -18,7 +17,6 @@ Ticket::Ticket(
     : BaseEntity(),
       title(title),
       description(description),
-      customerId(customerId),
       serviceGroupId(serviceGroupId),
       priority(priority),
       estimatedFee(estimatedFee),
@@ -33,10 +31,6 @@ const string& Ticket::getTitle() const{
 
 const string& Ticket::getDescription() const{
     return description;
-}
-
-const string& Ticket::getCustomerId() const{
-    return customerId;
 }
 
 const string& Ticket::getServiceGroupId() const{
@@ -76,13 +70,6 @@ void Ticket::setDescription(const string& description){
         throw invalid_argument("Mo ta ticket khong duoc de trong!");
     }
     this->description = description;
-}
-
-void Ticket::setCustomerId(const string& customerId){
-    if (customerId.empty()) {
-        throw invalid_argument("Ma khach hang khong duoc de trong!");
-    }
-    this->customerId = customerId;
 }
 
 void Ticket::setServiceGroupId(const string& serviceGroupId){
@@ -133,7 +120,6 @@ void Ticket::printInfo() const{
 
     cout << "Ticket ID: " << id 
          << " | Tieu de: " << title 
-         << " | KH: " << customerId 
          << " | Ma DV: " << serviceGroupId
          << " | Uu tien: " << prioStr
          << " | Chi phi: " << estimatedFee

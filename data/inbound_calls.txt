@@ -1,12 +1,12 @@
-Ma ID    | So dien thoai | Ma kenh   | Ma DTV    | Thoi gian          | Thoi luong | Trang thai   | Ghi chu
---------------------------------------------------------------------------------------------------------------
-CA001    | 0987654321    | CN001     | AG001     | 2026-10-11 08:30   | 125        | ANSWERED     | Khach hang hoi ve thoi gian giao hang
-CA002    | 0912345678    | CN001     | AG002     | 2026-10-11 09:15   | 45         | ANSWERED     | Yeu cau huong dan kich hoat tai khoan
-CA003    | 0905555666    | CN001     | AG001     | 2026-10-11 10:00   | 0          | MISSED       | Cuoc goi nho ngoai gio truc
-CA004    | 0934567890    | CN002     | AG002     | 2026-10-11 10:20   | 180        | ANSWERED     | Khach hang hoi ve chinh sach bao hanh
-CA005    | 0945678901    | CN003     | AG003     | 2026-10-11 11:05   | 240        | ANSWERED     | Ho tro khach hang cap nhat thong tin ca nhan
-CA006    | 0956789012    | CN001     | AG002     | 2026-10-11 13:30   | 0          | MISSED       | Khach hang goi nhung khong co nhan vien nghe may
-CA007    | 0967890123    | CN004     | AG004     | 2026-10-11 14:10   | 95         | ANSWERED     | Khach hang phan anh ve don hang giao cham
-CA008    | 0978901234    | CN005     | AG005     | 2026-10-11 15:25   | 310        | ANSWERED     | Huong dan khach hang su dung dich vu
-CA009    | 0901234567    | CN006     | AG006     | 2026-10-12 08:45   | 150        | ANSWERED     | Giai dap thac mac ve phi dich vu
-CA010    | 0902345678    | CN001     |           | 2026-10-12 09:30   | 0          | MISSED       | Khach hang goi nhung khong ket noi duoc
+Ma ID    | So dien thoai | Ma kenh   | Thoi gian          | Thoi luong | Trang thai   | Ghi chu
+----------------------------------------------------------------------------------------------------
+CA001    | 0987654321    | CN001     | 2026-10-11 08:30   | 125        | ANSWERED     | Khach hang hoi ve thoi gian giao hang
+CA002    | 0912345678    | CN001     | 2026-10-11 09:15   | 45         | ANSWERED     | Yeu cau huong dan kich hoat tai khoan
+CA003    | 0905555666    | CN001     | 2026-10-11 10:00   | 0          | MISSED       | Cuoc goi nho ngoai gio truc
+CA004    | 0934567890    | CN002     | 2026-10-11 10:20   | 180        | ANSWERED     | Khach hang hoi ve chinh sach bao hanh
+CA005    | 0945678901    | CN003     | 2026-10-11 11:05   | 240        | ANSWERED     | Ho tro khach hang cap nhat thong tin ca nhan
+CA006    | 0956789012    | CN001     | 2026-10-11 13:30   | 0          | MISSED       | Khach hang goi nhung khong co nhan vien nghe may
+CA007    | 0967890123    | CN004     | 2026-10-11 14:10   | 95         | ANSWERED     | Khach hang phan anh ve don hang giao cham
+CA008    | 0978901234    | CN005     | 2026-10-11 15:25   | 310        | ANSWERED     | Huong dan khach hang su dung dich vu
+CA009    | 0901234567    | CN006     | 2026-10-12 08:45   | 150        | ANSWERED     | Giai dap thac mac ve phi dich vu
+CA010    | 0902345678    | CN001     | 2026-10-12 09:30   | 0          | MISSED       | Khach hang goi nhung khong ket noi duoc

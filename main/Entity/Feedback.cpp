@@ -8,17 +8,13 @@ using namespace std;
 /**
  * @brief Constructor khởi tạo đối tượng Feedback
  */
-Feedback::Feedback(const string& c, const string& t, int s, const string& m, const string& d)
-    : customerId(c), ticketId(t), comment(m), date(d), score(s)
+Feedback::Feedback(const string& c, int s, const string& m, const string& d)
+    : customerId(c), comment(m), date(d), score(s)
 {
 }
 
 const string& Feedback::getCustomerId() const {
     return customerId;
-}
-
-const string& Feedback::getTicketId() const {
-    return ticketId;
 }
 
 const string& Feedback::getComment() const {
@@ -41,16 +37,6 @@ void Feedback::setCustomerId(const string& v) {
         throw invalid_argument("Ma khach hang khong duoc rong");
     }
     customerId = v;
-}
-
-/**
- * @brief Cập nhật mã ticket, yêu cầu không được để trống
- */
-void Feedback::setTicketId(const string& v) {
-    if (v.empty()) {
-        throw invalid_argument("Ma ticket khong duoc rong");
-    }
-    ticketId = v;
 }
 
 /**
@@ -89,7 +75,6 @@ void Feedback::setScore(int v) {
 void Feedback::printInfo() const {
     cout << "Feedback ID: " << id
          << " | Ma KH: " << customerId
-         << " | Ma Ticket: " << ticketId
          << " | Diem: " << score << "/5"
          << " | Ngay: " << date
          << " | Nhan xet: " << comment << endl;

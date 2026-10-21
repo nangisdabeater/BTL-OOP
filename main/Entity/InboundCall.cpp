@@ -8,7 +8,6 @@
 InboundCall::InboundCall(
     const string& phoneNumber,
     const string& channelId,
-    const string& agentId,
     const string& callTime,
     int duration,
     const string& status,
@@ -17,7 +16,6 @@ InboundCall::InboundCall(
     : BaseEntity(),
       phoneNumber(phoneNumber),
       channelId(channelId),
-      agentId(agentId),
       callTime(callTime),
       duration(duration),
       status(status),
@@ -33,11 +31,6 @@ const string& InboundCall::getPhoneNumber() const{
 
 const string& InboundCall::getChannelId() const{
     return channelId;
-}
-
-const string& InboundCall::getAgentId() const
-{
-    return agentId;
 }
 
 const string& InboundCall::getCallTime() const
@@ -78,11 +71,6 @@ void InboundCall::setChannelId(const string& channelId)
     this->channelId = channelId;
 }
 
-void InboundCall::setAgentId(const string& agentId)
-{
-    this->agentId = agentId;
-}
-
 void InboundCall::setCallTime(const string& callTime)
 {
     if (callTime.empty()) {
@@ -119,7 +107,6 @@ void InboundCall::printInfo() const
     cout << "Cuoc goi ID: " << id
          << " | SDT: " << phoneNumber
          << " | Kenh: " << channelId
-         << " | DTV: " << (agentId.empty() ? "(Chua gan)" : agentId)
          << " | Thoi gian: " << callTime
          << " | Thoi luong: " << duration << "s"
          << " | Trang thai: " << status

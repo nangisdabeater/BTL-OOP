@@ -342,6 +342,8 @@ void AgentShiftMenu::remove() {
     return;
   }
 
+  cout << "Thong tin ca truc can xoa:" << endl;
+  as->printInfo();
   cout << "Ban co chac chan muon xoa ca truc: " << id  << " (" << as->getShiftName() << ")? (Y/N): ";
   string confirm;
   getline(cin, confirm);
@@ -393,7 +395,13 @@ void AgentShiftMenu::manageAgentShift() {
       cout << "Chua phan cong";
     } else {
       for (size_t i = 0; i < agentIds.size(); ++i) {
-        cout << agentIds[i] << (i < agentIds.size() - 1 ? ", " : "");
+        Agent* ag = agentRepository.findById(agentIds[i]);
+        if (ag != nullptr) {
+          cout << agentIds[i] << " (" << ag->getFullName() << ")";
+        } else {
+          cout << agentIds[i];
+        }
+        if (i < agentIds.size() - 1) cout << ", ";
       }
     }
     cout << "\n========================================" << endl;
@@ -419,8 +427,13 @@ void AgentShiftMenu::manageAgentShift() {
         string agentId = Utils::inputNonEmptyString("Nhap ma nhan vien can them (VD: AG001, nhap 0 de quay lai): ");
         if (agentId == "0") break;
 
-        if (agentRepository.findById(agentId) ==  nullptr) {
+        Agent* ag = agentRepository.findById(agentId);
+        if (ag == nullptr) {
           cout << "Loi: Nhan vien " << agentId << " khong ton tai trong he thong!" << endl;
+          break;
+        }
+        if (!ag->isActive()) {
+          cout << "Loi rang buoc: Dien thoai vien '" << ag->getFullName() << "' (" << agentId << ") dang tam dung hoat dong, khong the phan cong vao ca truc!" << endl;
           break;
         }
 

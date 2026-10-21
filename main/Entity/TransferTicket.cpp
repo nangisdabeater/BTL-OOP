@@ -10,32 +10,56 @@
 using namespace std;
 
 TransferTicket::TransferTicket(
-    const string& ticketId,
-    const string& fromAgentId,
-    const string& toAgentId,
+    const string& slaId,
+    const string& fromDept,
+    const string& toDept,
     const string& reason
 )
     : BaseEntity(),
-      ticketId(ticketId),
-      fromAgentId(fromAgentId),
-      toAgentId(toAgentId),
+      slaId(slaId),
+      fromDept(fromDept),
+      toDept(toDept),
       reason(reason),
       status(TransferStatus::PENDING)
 {
-    if (ticketId.empty())    throw invalid_argument("Ma ticket khong duoc de trong!");
-    if (fromAgentId.empty()) throw invalid_argument("Ma agent chuyen khong duoc de trong!");
-    if (toAgentId.empty())   throw invalid_argument("Ma agent nhan khong duoc de trong!");
-    if (reason.empty())      throw invalid_argument("Ly do chuyen khong duoc de trong!");
-    if (fromAgentId == toAgentId) {
-        throw invalid_argument("Agent chuyen va agent nhan khong duoc trung nhau!");
+    if (slaId.empty())    throw invalid_argument("Ma muc SLA khong duoc de trong!");
+    if (fromDept.empty()) throw invalid_argument("Bo phan chuyen khong duoc de trong!");
+    if (toDept.empty())   throw invalid_argument("Bo phan nhan khong duoc de trong!");
+    if (reason.empty())   throw invalid_argument("Ly do chuyen khong duoc de trong!");
+    if (fromDept == toDept) {
+        throw invalid_argument("Bo phan chuyen va bo phan nhan khong duoc trung nhau!");
     }
 }
 
-const string& TransferTicket::getTicketId() const { return ticketId; }
-const string& TransferTicket::getFromAgentId() const { return fromAgentId; }
-const string& TransferTicket::getToAgentId() const { return toAgentId; }
+const string& TransferTicket::getSlaId() const { return slaId; }
+const string& TransferTicket::getFromDept() const { return fromDept; }
+const string& TransferTicket::getToDept() const { return toDept; }
 const string& TransferTicket::getReason() const { return reason; }
 TransferStatus TransferTicket::getStatus() const { return status; }
+
+void TransferTicket::setSlaId(const string& slaId)
+{
+    if (slaId.empty()) {
+        throw invalid_argument("Ma muc SLA khong duoc de trong!");
+    }
+    this->slaId = slaId;
+}
+
+void TransferTicket::setFromDept(const string& fromDept)
+{
+    if (fromDept.empty()) {
+        throw invalid_argument("Bo phan chuyen khong duoc de trong!");
+    }
+    this->fromDept = fromDept;
+}
+
+void TransferTicket::setToDept(const string& toDept)
+{
+    if (toDept.empty()) {
+        throw invalid_argument("Bo phan nhan khong duoc de trong!");
+    }
+    this->toDept = toDept;
+}
 
 void TransferTicket::setReason(const string& reason)
 {
@@ -49,14 +73,14 @@ void TransferTicket::printInfo() const
 {
     string stStr;
     switch (status) {
-        case TransferStatus::PENDING: stStr = "PENDING"; break;
-        case TransferStatus::ACCEPTED: stStr = "ACCEPTED"; break;
-        case TransferStatus::COMPLETED: stStr = "COMPLETED"; break;
+        case TransferStatus::PENDING: stStr = "Cho nhan (PENDING)"; break;
+        case TransferStatus::ACCEPTED: stStr = "Da nhan (ACCEPTED)"; break;
+        case TransferStatus::COMPLETED: stStr = "Hoan tat (COMPLETED)"; break;
     }
     cout << "TransferTicket ID: " << id
-         << " | Ticket: " << ticketId
-         << " | Tu DTV: " << fromAgentId
-         << " | Sang DTV: " << toAgentId
+         << " | Ma SLA: " << slaId
+         << " | Tu BP: " << fromDept
+         << " | Sang BP: " << toDept
          << " | Ly do: " << reason
          << " | Trang thai: " << stStr << endl;
 }

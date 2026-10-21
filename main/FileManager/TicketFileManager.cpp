@@ -34,18 +34,16 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
         if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
-        string id, title, desc, customerId, sgId;
+        string id, title, desc, sgId;
 
         // Đọc các trường cơ bản ngăn cách bằng '|'
         if (getline(ss, id, '|') &&
             getline(ss, title, '|') &&
             getline(ss, desc, '|') &&
-            getline(ss, customerId, '|') &&
             getline(ss, sgId, '|')){
             id = Utils::trim(id);
             title = Utils::trim(title);
             desc = Utils::trim(desc);
-            customerId = Utils::trim(customerId);
             sgId = Utils::trim(sgId);
 
             // Bỏ qua dòng tiêu đề cột
@@ -72,7 +70,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             int statusCode = 0;
 
             if (remainingCols.size() >= 4){
-                // Định dạng mới: priority | estimatedFee | createdDate | status
+                // Định dạng: priority | estimatedFee | createdDate | status
                 try { priority = stoi(remainingCols[0]); } catch (...) { priority = 2; }
                 try { estimatedFee = stod(remainingCols[1]); } catch (...) { estimatedFee = 0.0; }
                 createdDate = remainingCols[2];
@@ -83,7 +81,6 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
                 try { statusCode = stoi(remainingCols[3]); } catch (...) { statusCode = 0; }
             }
             else if (!remainingCols.empty()){
-                // Định dạng cũ: chỉ có status
                 try { statusCode = stoi(remainingCols[0]); } catch (...) { statusCode = 0; }
             }
             else{
@@ -92,7 +89,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath)
             }
 
             try{
-                Ticket t(title, desc, customerId, sgId, priority, estimatedFee, createdDate);
+                Ticket t(title, desc, sgId, priority, estimatedFee, createdDate);
                 t.setId(id);
                 if (statusCode >= 0 && statusCode <= 3)
                 {
@@ -132,20 +129,18 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
             << setw(8)  << "Ma ID"          << " | "
             << setw(24) << "Tieu de"        << " | "
             << setw(35) << "Mo ta chi tiet" << " | "
-            << setw(10) << "Ma KH"          << " | "
             << setw(10) << "Ma DV"          << " | "
             << setw(10) << "Uu tien"       << " | "
             << setw(12) << "Chi phi"        << " | "
             << setw(12) << "Ngay tao"       << " | "
             << "Trang thai" << "\n";
-    outFile << string(140, '-') << "\n";
+    outFile << string(128, '-') << "\n";
 
     for (const auto& t : data){
         outFile << left
                 << setw(8)  << t.getId()             << " | "
                 << setw(24) << t.getTitle()          << " | "
                 << setw(35) << t.getDescription()    << " | "
-                << setw(10) << t.getCustomerId()     << " | "
                 << setw(10) << t.getServiceGroupId() << " | "
                 << setw(10) << t.getPriority()       << " | "
                 << setw(12) << fixed << setprecision(2) << t.getEstimatedFee() << " | "

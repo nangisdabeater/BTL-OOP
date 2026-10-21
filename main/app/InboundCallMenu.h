@@ -14,14 +14,12 @@
 #include "../Repository/Repository.h"
 #include "../Entity/InboundCall.h"
 #include "../Entity/ReceptionChannel.h"
-#include "../Entity/Agent.h"
 
 class InboundCallMenu
 {
 private:
     Repository<InboundCall>& callRepository;
     Repository<ReceptionChannel>& channelRepository; // Khóa ngoại kiểm tra mã kênh
-    Repository<Agent>& agentRepository;               // Khóa ngoại kiểm tra mã điện thoại viên
 
     void showMenu();
     void displayAll();
@@ -34,8 +32,7 @@ private:
 public:
     InboundCallMenu(
         Repository<InboundCall>& cRepo,
-        Repository<ReceptionChannel>& chRepo,
-        Repository<Agent>& agRepo
+        Repository<ReceptionChannel>& chRepo
     );
 
     void run();

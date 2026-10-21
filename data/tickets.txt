@@ -1,12 +1,12 @@
-Ma ID    | Tieu de                  | Mo ta chi tiet                      | Ma KH      | Ma DV      | Uu tien    | Chi phi      | Ngay tao     | Trang thai
---------------------------------------------------------------------------------------------------------------------------------------------
-TK001    | Loi ket noi              | Khach hang mat mang                 | KH001      | SM001      | 3          | 50000.00     | 16/10/2026   | 0
-TK002    | Mang cham                | Toc do Internet khong on dinh       | KH002      | SM001      | 2          | 80000.00     | 16/10/2026   | 0
-TK003    | Loi truyen hinh          | Tin hieu truyen hinh bi gian doan   | KH003      | SM002      | 3          | 60000.00     | 16/10/2026   | 0
-TK004    | Khong kich hoat duoc SIM | Khach hang khong the kich hoat SIM  | KH004      | SM003      | 2          | 40000.00     | 16/10/2026   | 1
-TK005    | Hong modem               | Modem khong hoat dong               | KH005      | SM006      | 1          | 200000.00    | 16/10/2026   | 0
-TK006    | Yeu cau bao hanh         | Khach hang yeu cau bao hanh thiet bi | KH006      | SM005      | 3          | 0.00         | 16/10/2026   | 1
-TK007    | Loi thanh toan           | Khach hang khong thanh toan duoc    | KH007      | SM007      | 2          | 0.00         | 16/10/2026   | 0
-TK008    | Khieu nai cuoc phi       | Khach hang thac mac ve cuoc phi     | KH008      | SM010      | 1          | 0.00         | 16/10/2026   | 0
-TK009    | Yeu cau lap dat          | Khach hang yeu cau lap dat Internet | KH009      | SM009      | 3          | 300000.00    | 16/10/2026   | 1
-TK010    | Tu van goi cuoc          | Khach hang can tu van goi cuoc      | KH010      | SM008      | 3          | 50000.00     | 16/10/2026   | 1
+Ma ID    | Tieu de                  | Mo ta chi tiet                      | Ma DV      | Uu tien    | Chi phi      | Ngay tao     | Trang thai
+--------------------------------------------------------------------------------------------------------------------------------
+TK001    | Loi ket noi              | Khach hang mat mang                 | SM001      | 3          | 50000.00     | 16/10/2026   | 0
+TK002    | Mang cham                | Toc do Internet khong on dinh       | SM001      | 2          | 80000.00     | 16/10/2026   | 0
+TK003    | Loi truyen hinh          | Tin hieu truyen hinh bi gian doan   | SM002      | 3          | 60000.00     | 16/10/2026   | 0
+TK004    | Khong kich hoat duoc SIM | Khach hang khong the kich hoat SIM  | SM003      | 2          | 40000.00     | 16/10/2026   | 1
+TK005    | Hong modem               | Modem khong hoat dong               | SM006      | 1          | 200000.00    | 16/10/2026   | 0
+TK006    | Yeu cau bao hanh         | Khach hang yeu cau bao hanh thiet bi | SM005      | 3          | 0.00         | 16/10/2026   | 1
+TK007    | Loi thanh toan           | Khach hang khong thanh toan duoc    | SM007      | 2          | 0.00         | 16/10/2026   | 0
+TK008    | Khieu nai cuoc phi       | Khach hang thac mac ve cuoc phi     | SM010      | 1          | 0.00         | 16/10/2026   | 0
+TK009    | Yeu cau lap dat          | Khach hang yeu cau lap dat Internet | SM009      | 3          | 300000.00    | 16/10/2026   | 1
+TK010    | Tu van goi cuoc          | Khach hang can tu van goi cuoc      | SM008      | 3          | 50000.00     | 16/10/2026   | 1

@@ -23,7 +23,6 @@ class InboundCall : public BaseEntity{
 private:
     string phoneNumber;  
     string channelId;    
-    string agentId;      
     string callTime;     
     int duration;        
     string status;       // Trạng thái cuộc gọi: ANSWERED (Thành công), MISSED (Nhỡ), BUSY (Bận máy)
@@ -34,7 +33,6 @@ public:
     InboundCall(
         const string& phoneNumber = "",
         const string& channelId = "",
-        const string& agentId = "",
         const string& callTime = "",
         int duration = 0,
         const string& status = "ANSWERED",
@@ -44,7 +42,6 @@ public:
     // Getter
     const string& getPhoneNumber() const;
     const string& getChannelId() const;
-    const string& getAgentId() const;
     const string& getCallTime() const;
     int getDuration() const;
     const string& getStatus() const;
@@ -53,7 +50,6 @@ public:
     // Setter (có kiểm tra dữ liệu hợp lệ)
     void setPhoneNumber(const string& phoneNumber);
     void setChannelId(const string& channelId);
-    void setAgentId(const string& agentId);
     void setCallTime(const string& callTime);
     void setDuration(int duration);
     void setStatus(const string& status);

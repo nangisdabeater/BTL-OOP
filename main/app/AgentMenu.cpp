@@ -8,10 +8,10 @@ using namespace std;
 /**
  * @brief Khởi tạo đối tượng AgentMenu
  * @param agRepo Tham chiếu tới kho lưu trữ Điện thoại viên
- * @param cRepo Con trỏ tới kho lưu trữ Cuộc gọi (để kiểm tra ràng buộc toàn vẹn)
+ * @param asRepo Tham chiếu tới kho lưu trữ Ca trực (để kiểm tra ràng buộc toàn vẹn trong cùng phân hệ)
  */
-AgentMenu::AgentMenu(Repository<Agent>& agRepo, Repository<InboundCall>* cRepo)
-  : agentRepository(agRepo), callRepository(cRepo)
+AgentMenu::AgentMenu(Repository<Agent>& agRepo, Repository<AgentShift>& asRepo)
+  : agentRepository(agRepo), agentShiftRepository(asRepo)
 {}
 
 /**
@@ -321,19 +321,22 @@ void AgentMenu::remove() {
     return;
   }
 
-  // Kiểm tra ràng buộc toàn vẹn dữ liệu với Cuộc gọi
-  if (callRepository != nullptr) {
-    for (const auto& call : callRepository->getAll()) {
-      if (call.getAgentId() == id) {
+  // Kiểm tra ràng buộc toàn vẹn dữ liệu với Ca trực (AgentShift - thuộc phân hệ của Thành)
+  for (const auto& shift : agentShiftRepository.getAll()) {
+    for (const auto& assignedId : shift.getAgentIds()) {
+      if (assignedId == id) {
         cout << "Loi rang buoc toan ven: Khong the xoa dien thoai vien '" << id
-             << "' vi dang co cuoc goi tiep nhan lien ket (VD ma " << call.getId() << ")!" << endl;
-        cout << "Vui long xu ly hoac go bo phan cong cua DTV nay truoc khi xoa." << endl;
+             << "' vi dang duoc phan cong trong ca truc '" << shift.getShiftName()
+             << "' (Ma ca: " << shift.getId() << ")!" << endl;
+        cout << "Vui long vao menu Ca Truc -> Xoa nhan vien khoi ca truoc khi xoa ho so!" << endl;
         Utils::backChoice();
         return;
       }
     }
   }
 
+  cout << "Thong tin dien thoai vien can xoa:" << endl;
+  ag->printInfo();
   cout << "Ban co chac chan muon xoa dien thoai vien " << id << " (" << ag->getFullName() << ")? (y/n): ";
   string confirm;
   getline(cin, confirm);

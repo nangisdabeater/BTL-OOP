@@ -10,7 +10,6 @@
 #include "../Repository/Repository.h"
 #include "../Entity/Ticket.h"
 #include "../Entity/ServiceGroup.h"
-#include "../Entity/Customer.h"
 
 using namespace std;
 
@@ -19,7 +18,6 @@ class TicketMenu
 private:
     Repository<Ticket>& ticketRepository;             // Tham chiếu đến kho lưu trữ Ticket
     Repository<ServiceGroup>& serviceGroupRepository; // Tham chiếu đến kho Nhóm dịch vụ (để kiểm tra khóa ngoại)
-    Repository<Customer>& customerRepository;         // Tham chiếu đến kho Khách hàng (để kiểm tra khóa ngoại)
 
     // Các hàm nội bộ phục vụ giao diện và nghiệp vụ
     void showMenu();          // Hiển thị danh mục chức năng quản lý Ticket
@@ -34,8 +32,8 @@ private:
     static string priorityToString(int priority);
 
 public:
-    // Hàm khởi tạo nhận vào tham chiếu của 3 repository
-    TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo, Repository<Customer>& cRepo);
+    // Hàm khởi tạo nhận vào tham chiếu của 2 repository
+    TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo);
 
     // Hàm điều phối chạy vòng lặp menu
     void run();

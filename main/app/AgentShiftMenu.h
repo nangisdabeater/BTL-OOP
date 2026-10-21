@@ -7,7 +7,9 @@
  * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra trùng tên, kiểm tra toàn vẹn dữ liệu khi xóa.
  */
 
- #include "App.h"
+#include "../Repository/Repository.h"
+#include "../Entity/AgentShift.h"
+#include "../Entity/Agent.h"
 
 class AgentShiftMenu {
   private:

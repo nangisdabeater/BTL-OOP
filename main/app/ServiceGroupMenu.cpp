@@ -309,6 +309,8 @@ void ServiceGroupMenu::remove(){
         }
     }
 
+    cout << "Thong tin dich vu can xoa:" << endl;
+    sg->printInfo();
     cout << "Ban co chac chan muon xoa dich vu " << id << " (" << sg->getName() << ")? (y/n): ";
     string confirm;
     getline(cin, confirm);

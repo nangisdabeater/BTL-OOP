@@ -19,10 +19,9 @@ using namespace std;
  */
 InboundCallMenu::InboundCallMenu(
     Repository<InboundCall>& cRepo,
-    Repository<ReceptionChannel>& chRepo,
-    Repository<Agent>& agRepo
+    Repository<ReceptionChannel>& chRepo
 )
-    : callRepository(cRepo), channelRepository(chRepo), agentRepository(agRepo)
+    : callRepository(cRepo), channelRepository(chRepo)
 {
 }
 
@@ -113,12 +112,11 @@ void InboundCallMenu::displayAll()
          << setw(8)  << "Ma ID"
          << setw(14) << "So dien thoai"
          << setw(10) << "Ma kenh"
-         << setw(10) << "Ma DTV"
          << setw(18) << "Thoi gian"
          << setw(12) << "T.Luong(s)"
          << setw(12) << "Trang thai"
          << "Ghi chu" << endl;
-    cout << string(95, '-') << endl;
+    cout << string(90, '-') << endl;
 
     for (const auto& call : list)
     {
@@ -126,7 +124,6 @@ void InboundCallMenu::displayAll()
              << setw(8)  << call.getId()
              << setw(14) << call.getPhoneNumber()
              << setw(10) << call.getChannelId()
-             << setw(10) << (call.getAgentId().empty() ? "-" : call.getAgentId())
              << setw(18) << call.getCallTime()
              << setw(12) << call.getDuration()
              << setw(12) << call.getStatus()
@@ -155,6 +152,12 @@ void InboundCallMenu::findById()
     }
 
     Utils::printEntityDetails(*call);
+    ReceptionChannel* ch = channelRepository.findById(call->getChannelId());
+    if (ch != nullptr)
+    {
+        cout << "  -> Kênh tiếp nhận: " << ch->getName()
+             << " (" << (ch->isActive() ? "Hoat dong" : "Ngung hoat dong") << ")" << endl;
+    }
     Utils::backChoice();
 }
 
@@ -208,35 +211,6 @@ void InboundCallMenu::add()
         }
     }
 
-    // Nhập mã điện thoại viên tiếp nhận (tùy chọn, có thể để trống)
-    string agId;
-    while (true)
-    {
-        cout << "Nhap ma dien thoai vien tiep nhan (VD: AG001, de trong neu chua gan): ";
-        getline(cin, agId);
-        agId = Utils::trim(agId);
-        if (agId.empty())
-        {
-            break; // Cho phép để trống
-        }
-        Agent* ag = agentRepository.findById(agId);
-        if (ag == nullptr)
-        {
-            cout << "Loi rang buoc: Ma DTV '" << agId << "' khong ton tai tren he thong! Vui long nhap lai." << endl;
-        }
-        else if (!ag->isActive())
-        {
-            cout << "Canh bao: DTV '" << ag->getFullName() << "' dang tam dung hoat dong. Ban van muon gan? (y/n): ";
-            string cf;
-            getline(cin, cf);
-            if (Utils::trim(cf) == "y" || Utils::trim(cf) == "Y") break;
-        }
-        else
-        {
-            break;
-        }
-    }
-
     string callTime = Utils::inputNonEmptyString("Nhap thoi gian cuoc goi (VD: 2026-10-11 14:30): ");
 
     int duration = 0;
@@ -271,7 +245,7 @@ void InboundCallMenu::add()
     getline(cin, note);
     note = Utils::trim(note);
 
-    InboundCall newCall(phone, chId, agId, callTime, duration, status, note);
+    InboundCall newCall(phone, chId, callTime, duration, status, note);
     try
     {
         // Repository sẽ tự sinh mã ID với tiền tố "CA", VD: CA001
@@ -310,21 +284,6 @@ void InboundCallMenu::update()
 
     cout << "Thong tin hien tai:" << endl;
     updated.printInfo();
-
-    // Cập nhật DTV
-    cout << "\nNhap ma DTV moi (de trong neu giu nguyen '" << updated.getAgentId() << "'): ";
-    string newAg;
-    getline(cin, newAg);
-    newAg = Utils::trim(newAg);
-    if (!newAg.empty())
-    {
-        Agent* ag = agentRepository.findById(newAg);
-        if (ag == nullptr)
-        {
-            cout << "Canh bao: Ma DTV " << newAg << " khong tim thay trong he thong." << endl;
-        }
-        updated.setAgentId(newAg);
-    }
 
     // Cập nhật trạng thái
     cout << "Chon trang thai moi (1: ANSWERED, 2: MISSED, 3: BUSY, de trong de giu nguyen): ";
@@ -374,8 +333,16 @@ void InboundCallMenu::filterByChannel()
         return;
     }
 
+    ReceptionChannel* ch = channelRepository.findById(chId);
+    if (ch == nullptr)
+    {
+        cout << "Loi: Kenh tiep nhan voi ma '" << chId << "' khong ton tai!" << endl;
+        Utils::backChoice();
+        return;
+    }
+
     int count = 0;
-    cout << "\n--- Danh sach cuoc goi thuoc kenh: " << chId << " ---" << endl;
+    cout << "\n--- Danh sach cuoc goi thuoc kenh: " << chId << " (" << ch->getName() << ") ---" << endl;
     for (const auto& call : callRepository.getAll())
     {
         if (call.getChannelId() == chId)
@@ -416,6 +383,8 @@ void InboundCallMenu::remove()
         return;
     }
 
+    cout << "Thong tin cuoc goi can xoa:" << endl;
+    call->printInfo();
     cout << "Ban co chac muon xoa cuoc goi " << id << "? (y/n): ";
     string confirm;
     getline(cin, confirm);

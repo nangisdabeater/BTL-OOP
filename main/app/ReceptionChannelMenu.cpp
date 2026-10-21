@@ -107,16 +107,16 @@ void ReceptionChannelMenu::displayAll()
     cout << left
          << setw(8)  << "Ma ID"
          << setw(25) << "Ten kenh tiep nhan"
-         << setw(35) << "Mo ta"
+         << setw(42) << "Mo ta"
          << setw(15) << "Trang thai" << endl;
-    cout << string(83, '-') << endl;
+    cout << string(90, '-') << endl;
 
     for (const auto& ch : list)
     {
         cout << left
              << setw(8)  << ch.getId()
              << setw(25) << ch.getName()
-             << setw(35) << ch.getDescription()
+             << setw(42) << ch.getDescription()
              << setw(15) << (ch.isActive() ? "Hoat dong" : "Ngung hoat dong") << endl;
     }
     Utils::backChoice();
@@ -343,6 +343,8 @@ void ReceptionChannelMenu::remove()
         }
     }
 
+    cout << "Thong tin kenh tiep nhan can xoa:" << endl;
+    ch->printInfo();
     cout << "Ban co chac chan muon xoa kenh " << id << " (" << ch->getName() << ")? (y/n): ";
     string confirm;
     getline(cin, confirm);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Entity/Customer.h"
+#include "../Entity/Feedback.h"
 #include "../Repository/Repository.h"
 
 /**
@@ -13,7 +14,8 @@
 class CustomerMenu
 {
 private:
-    Repository<Customer>& repo; ///< Kho lưu trữ dữ liệu khách hàng
+    Repository<Customer>& repo;              ///< Kho lưu trữ dữ liệu khách hàng
+    Repository<Feedback>& feedbackRepo;      ///< Kho lưu trữ phiếu đánh giá để kiểm tra ràng buộc khi xóa
 
     /**
      * @brief Hiển thị bảng danh mục các chức năng quản lý khách hàng
@@ -47,10 +49,11 @@ private:
 
 public:
     /**
-     * @brief Khởi tạo đối tượng CustomerMenu với kho dữ liệu khách hàng
+     * @brief Khởi tạo đối tượng CustomerMenu với kho dữ liệu khách hàng và đánh giá
      * @param r Tham chiếu đến Repository<Customer>
+     * @param fbRepo Tham chiếu đến Repository<Feedback>
      */
-    explicit CustomerMenu(Repository<Customer>& r);
+    CustomerMenu(Repository<Customer>& r, Repository<Feedback>& fbRepo);
 
     /**
      * @brief Vòng lặp chính điều khiển giao diện menu khách hàng

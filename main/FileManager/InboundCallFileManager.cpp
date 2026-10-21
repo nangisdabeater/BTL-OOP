@@ -42,13 +42,12 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
         if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
-        string id, phone, chId, agId, time, durStr, status, note;
+        string id, phone, chId, time, durStr, status, note;
 
         // Đọc các trường dữ liệu ngăn cách bằng ký tự '|'
         if (getline(ss, id, '|') &&
             getline(ss, phone, '|') &&
             getline(ss, chId, '|') &&
-            getline(ss, agId, '|') &&
             getline(ss, time, '|') &&
             getline(ss, durStr, '|') &&
             getline(ss, status, '|') &&
@@ -57,7 +56,6 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
             id = Utils::trim(id);
             phone = Utils::trim(phone);
             chId = Utils::trim(chId);
-            agId = Utils::trim(agId);
             time = Utils::trim(time);
             durStr = Utils::trim(durStr);
             status = Utils::trim(status);
@@ -85,7 +83,7 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
             }
 
             try {
-                InboundCall call(phone, chId, agId, time, dur, status, note);
+                InboundCall call(phone, chId, time, dur, status, note);
                 call.setId(id);
                 result.push_back(call);
             } catch (...) {
@@ -120,12 +118,11 @@ void FileManager<InboundCall>::save(const string& filePath, const vector<Inbound
             << setw(8)  << "Ma ID"         << " | "
             << setw(13) << "So dien thoai" << " | "
             << setw(9)  << "Ma kenh"       << " | "
-            << setw(9)  << "Ma DTV"        << " | "
             << setw(18) << "Thoi gian"     << " | "
             << setw(10) << "Thoi luong"    << " | "
             << setw(12) << "Trang thai"    << " | "
             << "Ghi chu"                   << "\n";
-    outFile << string(110, '-') << "\n";
+    outFile << string(100, '-') << "\n";
 
     // Ghi từng cuộc gọi
     for (const auto& call : data)
@@ -134,7 +131,6 @@ void FileManager<InboundCall>::save(const string& filePath, const vector<Inbound
                 << setw(8)  << call.getId()          << " | "
                 << setw(13) << call.getPhoneNumber() << " | "
                 << setw(9)  << call.getChannelId()   << " | "
-                << setw(9)  << call.getAgentId()     << " | "
                 << setw(18) << call.getCallTime()    << " | "
                 << setw(10) << call.getDuration()    << " | "
                 << setw(12) << call.getStatus()      << " | "

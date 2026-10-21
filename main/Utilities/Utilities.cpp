@@ -3,7 +3,6 @@
 #include <iomanip>
 #include <sstream>
 #include <cctype>
-#include <ctime>
 
 #include "../Entity/BaseEntity.h"
 

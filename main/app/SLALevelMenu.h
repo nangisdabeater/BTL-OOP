@@ -8,6 +8,7 @@
 
 #include "../Repository/Repository.h"
 #include "../Entity/SLALevel.h"
+#include "../Entity/TransferTicket.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class SLALevelMenu
 {
 private:
     Repository<SLALevel>& slaRepository;
+    Repository<TransferTicket>& transferRepository; // Kiểm tra ràng buộc toàn vẹn với Phiếu chuyển (cùng phân hệ của Cường)
 
     void showMenu();
     void displayAll();
@@ -27,6 +29,6 @@ private:
     static int inputInt(const string& prompt, int minValue, int maxValue);
 
 public:
-    explicit SLALevelMenu(Repository<SLALevel>& repo);
+    SLALevelMenu(Repository<SLALevel>& repo, Repository<TransferTicket>& tfRepo);
     void run();
 };

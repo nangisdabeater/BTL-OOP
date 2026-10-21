@@ -7,10 +7,9 @@ using namespace std;
 
 TransferTicketMenu::TransferTicketMenu(
     Repository<TransferTicket>& tfRepo,
-    Repository<Ticket>& tRepo,
-    Repository<Agent>& aRepo
+    Repository<SLALevel>& sRepo
 )
-    : transferRepository(tfRepo), ticketRepository(tRepo), agentRepository(aRepo)
+    : transferRepository(tfRepo), slaRepository(sRepo)
 {
 }
 
@@ -25,15 +24,14 @@ string TransferTicketMenu::statusToString(TransferStatus s)
     return "Khong ro";
 }
 
-// Tra ten agent de hien thi de doc (neu agent con ton tai)
-string TransferTicketMenu::agentNameOf(const string& agentId)
+string TransferTicketMenu::slaNameOf(const string& slaId)
 {
-    Agent* a = agentRepository.findById(agentId);
-    if (a == nullptr)
+    SLALevel* s = slaRepository.findById(slaId);
+    if (s == nullptr)
     {
         return "(khong xac dinh)";
     }
-    return a->getFullName();
+    return s->getName();
 }
 
 void TransferTicketMenu::showMenu()
@@ -93,21 +91,21 @@ void TransferTicketMenu::displayAll()
     }
     cout << left
          << setw(8)  << "Ma ID"
-         << setw(10) << "Ticket"
-         << setw(14) << "Agent chuyen"
-         << setw(12) << "Agent nhan"
-         << setw(28) << "Ly do"
+         << setw(10) << "Ma SLA"
+         << setw(22) << "Bo phan chuyen"
+         << setw(24) << "Bo phan nhan"
+         << setw(36) << "Ly do"
          << setw(12) << "Trang thai" << endl;
-    cout << string(84, '-') << endl;
+    cout << string(112, '-') << endl;
 
     for (const auto& t : list)
     {
         cout << left
              << setw(8)  << t.getId()
-             << setw(10) << t.getTicketId()
-             << setw(14) << t.getFromAgentId()
-             << setw(12) << t.getToAgentId()
-             << setw(28) << t.getReason()
+             << setw(10) << t.getSlaId()
+             << setw(22) << t.getFromDept()
+             << setw(24) << t.getToDept()
+             << setw(36) << t.getReason()
              << setw(12) << statusToString(t.getStatus()) << endl;
     }
     Utils::backChoice();
@@ -129,75 +127,60 @@ void TransferTicketMenu::findById()
     }
 
     Utils::printEntityDetails(*t);
+    cout << "  -> Muc cam ket SLA: [" << t->getSlaId() << "] " << slaNameOf(t->getSlaId()) << endl;
     Utils::backChoice();
 }
 
 /**
  * Tao phieu chuyen. Rang buoc:
  * 1. Cac truong khong rong.
- * 2. Khoa ngoai: Ticket, Agent chuyen, Agent nhan phai ton tai.
- * 3. Agent chuyen va Agent nhan phai dang hoat dong.
- * 4. Agent chuyen khac Agent nhan.
- * 5. Khong chuyen Ticket da RESOLVED/CLOSED.
+ * 2. Khoa ngoai: Ma SLA (SLxxx) phai ton tai trong slaRepository.
+ * 3. Bo phan chuyen khac Bo phan nhan.
  */
 void TransferTicketMenu::add()
 {
     cout << "--- Tao phieu chuyen xu ly ---" << endl;
-    string ticketId = Utils::inputNonEmptyString("Nhap ma ticket can chuyen (nhap 0 de quay lai): ");
-    if (ticketId == "0")
+    if (slaRepository.getAll().empty())
     {
-        return;
-    }
-
-    Ticket* ticket = ticketRepository.findById(ticketId);
-    if (ticket == nullptr)
-    {
-        cout << "Loi rang buoc: Ticket '" << ticketId << "' khong ton tai!" << endl;
-        Utils::backChoice();
-        return;
-    }
-    if (ticket->getStatus() == TicketStatus::RESOLVED || ticket->getStatus() == TicketStatus::CLOSED)
-    {
-        cout << "Loi rang buoc: Ticket '" << ticketId << "' da xu ly xong/da dong, khong the chuyen!" << endl;
+        cout << "Loi: Chua co muc SLA nao trong he thong! Vui long tao muc SLA truoc." << endl;
         Utils::backChoice();
         return;
     }
 
-    string fromId = Utils::inputNonEmptyString("Nhap ma agent chuyen (nhap 0 de quay lai): ");
-    if (fromId == "0")
+    string slaId;
+    while (true)
     {
-        return;
+        slaId = Utils::inputNonEmptyString("Nhap ma muc SLA ap dung (VD: SL001, nhap 0 de quay lai): ");
+        if (slaId == "0")
+        {
+            return;
+        }
+        SLALevel* sla = slaRepository.findById(slaId);
+        if (sla == nullptr)
+        {
+            cout << "Loi rang buoc: Muc SLA '" << slaId << "' khong ton tai! Vui long nhap lai." << endl;
+        }
+        else
+        {
+            break;
+        }
     }
-    Agent* from = agentRepository.findById(fromId);
-    if (from == nullptr)
+
+    string fromDept = Utils::inputNonEmptyString("Nhap bo phan chuyen (VD: Tuyen 1 - CSKH, nhap 0 de quay lai): ");
+    if (fromDept == "0")
     {
-        cout << "Loi rang buoc: Agent chuyen '" << fromId << "' khong ton tai!" << endl;
-        Utils::backChoice();
         return;
     }
 
-    string toId = Utils::inputNonEmptyString("Nhap ma agent nhan (nhap 0 de quay lai): ");
-    if (toId == "0")
+    string toDept = Utils::inputNonEmptyString("Nhap bo phan nhan (VD: Tuyen 2 - Ky thuat, nhap 0 de quay lai): ");
+    if (toDept == "0")
     {
-        return;
-    }
-    Agent* to = agentRepository.findById(toId);
-    if (to == nullptr)
-    {
-        cout << "Loi rang buoc: Agent nhan '" << toId << "' khong ton tai!" << endl;
-        Utils::backChoice();
         return;
     }
 
-    if (fromId == toId)
+    if (fromDept == toDept)
     {
-        cout << "Loi rang buoc: Agent chuyen va agent nhan khong duoc trung nhau!" << endl;
-        Utils::backChoice();
-        return;
-    }
-    if (!from->isActive() || !to->isActive())
-    {
-        cout << "Loi rang buoc: Ca hai agent phai dang hoat dong!" << endl;
+        cout << "Loi rang buoc: Bo phan chuyen va bo phan nhan khong duoc trung nhau!" << endl;
         Utils::backChoice();
         return;
     }
@@ -206,7 +189,7 @@ void TransferTicketMenu::add()
 
     try
     {
-        TransferTicket tf(ticketId, fromId, toId, reason);
+        TransferTicket tf(slaId, fromDept, toDept, reason);
         transferRepository.add(tf);
         cout << "Tao phieu chuyen thanh cong! Ma duoc cap: "
              << transferRepository.getAll().back().getId() << endl;
@@ -316,6 +299,8 @@ void TransferTicketMenu::remove()
         return;
     }
 
+    cout << "Thong tin phieu chuyen can xoa:" << endl;
+    t->printInfo();
     cout << "Ban co chac chan muon xoa phieu chuyen " << id << "? (y/n): ";
     string confirm;
     getline(cin, confirm);

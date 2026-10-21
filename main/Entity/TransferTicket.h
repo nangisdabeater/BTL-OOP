@@ -2,8 +2,8 @@
 
 /**
  * @file TransferTicket.h
- * @brief Thuc the Phieu chuyen xu ly: ghi nhan 1 Ticket duoc chuyen tu Agent nay sang Agent khac.
- * Thuoc tinh: ma ID, ma ticket, ma agent chuyen, ma agent nhan, ly do, trang thai.
+ * @brief Thuc the Phieu chuyen xu ly: ghi nhan phieu chuyen tuyen xu ly theo muc cam ket SLA.
+ * Thuoc tinh: ma ID (TFxxx), ma muc SLA (SLxxx), bo phan chuyen, bo phan nhan, ly do, trang thai.
  */
 
 #include <string>
@@ -21,29 +21,32 @@ enum class TransferStatus
 class TransferTicket : public BaseEntity
 {
 private:
-    string ticketId;
-    string fromAgentId;
-    string toAgentId;
-    string reason;
+    string slaId;       // Ma muc SLA ap dung (SLxxx - khoa ngoai lien ket SLALevel)
+    string fromDept;    // Bo phan / tuyen chuyen
+    string toDept;      // Bo phan / tuyen nhan
+    string reason;      // Ly do chuyen xu ly
     TransferStatus status;
 
 public:
-    // id se duoc Repository cap khi add
+    // id se duoc Repository cap khi add (TFxxx)
     TransferTicket(
-        const string& ticketId,
-        const string& fromAgentId,
-        const string& toAgentId,
-        const string& reason
+        const string& slaId = "",
+        const string& fromDept = "",
+        const string& toDept = "",
+        const string& reason = ""
     );
 
     // Getter
-    const string& getTicketId() const;
-    const string& getFromAgentId() const;
-    const string& getToAgentId() const;
+    const string& getSlaId() const;
+    const string& getFromDept() const;
+    const string& getToDept() const;
     const string& getReason() const;
     TransferStatus getStatus() const;
 
     // Setter
+    void setSlaId(const string& slaId);
+    void setFromDept(const string& fromDept);
+    void setToDept(const string& toDept);
     void setReason(const string& reason);
 
     void printInfo() const override;
