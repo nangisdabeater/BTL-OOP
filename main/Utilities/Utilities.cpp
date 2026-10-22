@@ -38,30 +38,30 @@ namespace Utils {
         return ss.str();
     }
 
-    int extractIdNumber(const std::string& id, const std::string& prefix) {
-        // Kiểm tra độ dài tối thiểu và so khớp tiền tố
-        if (id.length() <= prefix.length() || id.substr(0, prefix.length()) != prefix) {
-            return -1; 
-        }
+        int extractIdNumber(const std::string& id, const std::string& prefix) {
+            // Kiểm tra độ dài tối thiểu và so khớp tiền tố
+            if (id.length() <= prefix.length() || id.substr(0, prefix.length()) != prefix) {
+                return -1; 
+            }
 
-        std::string numberStr = id.substr(prefix.length());
-        
-        // Đảm bảo phần phía sau tiền tố hoàn toàn là số
-        for (char c : numberStr) {
-            if (!isdigit(static_cast<unsigned char>(c))) {
+            std::string numberStr = id.substr(prefix.length());
+            
+            // Đảm bảo phần phía sau tiền tố hoàn toàn là số
+            for (char c : numberStr) {
+                if (!isdigit(static_cast<unsigned char>(c))) {
+                    return -1;
+                }
+            }
+
+            try {
+                int number = std::stoi(numberStr);
+                if (number < 1 || number > 999) return -1; // Ràng buộc giới hạn (có thể thay đổi nếu cần)
+                return number;
+            }
+            catch (...) {
                 return -1;
             }
         }
-
-        try {
-            int number = std::stoi(numberStr);
-            if (number < 1 || number > 999) return -1; // Ràng buộc giới hạn (có thể thay đổi nếu cần)
-            return number;
-        }
-        catch (...) {
-            return -1;
-        }
-    }
 //Xử lí ngày tháng (năm từ 1900)
     bool isValidDate(const std::string& dateStr) { //Ktra chuỗi thứ ngày tháng hợp lệ
         // Định dạng DD/MM/YYYY (10 ký tự)
@@ -107,10 +107,12 @@ namespace Utils {
                 if (pos == s.length() && val >= minVal && val <= maxVal) {
                     return val;
                 }
-            } catch (...) {}
+            } 
+            catch (...) {}
             if (maxVal == INT_MAX) {
                 std::cout << "Gia tri khong hop le! Vui long nhap so nguyen >= " << minVal << "." << std::endl;
-            } else {
+            } 
+            else {
                 std::cout << "Gia tri khong hop le! Vui long nhap so nguyen trong khoang [" 
                           << minVal << " - " << maxVal << "]." << std::endl;
             }
@@ -128,23 +130,19 @@ namespace Utils {
     }
 
     void backChoice() {
-        int backChoice;
+        std::string input;
         while (true) {
             std::cout << "\n0. Quay lai menu" << std::endl;
             std::cout << "Moi nhap lua chon: ";
 
-            if (!(std::cin >> backChoice)) {
-                std::cin.clear();
-                std::cin.ignore(10000, '\n');
-                std::cout << "Loi: Vui long nhap so 0!" << std::endl;
-                continue;
-            }
-            std::cin.ignore(10000, '\n');
+            std::getline(std::cin, input);
+            input = trim(input);
 
-            if (backChoice == 0) {
+            // Chỉ nhận chuỗi "0"
+            if (input == "0") {
                 break;
             } else {
-                std::cout << "Loi: Chuc nang khong ton tai! Vui long nhap 0 de quay lai." << std::endl;
+                std::cout << "Loi: Chuc nang khong ton tai! Vui long chi nhap duy nhat so 0 de quay lai." << std::endl;
             }
         }
     }
@@ -154,5 +152,4 @@ namespace Utils {
         entity.printInfo();
         std::cout << "-----------------------------------" << std::endl;
     }
-
 }

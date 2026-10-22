@@ -10,8 +10,7 @@
 
 using namespace std;
 
-class ServiceGroup : public BaseEntity
-{
+class ServiceGroup : public BaseEntity{
 private:
     string name;            // Ten dich vu (khong rong, toi da 100 ky tu)
     string description;     // Mo ta chi tiet

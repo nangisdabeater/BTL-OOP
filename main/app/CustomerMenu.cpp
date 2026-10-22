@@ -6,9 +6,7 @@
 using namespace std;
 
 CustomerMenu::CustomerMenu(Repository<Customer>& r, Repository<Feedback>& fbRepo)
-    : repo(r), feedbackRepo(fbRepo)
-{
-}
+    : repo(r), feedbackRepo(fbRepo){}
 
 /**
  * @brief Hiển thị menu chức năng quản lý khách hàng

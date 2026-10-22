@@ -60,15 +60,13 @@ Application::Application()
 void Application::run(){
     bool running = true;
 
-    while (running)
-    {
+    while (running){
         showMainMenu();
 
         int choice;
 
         cout << "Nhap lua chon: ";
-        if (!(cin >> choice))
-        {
+        if (!(cin >> choice)){
             cin.clear();
             cin.ignore(10000, '\n');
             cout << "Lua chon khong hop le!" << endl << endl;
@@ -76,8 +74,7 @@ void Application::run(){
         }
         cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng
 
-        switch (choice)
-        {
+        switch (choice){
         case 1:
             serviceGroupMenu();
             break;

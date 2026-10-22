@@ -117,7 +117,6 @@ Tham số đầu vào: data (Dữ liệu cần ghi)
  */
 void FileManager<ServiceGroup>::save(const string& filePath, const vector<ServiceGroup>& data){
 
-
     ofstream outFile(filePath);
     if (!outFile.is_open()){
         throw runtime_error("Khong the mo file de ghi: " + filePath);

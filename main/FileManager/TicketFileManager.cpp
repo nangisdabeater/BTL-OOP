@@ -14,8 +14,7 @@ Nạp danh sách Ticket từ file văn bản có kẻ hàng cột
 Đầu vào: Đường dẫn file (data/tickets.txt)
 Trả về danh sách vector các đối tượng Ticket đã đọc được
  */
-vector<Ticket> FileManager<Ticket>::load(const string& filePath)
-{
+vector<Ticket> FileManager<Ticket>::load(const string& filePath){
     vector<Ticket> result;
     ifstream inFile(filePath);
     if (!inFile.is_open()){
@@ -117,7 +116,6 @@ Ghi toàn bộ danh sách Ticket ra file văn bản kẻ hàng cột ngay ngắn
 Đầu vào: filePath là  Đường dẫn file (data/tickets.txt) và data là  Dữ liệu cần ghi
  */
 void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& data){
-
 
     ofstream outFile(filePath);
     if (!outFile.is_open()){

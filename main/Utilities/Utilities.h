@@ -32,7 +32,6 @@ namespace ValidationUtils {
     /**
      * Hàm kiểm tra trùng lặp
      * list: Danh sách bất kỳ (vector<ServiceGroup>, vector<User>, vector<Ticket>...)
-     * Điều kiện kiểm tra trùng lặp : hàm Lambda
      */
     template <typename T, typename Predicate>
     bool isDuplicate(const std::vector<T>& list, Predicate condition){

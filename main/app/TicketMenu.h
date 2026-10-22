@@ -1,8 +1,7 @@
 #pragma once
 
 /**
- * @file TicketMenu.h
- * @brief Lớp điều khiển giao diện Menu và các thao tác CRUD cho Ticket
+ * Lớp điều khiển giao diện Menu và các thao tác CRUD cho Ticket
  * Quản lý các thuộc tính: Mã Ticket, Tiêu đề, Mô tả, Mã khách hàng, Mã nhóm dịch vụ, Trạng thái.
  * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra khóa ngoại ServiceGroupId, trạng thái hoạt động của nhóm dịch vụ.
  */
@@ -13,8 +12,7 @@
 
 using namespace std;
 
-class TicketMenu
-{
+class TicketMenu{
 private:
     Repository<Ticket>& ticketRepository;             // Tham chiếu đến kho lưu trữ Ticket
     Repository<ServiceGroup>& serviceGroupRepository; // Tham chiếu đến kho Nhóm dịch vụ (để kiểm tra khóa ngoại)

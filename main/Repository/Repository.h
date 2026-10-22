@@ -1,8 +1,6 @@
 #pragma once
 
-/**
- * Lớp khuôn mẫu (Template Class) quản lý kho lưu trữ dữ liệu dạng CRUD
- */
+//Lớp khuôn mẫu (Template Class) quản lý kho lưu trữ dữ liệu dạng CRUD
 
 #include <vector>
 #include <algorithm>
@@ -61,8 +59,7 @@ public:
 
 template <typename T>
 std::string Repository<T>::generateId(){
-    if (count > 999)
-    {
+    if (count > 999){
         throw std::overflow_error("Da het ID!");
     }
     // Sử dụng Utils để gen ID
@@ -83,8 +80,7 @@ void Repository<T>::load(){
         // Sử dụng Utils để trích xuất số và xác thực ID (để ktra nguồn nhập từ bên ngoài).
         int number = Utils::extractIdNumber(entity.getId(), idPrefix);
 
-        if (number == -1 || findById(entity.getId()) != nullptr)
-        {
+        if (number == -1 || findById(entity.getId()) != nullptr){
             std::cout << "Canh bao: bo qua ban ghi co ma khong hop le hoac trung: "
                       << entity.getId() << std::endl;
             continue;
@@ -93,8 +89,7 @@ void Repository<T>::load(){
         data.push_back(entity);
 
         // Khoi phuc bo dem de id moi khong trung id da co
-        if (number >= count)
-        {
+        if (number >= count){
             count = number + 1;
         }
     }
@@ -106,15 +101,14 @@ void Repository<T>::save(){
     FileManager<T>::save(filePath, data);
 }
 
+//Kiểm tra dữ liệu đc lưu chưa , nếu chưa thì khôi phục trạng thái ban đầu
 template <typename T>
 void Repository<T>::saveOrRollback(const std::vector<T>& backup, int backupCounter)
 {
-    try
-    {
+    try{
         save();
     }
-    catch (...)
-    {
+    catch (...){
         data = backup;
         count = backupCounter;
         throw;
