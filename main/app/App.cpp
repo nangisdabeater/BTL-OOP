@@ -19,16 +19,16 @@ using namespace std;
 // Dùng Danh sách khởi tạo (Member Initializer List) để truyền tiền tố ID và đường dẫn file cho từng Repository
 // vì lớp Repository không có hàm khởi tạo mặc định không tham số.
 Application::Application()
-    : serviceGroupRepository("SM", "data/service_groups.txt"),
-      ticketRepository("TK", "data/tickets.txt"),
-      agentRepository("AG", "data/agents.txt"),
-      channelRepository("CN", "data/channels.txt"),
-      inboundCallRepository("CA", "data/inbound_calls.txt"),
-      slaRepository("SL", "data/sla_levels.txt"),
-      transferRepository("TF", "data/transfer_tickets.txt"),
-      customerRepository("KH", "data/customers.txt"),
-      feedbackRepository("DG", "data/feedback.txt"),
-      agentShiftRepository("AS", "data/agent_shifts.txt") {
+    : serviceGroupRepository("SM", "../data/service_groups.txt"),
+      ticketRepository("TK", "../data/tickets.txt"),
+      agentRepository("AG", "../data/agents.txt"),
+      channelRepository("CN", "../data/channels.txt"),
+      inboundCallRepository("CA", "../data/inbound_calls.txt"),
+      slaRepository("SL", "../data/sla_levels.txt"),
+      transferRepository("TF", "../data/transfer_tickets.txt"),
+      customerRepository("KH", "../data/customers.txt"),
+      feedbackRepository("DG", "../data/feedback.txt"),
+      agentShiftRepository("AS", "../data/agent_shifts.txt") {
     
     // Nạp toàn bộ dữ liệu từ các file trong thư mục data/ lên bộ nhớ RAM ngay khi mở chương trình
     serviceGroupRepository.load();

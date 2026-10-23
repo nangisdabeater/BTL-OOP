@@ -10,3 +10,4 @@ SL007    | SLA Rat khan cap     | 5               | 2            | 1
 SL008    | SLA Bao hanh         | 60              | 48           | 3
 SL009    | SLA Ky thuat         | 30              | 16           | 2
 SL010    | SLA Khieu nai        | 15              | 8            | 1
+SL011    | SL001                | 10              | 1            | 3
