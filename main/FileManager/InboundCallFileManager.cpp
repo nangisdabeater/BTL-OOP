@@ -1,11 +1,3 @@
-/**
- * @file InboundCallFileManager.cpp
- * @brief Cài đặt đọc/ghi file cho Thực thể Cuộc gọi tiếp nhận (InboundCall)
- * [PHẦN THÊM MỚI]
- * Quản lý file: data/inbound_calls.txt
- * Định dạng ID yêu cầu: CA001, CA002,...
- */
-
 #include "FileManager.h"
 #include <iostream>
 #include <fstream>
@@ -14,28 +6,21 @@
 #include <stdexcept>
 #include "Utilities.h"
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
-/**
- * @brief Nạp danh sách Cuộc gọi tiếp nhận từ file data/inbound_calls.txt
- * @param filePath Đường dẫn file
- * @return Danh sách vector<InboundCall>
- */
-vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
-{
+// Chuyên biệt hóa hàm load cho InboundCall: nạp danh sách Cuộc gọi tiếp nhận từ file văn bản
+vector<InboundCall> FileManager<InboundCall>::load(const string& filePath) {
     vector<InboundCall> result;
     ifstream inFile(filePath);
-    if (!inFile.is_open())
-    {
-
+    if (!inFile.is_open()) {
         ofstream outFile(filePath);
         outFile.close();
         return result;
     }
 
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)) {
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
         // Bỏ qua dòng trống hoặc dòng phân cách gạch ngang
@@ -44,15 +29,14 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
         stringstream ss(line);
         string id, phone, chId, time, durStr, status, note;
 
-        // Đọc các trường dữ liệu ngăn cách bằng ký tự '|'
+        // Tách từng trường ngăn cách bởi dấu '|'
         if (getline(ss, id, '|') &&
             getline(ss, phone, '|') &&
             getline(ss, chId, '|') &&
             getline(ss, time, '|') &&
             getline(ss, durStr, '|') &&
             getline(ss, status, '|') &&
-            getline(ss, note, '|'))
-        {
+            getline(ss, note, '|')) {
             id = Utils::trim(id);
             phone = Utils::trim(phone);
             chId = Utils::trim(chId);
@@ -62,14 +46,12 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
             note = Utils::trim(note);
 
             // Bỏ qua dòng tiêu đề bảng
-            if (id == "Ma ID")
-            {
+            if (id == "Ma ID") {
                 continue;
             }
 
-            // KIỂM TRA ĐỊNH DẠNG ID: Yêu cầu định dạng tiền tố "CA" (CA001, CA002,...)
-            if (Utils::extractIdNumber(id, "CA") == -1)
-            {
+            // Kiểm tra tiền tố CA (CA001, CA002,...)
+            if (Utils::extractIdNumber(id, "CA") == -1) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
@@ -89,31 +71,20 @@ vector<InboundCall> FileManager<InboundCall>::load(const string& filePath)
             } catch (...) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
-        }
-        else
-        {
+        } else {
             cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;
 }
 
-/**
- * @brief Ghi danh sách Cuộc gọi tiếp nhận ra file data/inbound_calls.txt
- * @param filePath Đường dẫn file
- * @param data Dữ liệu cần ghi
- */
-void FileManager<InboundCall>::save(const string& filePath, const vector<InboundCall>& data)
-{
-
-
+// Chuyên biệt hóa hàm save cho InboundCall: ghi danh sách Cuộc gọi tiếp nhận ra file văn bản
+void FileManager<InboundCall>::save(const string& filePath, const vector<InboundCall>& data) {
     ofstream outFile(filePath);
-    if (!outFile.is_open())
-    {
+    if (!outFile.is_open()) {
         throw runtime_error("Khong the mo file de ghi cuoc goi tiep nhan: " + filePath);
     }
 
-    // Tiêu đề bảng
     outFile << left
             << setw(8)  << "Ma ID"         << " | "
             << setw(13) << "So dien thoai" << " | "
@@ -124,9 +95,7 @@ void FileManager<InboundCall>::save(const string& filePath, const vector<Inbound
             << "Ghi chu"                   << "\n";
     outFile << string(100, '-') << "\n";
 
-    // Ghi từng cuộc gọi
-    for (const auto& call : data)
-    {
+    for (const auto& call : data) {
         outFile << left
                 << setw(8)  << call.getId()          << " | "
                 << setw(13) << call.getPhoneNumber() << " | "
@@ -138,8 +107,7 @@ void FileManager<InboundCall>::save(const string& filePath, const vector<Inbound
     }
 
     outFile.flush();
-    if (!outFile)
-    {
+    if (!outFile) {
         throw runtime_error("Loi xay ra khi ghi file cuoc goi tiep nhan: " + filePath);
     }
 }

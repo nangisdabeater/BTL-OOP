@@ -4,43 +4,34 @@
 
 using namespace std;
 
-/**
- * @brief Constructor khởi tạo đối tượng Customer
- */
+// Khởi tạo đối tượng Customer bằng danh sách khởi tạo thành viên để tối ưu tốc độ
 Customer::Customer(const string& n, const string& p, const string& e, const string& a)
-    : fullName(n), phone(p), email(e), address(a)
-{
-}
+    : BaseEntity(), fullName(n), phone(p), email(e), address(a) {}
 
 const string& Customer::getFullName() const {
-    return fullName;
+    return fullName; // Trả về họ tên khách hàng
 }
 
 const string& Customer::getPhone() const {
-    return phone;
+    return phone; // Trả về số điện thoại
 }
 
 const string& Customer::getEmail() const {
-    return email;
+    return email; // Trả về địa chỉ email
 }
 
 const string& Customer::getAddress() const {
-    return address;
+    return address; // Trả về địa chỉ cư trú
 }
 
-/**
- * @brief Cập nhật họ tên khách hàng, yêu cầu không được để trống
- */
 void Customer::setFullName(const string& v) {
+    // Kiểm tra họ tên không được để trống, nếu trống thì ném ngoại lệ
     if (v.empty()) {
         throw invalid_argument("Ten khach hang khong duoc rong");
     }
     fullName = v;
 }
 
-/**
- * @brief Cập nhật số điện thoại, yêu cầu không được để trống
- */
 void Customer::setPhone(const string& v) {
     if (v.empty()) {
         throw invalid_argument("So dien thoai khong duoc rong");
@@ -48,19 +39,14 @@ void Customer::setPhone(const string& v) {
     phone = v;
 }
 
-/**
- * @brief Cập nhật email, yêu cầu phải chứa ký tự '@'
- */
 void Customer::setEmail(const string& v) {
+    // Kiểm tra chuỗi email phải hợp lệ (nếu hàm find trả về string::npos tức là không tìm thấy)
     if (v.find('@') == string::npos) {
         throw invalid_argument("Email khong hop le");
     }
     email = v;
 }
 
-/**
- * @brief Cập nhật địa chỉ, yêu cầu không được để trống
- */
 void Customer::setAddress(const string& v) {
     if (v.empty()) {
         throw invalid_argument("Dia chi khong duoc rong");
@@ -68,10 +54,8 @@ void Customer::setAddress(const string& v) {
     address = v;
 }
 
-/**
- * @brief Hiển thị thông tin tóm tắt khách hàng
- */
 void Customer::printInfo() const {
+    // Hiển thị thông tin chi tiết khách hàng ra màn hình
     cout << "Customer ID: " << id
          << " | Ho ten: " << fullName
          << " | SDT: " << phone

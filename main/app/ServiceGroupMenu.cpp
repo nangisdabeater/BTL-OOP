@@ -5,17 +5,12 @@
 
 using namespace std;
 
-/**
-Khởi tạo đối tượng ServiceGroupMenu (Quản lý Dịch vụ / ServiceManager)
-sgRepo Tham chiếu tới kho lưu trữ Dịch vụ
-tRepo Tham chiếu tới kho lưu trữ Ticket (để kiểm tra ràng buộc toàn vẹn)
- */
+// dùng Danh sách khởi tạo ": serviceGroupRepository(sgRepo)..." vì biến thành viên là kiểu tham chiếu (&),
+// mà tham chiếu trong C++ bắt buộc phải được gắn đối tượng ngay lúc khởi tạo chứ không thể gán trong thân hàm {}.
 ServiceGroupMenu::ServiceGroupMenu(Repository<ServiceGroup>& sgRepo, Repository<Ticket>& tRepo)
-    : serviceGroupRepository(sgRepo), ticketRepository(tRepo){}
+    : serviceGroupRepository(sgRepo), ticketRepository(tRepo) {}
 
-//Hiển thị bảng danh mục các chức năng quản lý Dịch vụ
-
-void ServiceGroupMenu::showMenu(){
+void ServiceGroupMenu::showMenu() {
     cout << "========================================" << endl;
     cout << "    QUAN LY DICH VU (SERVICE MANAGER)" << endl;
     cout << "========================================" << endl;
@@ -28,24 +23,23 @@ void ServiceGroupMenu::showMenu(){
     cout << "========================================" << endl;
 }
 
-//Thực hiện vòng lặp xử lý các lựa chọn trong menu Dịch vụ
-
-void ServiceGroupMenu::run(){
+void ServiceGroupMenu::run() {
     bool inMenu = true;
-    while (inMenu){
+    while (inMenu) {
         showMenu();
 
         int choice;
         cout << "Nhap lua chon: ";
-        if (!(cin >> choice)){
-            cin.clear();
-            cin.ignore(10000, '\n');
+        // Kiểm tra nếu người dùng nhập chữ cái vào biến int làm luồng cin bị lỗi
+        if (!(cin >> choice)) {
+            cin.clear();             // Xóa cờ báo lỗi của cin để có thể tiếp tục nhập ở vòng lặp sau
+            cin.ignore(10000, '\n'); // Xóa toàn bộ các ký tự chữ bị kẹt trong bộ đệm bàn phím tránh lặp vô tận
             cout << "Lua chon khong hop le!" << endl << endl;
             continue;
         }
-        cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng còn sót trong bộ đệm
+        cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng (\n) còn sót lại sau khi dùng cin >> choice
 
-        switch (choice){
+        switch (choice) {
         case 1:
             displayAll();
             break;
@@ -62,7 +56,7 @@ void ServiceGroupMenu::run(){
             remove();
             break;
         case 0:
-            inMenu = false;
+            inMenu = false; // Đặt cờ false để thoát vòng lặp quay về menu chính
             break;
         default:
             cout << "Lua chon khong hop le!" << endl;
@@ -72,15 +66,16 @@ void ServiceGroupMenu::run(){
     }
 }
 
-//Hiển thị danh sách tất cả dịch vụ
-
-void ServiceGroupMenu::displayAll(){
+void ServiceGroupMenu::displayAll() {
+    // Dùng "const auto&" để mượn trực tiếp danh sách từ kho dữ liệu mà không phải copy sang biến mới
     const auto& list = serviceGroupRepository.getAll();
-    if (list.empty()){
+    if (list.empty()) {
         cout << "Danh sach dich vu dang trong!" << endl;
         Utils::backChoice();
         return;
     }
+
+    // Dùng left và setw() của thư viện <iomanip> để căn lề trái và chia độ rộng từng cột đều nhau
     cout << left
          << setw(8)  << "Ma ID"
          << setw(24) << "Ten dich vu"
@@ -89,9 +84,9 @@ void ServiceGroupMenu::displayAll(){
          << setw(14) << "Phi co ban"
          << setw(15) << "Ngay ban hanh"
          << setw(14) << "Trang thai" << endl;
-    cout << string(105, '-') << endl;
+    cout << string(105, '-') << endl; // In đường kẻ ngang gồm 105 dấu gạch ngang '-'
 
-    for (const auto& sg : list){
+    for (const auto& sg : list) {
         cout << left
              << setw(8)  << sg.getId()
              << setw(24) << sg.getName()
@@ -104,45 +99,36 @@ void ServiceGroupMenu::displayAll(){
     Utils::backChoice();
 }
 
-//Chức năng tìm kiếm dịch vụ theo mã ID (Read by ID: SMxxx)
-
-void ServiceGroupMenu::findById(){
+void ServiceGroupMenu::findById() {
     string id = Utils::inputNonEmptyString("Nhap ma dich vu can tim (vi du SM001, nhap 0 de quay lai): ");
-    if (id == "0"){
-        return;
+    if (id == "0") {
+        return; // Người dùng nhập 0 thì thoát hàm quay lại menu ngay
     }
+
+    // Nhận con trỏ từ hàm findById: nếu không tìm thấy sẽ trả về nullptr
     ServiceGroup* sg = serviceGroupRepository.findById(id);
 
-    if (sg == nullptr){
+    if (sg == nullptr) {
         cout << "Khong tim thay dich vu voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
+    // Giải tham chiếu (*sg) để truyền đối tượng vào hàm in chi tiết đa hình
     Utils::printEntityDetails(*sg);
     Utils::backChoice();
 }
 
-/**
-    Chức năng thêm mới dịch vụ (Create)
- * Ràng buộc:
- * - ID sinh tự động dạng SMxxx
- * - Tên không rỗng, tối đa 100 ký tự, không trùng lặp
- * - Mô tả, Phòng ban không rỗng
- * - SLA > 0 gio
- * - Phí cơ bản >= 0
- * - Ngày ban hành định dạng DD/MM/YYYY
- */
-void ServiceGroupMenu::add(){
+void ServiceGroupMenu::add() {
     cout << "--- Them dich vu moi ---" << endl;
     string name = Utils::inputNonEmptyString("Nhap ten dich vu (nhap 0 de quay lai): ");
-    if (name == "0"){
+    if (name == "0") {
         return;
     }
 
-    // Ràng buộc: Tên dịch vụ không được trùng lặp trong hệ thống
-    for (const auto& existing : serviceGroupRepository.getAll()){
-        if (existing.getName() == name){
+    // Duyệt qua toàn bộ danh sách hiện có để kiểm tra trùng tên dịch vụ trước khi cho phép thêm mới
+    for (const auto& existing : serviceGroupRepository.getAll()) {
+        if (existing.getName() == name) {
             cout << "Loi rang buoc: Ten dich vu '" << name << "' da ton tai tren he thong!" << endl;
             Utils::backChoice();
             return;
@@ -156,81 +142,80 @@ void ServiceGroupMenu::add(){
     string createdDate = Utils::inputDateString("Nhap ngay ban hanh (DD/MM/YYYY): ");
 
     ServiceGroup newSg(name, description, department, slaHours, baseFee, createdDate);
-    try{
+    try {
+        // Khi gọi add(), Repository sẽ tự động sinh mã ID (SM001, SM002...) và lưu xuống file
         serviceGroupRepository.add(newSg);
         const auto& list = serviceGroupRepository.getAll();
+        // Lấy phần tử cuối cùng vừa thêm vào (list.back()) để in ra mã ID vừa được cấp
         cout << "Them dich vu thanh cong! Ma ID duoc cap: " << list.back().getId() << endl;
     }
-    catch (const exception& e){
+    catch (const exception& e) {
         cout << "Loi khi them dich vu: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
-Cập nhật thông tin dịch vụ (Update)
- * Ràng buộc: ID phải tồn tại, tên mới không được trùng với các dịch vụ khác
- */
-void ServiceGroupMenu::update(){
+void ServiceGroupMenu::update() {
     cout << "--- Cap nhat thong tin dich vu ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma dich vu can cap nhat (vi du SM001, nhap 0 de quay lai): ");
-    if (id == "0"){
+    if (id == "0") {
         return;
     }
 
     ServiceGroup* sg = serviceGroupRepository.findById(id);
-    if (sg == nullptr){
+    if (sg == nullptr) {
         cout << "Loi: Khong tim thay dich vu voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
+    // Tạo bản sao "updated" từ đối tượng gốc (*sg): mọi chỉnh sửa sẽ làm trên bản sao này trước,
+    // đến cuối hàm mới gọi update(updated) để nếu người dùng nhập lỗi giữa chừng thì dữ liệu gốc không bị hỏng.
     ServiceGroup updated = *sg;
 
     cout << "Thong tin hien tai:" << endl;
     updated.printInfo();
 
-    // Cập nhật tên
+    // Dùng getline kết hợp kiểm tra chuỗi rỗng để cho phép người dùng nhấn phím Enter nếu muốn giữ nguyên thông tin cũ
     cout << "Nhap ten moi (nhan Enter de giu nguyen): ";
     string newName;
     getline(cin, newName);
     newName = Utils::trim(newName);
-    if (!newName.empty()){
-        for (const auto& other : serviceGroupRepository.getAll()){
-            if (other.getId() != id && other.getName() == newName){
+    if (!newName.empty()) {
+        // Kiểm tra tên mới không được trùng với tên của các dịch vụ khác (trừ chính nó: other.getId() != id)
+        for (const auto& other : serviceGroupRepository.getAll()) {
+            if (other.getId() != id && other.getName() == newName) {
                 cout << "Loi rang buoc: Ten dich vu '" << newName << "' da ton tai!" << endl;
+                Utils::backChoice();
                 return;
             }
         }
         updated.setName(newName);
     }
 
-    // Cập nhật mô tả
     cout << "Nhap mo ta moi (nhan Enter de giu nguyen): ";
     string newDesc;
     getline(cin, newDesc);
     newDesc = Utils::trim(newDesc);
-    if (!newDesc.empty()){
+    if (!newDesc.empty()) {
         updated.setDescription(newDesc);
     }
 
-    // Cập nhật phòng ban
     cout << "Nhap phong ban moi (nhan Enter de giu nguyen): ";
     string newDept;
     getline(cin, newDept);
     newDept = Utils::trim(newDept);
-    if (!newDept.empty()){
+    if (!newDept.empty()) {
         updated.setDepartment(newDept);
     }
 
-    // Cập nhật SLA
     cout << "Nhap SLA moi tinh bang gio (nhan Enter de giu nguyen): ";
     string slaInput;
     getline(cin, slaInput);
     slaInput = Utils::trim(slaInput);
-    if (!slaInput.empty()){
+    if (!slaInput.empty()) {
         try {
-            int newSla = stoi(slaInput);
+            int newSla = stoi(slaInput); // Chuyển chuỗi sang số nguyên, nếu nhập chữ sẽ nhảy vào catch
             if (newSla > 0) updated.setSlaHours(newSla);
             else cout << "Gia tri SLA khong hop le, giu nguyen gia tri cu." << endl;
         } catch (...) {
@@ -238,12 +223,11 @@ void ServiceGroupMenu::update(){
         }
     }
 
-    // Cập nhật phí cơ bản
     cout << "Nhap phi co ban moi (nhan Enter de giu nguyen): ";
     string feeInput;
     getline(cin, feeInput);
     feeInput = Utils::trim(feeInput);
-    if (!feeInput.empty()){
+    if (!feeInput.empty()) {
         try {
             int newFee = stoi(feeInput);
             if (newFee >= 0) updated.setBaseFee(newFee);
@@ -253,54 +237,51 @@ void ServiceGroupMenu::update(){
         }
     }
 
-    // Cập nhật trạng thái hoạt động
     cout << "Doi trang thai (1: Hoat dong, 0: Tam dung, Enter: Giu nguyen): ";
     string statusChoice;
     getline(cin, statusChoice);
     statusChoice = Utils::trim(statusChoice);
-    if (statusChoice == "1"){
+    if (statusChoice == "1") {
         updated.activate();
     }
-    else if (statusChoice == "0"){
+    else if (statusChoice == "0") {
         updated.deactivate();
     }
 
-    try{
-        if (serviceGroupRepository.update(updated)){
+    try {
+        // Ghi đè đối tượng đã chỉnh sửa vào kho lưu trữ và cập nhật xuống file
+        if (serviceGroupRepository.update(updated)) {
             cout << "Cap nhat dich vu thanh cong!" << endl;
         }
-        else{
+        else {
             cout << "Loi khi cap nhat dich vu!" << endl;
         }
     }
-    catch (const exception& e){
+    catch (const exception& e) {
         cout << "Loi khi cap nhat dich vu: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
-Chức năng xóa dịch vụ (Delete)
-Ràng buộc: ID phải tồn tại, kiểm tra toàn vẹn dữ liệu (không xóa khi còn ticket liên kết)
- */
-void ServiceGroupMenu::remove(){
+void ServiceGroupMenu::remove() {
     cout << "--- Xoa dich vu ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma dich vu can xoa (vi du SM001, nhap 0 de quay lai): ");
-    if (id == "0"){
+    if (id == "0") {
         return;
     }
 
     ServiceGroup* sg = serviceGroupRepository.findById(id);
-    if (sg == nullptr){
+    if (sg == nullptr) {
         cout << "Loi: Khong tim thay dich vu voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
-    // Ràng buộc toàn vẹn dữ liệu (Khóa ngoại): Từ chối xóa nếu có Ticket đang liên kết
-    for (const auto& ticket : ticketRepository.getAll()){
-        if (ticket.getServiceGroupId() == id)
-        {
+    // Tại sao phải duyệt qua ticketRepository trước khi xóa dịch vụ?
+    // Để đảm bảo toàn vẹn khóa ngoại: nếu dịch vụ này đang có Ticket tham chiếu tới mà bị xóa mất,
+    // thì các Ticket đó sẽ bị lỗi mất thông tin dịch vụ. Do đó phải chặn lại không cho xóa.
+    for (const auto& ticket : ticketRepository.getAll()) {
+        if (ticket.getServiceGroupId() == id) {
             cout << "Loi rang buoc toan ven: Khong the xoa dich vu '" << id
                  << "' vi dang co ticket lien ket (Ma ticket: " << ticket.getId() << ")!" << endl;
             cout << "Vui long xu ly hoac xoa cac ticket lien quan truoc khi xoa dich vu nay." << endl;
@@ -316,20 +297,20 @@ void ServiceGroupMenu::remove(){
     getline(cin, confirm);
     confirm = Utils::trim(confirm);
 
-    if (confirm == "y" || confirm == "Y"){
-        try{
-            if (serviceGroupRepository.remove(id)){
+    if (confirm == "y" || confirm == "Y") {
+        try {
+            if (serviceGroupRepository.remove(id)) {
                 cout << "Da xoa dich vu thanh cong!" << endl;
             }
-            else{
+            else {
                 cout << "Loi: Khong the xoa dich vu!" << endl;
             }
         }
-        catch (const exception& e){
+        catch (const exception& e) {
             cout << "Loi khi xoa dich vu: " << e.what() << endl;
         }
     }
-    else{
+    else {
         cout << "Da huy thao tac xoa." << endl;
     }
     Utils::backChoice();

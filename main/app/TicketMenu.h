@@ -1,38 +1,32 @@
 #pragma once
 
-/**
- * Lớp điều khiển giao diện Menu và các thao tác CRUD cho Ticket
- * Quản lý các thuộc tính: Mã Ticket, Tiêu đề, Mô tả, Mã khách hàng, Mã nhóm dịch vụ, Trạng thái.
- * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra khóa ngoại ServiceGroupId, trạng thái hoạt động của nhóm dịch vụ.
- */
-
+#include <string>
 #include "../Repository/Repository.h"
 #include "../Entity/Ticket.h"
 #include "../Entity/ServiceGroup.h"
 
-using namespace std;
-
-class TicketMenu{
+class TicketMenu {
 private:
-    Repository<Ticket>& ticketRepository;             // Tham chiếu đến kho lưu trữ Ticket
-    Repository<ServiceGroup>& serviceGroupRepository; // Tham chiếu đến kho Nhóm dịch vụ (để kiểm tra khóa ngoại)
+    Repository<Ticket>& ticketRepository;
+    Repository<ServiceGroup>& serviceGroupRepository;
 
-    // Các hàm nội bộ phục vụ giao diện và nghiệp vụ
-    void showMenu();          // Hiển thị danh mục chức năng quản lý Ticket
-    void displayAll();        // Hiển thị danh sách tất cả ticket (Read All)
-    void findById();          // Tìm kiếm ticket theo ID (Read by ID)
-    void add();               // Tạo mới ticket (Create)
-    void update();            // Cập nhật thông tin và trạng thái ticket (Update)
-    void remove();            // Xóa ticket (Delete)
+    // Đặt các hàm chức năng ở private để đóng gói luồng xử lý nội bộ, bên ngoài chỉ gọi run()
+    void showMenu();   // Hiển thị danh sách các chức năng của menu Ticket
+    void displayAll(); // Hiển thị toàn bộ danh sách Ticket dạng bảng
+    void findById();   // Tìm kiếm và xem chi tiết Ticket theo mã ID
+    void add();        // Tạo mới Ticket (kèm kiểm tra khóa ngoại ServiceGroup)
+    void update();     // Cập nhật thông tin và trạng thái xử lý của Ticket
+    void remove();     // Xóa Ticket (chặn không cho xóa nếu Ticket đang ở trạng thái IN_PROGRESS)
 
-    // Các hàm tiện ích hỗ trợ
-    static string ticketStatusToString(TicketStatus status);
-    static string priorityToString(int priority);
+    // Dùng từ khóa "static" cho 2 hàm chuyển đổi chuỗi vì chúng chỉ xử lý dữ liệu đầu vào rồi trả về chuỗi,
+    // không cần truy cập vào các thuộc tính của lớp TicketMenu.
+    static std::string ticketStatusToString(TicketStatus status);
+    static std::string priorityToString(int priority);
 
 public:
-    // Hàm khởi tạo nhận vào tham chiếu của 2 repository
+    // Khởi tạo menu với tham chiếu tới kho Ticket và kho Nhóm dịch vụ
     TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo);
 
-    // Hàm điều phối chạy vòng lặp menu
+    // Chạy vòng lặp điều khiển menu Ticket
     void run();
 };

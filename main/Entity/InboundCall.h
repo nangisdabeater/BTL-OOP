@@ -1,34 +1,20 @@
 #pragma once
-/**
-    Định nghĩa thực thể Cuộc gọi tiếp nhận (InboundCall)
- * [PHẦN THÊM MỚI]
- * Đại diện cho 1 cuộc gọi đến từ khách hàng tới trung tâm CSKH.
- * Thuộc tính:
- *   - Mã ID: Kế thừa BaseEntity, định dạng tự động CA001, CA002,...
- *   - Số điện thoại khách gọi (phoneNumber)
- *   - Mã kênh tiếp nhận (channelId - khóa ngoại liên kết ReceptionChannel, VD: CN001)
- *   - Mã nhân viên trực tiếp nhận (agentId - khóa ngoại liên kết Agent, VD: AG001)
- *   - Thời gian cuộc gọi (callTime)
- *   - Thời lượng cuộc gọi (duration: tính theo giây)
- *   - Trạng thái cuộc gọi (status: ANSWERED / MISSED / BUSY)
- *   - Ghi chú tóm tắt (note)
- */
 
 #include <string>
 #include "BaseEntity.h"
 
-
-class InboundCall : public BaseEntity{
+// Kế thừa từ BaseEntity để quản lý thống nhất mã ID (CAxxx) cho mỗi cuộc gọi tiếp nhận
+class InboundCall : public BaseEntity {
 private:
-    std::string phoneNumber;  
-    std::string channelId;    
-    std::string callTime;     
-    int duration;        
-    std::string status;       // Trạng thái cuộc gọi: ANSWERED (Thành công), MISSED (Nhỡ), BUSY (Bận máy)
-    std::string note;         
+    std::string phoneNumber; // Số điện thoại của khách hàng gọi đến
+    std::string channelId;   // Mã kênh tiếp nhận (khóa ngoại liên kết với ReceptionChannel, VD: CN001)
+    std::string callTime;    // Thời điểm diễn ra cuộc gọi
+    int duration;            // Thời lượng cuộc gọi tính bằng giây (>= 0)
+    std::string status;      // Trạng thái cuộc gọi: ANSWERED (Đã nghe), MISSED (Nhỡ), BUSY (Máy bận)
+    std::string note;        // Ghi chú tóm tắt nội dung cuộc gọi
 
 public:
-    // Constructor (ID sẽ được Repository cấp tự động dạng CAxxx khi gọi add)
+    // Hàm khởi tạo có tham số mặc định (ID sẽ được Repository cấp tự động dạng CAxxx khi gọi add)
     InboundCall(
         const std::string& phoneNumber = "",
         const std::string& channelId = "",
@@ -38,7 +24,7 @@ public:
         const std::string& note = ""
     );
 
-    // Getter
+    // Các hàm Getter lấy thông tin cuộc gọi (dùng const& để tránh copy chuỗi)
     const std::string& getPhoneNumber() const;
     const std::string& getChannelId() const;
     const std::string& getCallTime() const;
@@ -46,7 +32,7 @@ public:
     const std::string& getStatus() const;
     const std::string& getNote() const;
 
-    // Setter (có kiểm tra dữ liệu hợp lệ)
+    // Các hàm Setter cập nhật thông tin kèm kiểm tra dữ liệu hợp lệ
     void setPhoneNumber(const std::string& phoneNumber);
     void setChannelId(const std::string& channelId);
     void setCallTime(const std::string& callTime);
@@ -54,6 +40,6 @@ public:
     void setStatus(const std::string& status);
     void setNote(const std::string& note);
 
-    // Triển khai phương thức thuần ảo từ BaseEntity
+    // Ghi đè phương thức thuần ảo từ BaseEntity để hiển thị thông tin cuộc gọi
     void printInfo() const override;
 };

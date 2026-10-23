@@ -3,46 +3,33 @@
 #include "BaseEntity.h"
 #include <string>
 
-/**
- * @file Feedback.h
- * @brief Lớp thực thể đại diện cho Phiếu đánh giá hài lòng của khách hàng (Feedback)
- * Kế thừa từ lớp cơ sở trừu tượng BaseEntity
- */
-class Feedback : public BaseEntity
-{
+// Kế thừa từ BaseEntity để quản lý thống nhất mã ID (DGxxx) và tính đa hình
+class Feedback : public BaseEntity {
 private:
-    std::string customerId; ///< Mã khách hàng thực hiện đánh giá (VD: KH001)
-    std::string comment;    ///< Nội dung ý kiến hoặc nhận xét của khách hàng
-    std::string date;       ///< Ngày tạo đánh giá theo định dạng dd/mm/yyyy
-    int score;              ///< Điểm đánh giá mức độ hài lòng (thang điểm 1 đến 5 sao)
+    std::string customerId; // Mã khách hàng thực hiện đánh giá (khóa ngoại liên kết với Customer, VD: KH001)
+    std::string comment;    // Nội dung ý kiến nhận xét của khách hàng
+    std::string date;       // Ngày tạo đánh giá theo định dạng DD/MM/YYYY
+    int score;              // Điểm đánh giá mức độ hài lòng (thang điểm từ 1 đến 5 sao)
 
 public:
-    /**
-     * @brief Khởi tạo đối tượng Phiếu đánh giá hài lòng
-     * @param customer Mã khách hàng
-     * @param score Điểm hài lòng (1-5)
-     * @param comment Nội dung nhận xét
-     * @param date Ngày ban hành phiếu đánh giá (dd/mm/yyyy)
-     */
+    // Hàm khởi tạo có tham số mặc định cho phiếu đánh giá hài lòng
     Feedback(const std::string& customer = "",
              int score = 5,
              const std::string& comment = "",
              const std::string& date = "01/01/2026");
 
-    // --- Các phương thức lấy dữ liệu (Getters) ---
+    // Các hàm Getter lấy thông tin phiếu đánh giá
     const std::string& getCustomerId() const;
     const std::string& getComment() const;
     const std::string& getDate() const;
     int getScore() const;
 
-    // --- Các phương thức cập nhật dữ liệu (Setters với kiểm tra ràng buộc) ---
+    // Các hàm Setter cập nhật thông tin kèm kiểm tra ràng buộc (điểm 1-5, ngày hợp lệ)
     void setCustomerId(const std::string& customer);
     void setComment(const std::string& comment);
     void setDate(const std::string& date);
     void setScore(int score);
 
-    /**
-     * @brief In thông tin phiếu đánh giá ra màn hình (Ghi đè phương thức thuần ảo)
-     */
+    // Ghi đè phương thức thuần ảo của BaseEntity để in thông tin phiếu đánh giá
     void printInfo() const override;
 };

@@ -1,26 +1,22 @@
 #pragma once
 
-/**
-Định nghĩa thực thể Nhóm dịch vụ (ServiceGroup)
-Đại diện cho 1 nhóm dịch vụ với các thuộc tính: mã ID, tên, mô tả và trạng thái hoạt động.
- */
-
 #include <string>
 #include "BaseEntity.h"
 
-
-class ServiceGroup : public BaseEntity{
+// Kế thừa để tái sử dụng thuộc tính id và các hàm getId(), setId() của lớp cha
+class ServiceGroup : public BaseEntity {
 private:
-    std::string name;            // Ten dich vu (khong rong, toi da 100 ky tu)
-    std::string description;     // Mo ta chi tiet
-    std::string department;      // Phong ban phu trach (khong rong, toi da 50 ky tu)
-    int slaHours;           // Thoi gian xu ly tieu chuan (gio, > 0)
-    int baseFee;            // Phi dich vu co ban (>= 0)
-    std::string createdDate;     // Ngay ban hanh (DD/MM/YYYY)
-    bool active;            // Trang thai hoat dong (true: Hoat dong, false: Tam ngung)
+//Đặt tất cả thuộc tính ở phạm vi private để đảm bảo tính Đóng gói:bên ngoài không thể sửa trực tiếp mà phải đi qua các hàm setter có kiểm tra hợp lệ.
+    std::string name;        // Tên nhóm dịch vụ (không được rỗng, tối đa 100 ký tự)
+    std::string description; // Mô tả chi tiết dịch vụ
+    std::string department;  // Phòng ban phụ trách (không được rỗng)
+    int slaHours;            // Thời gian cam kết xử lý tiêu chuẩn tính theo giờ (> 0)
+    int baseFee;             // Phí dịch vụ cơ bản tính bằng VNĐ (>= 0)
+    std::string createdDate; // Ngày ban hành dịch vụ theo định dạng DD/MM/YYYY
+    bool active;             // Trạng thái hoạt động (true: Đang hoạt động, false: Tạm ngưng)
 
 public:
-    // Constructor (ID se duoc Repository cap tu dong dang SMxxx)
+//Hàm khởi tạo có tham số mặc định
     ServiceGroup(
         const std::string& name = "",
         const std::string& description = "",
@@ -30,7 +26,6 @@ public:
         const std::string& createdDate = "01/01/2026"
     );
 
-    // Getter
     const std::string& getName() const;
     const std::string& getDescription() const;
     const std::string& getDepartment() const;
@@ -39,7 +34,7 @@ public:
     const std::string& getCreatedDate() const;
     bool isActive() const;
 
-    // Setter (rang buoc du lieu hop le)
+    // Các hàm Setter dùng để kiểm tra điều kiện hợp lệ trước khi gán giá trị mới vào thuộc tính
     void setName(const std::string& name);
     void setDescription(const std::string& description);
     void setDepartment(const std::string& department);
@@ -47,13 +42,13 @@ public:
     void setBaseFee(int baseFee);
     void setCreatedDate(const std::string& createdDate);
 
-    // Implement pure virtual method
+    // Dùng từ khóa "override" để trình biên dịch kiểm tra chắc chắn hàm này ghi đè đúng
+    // phương thức thuần ảo printInfo() của lớp cha BaseEntity, tránh lỗi gõ sai tên hàm.
     void printInfo() const override;
 
-    // Business methods
-    void activate();
-    void deactivate();
+    void activate();   // Bật trạng thái hoạt động của nhóm dịch vụ (active = true)
+    void deactivate(); // Tạm ngưng nhóm dịch vụ (active = false), không cho tạo ticket mới vào dịch vụ này
 };
 
-// Bí danh tương thích cho use case ServiceManager
+// Đặt tên bí danh ServiceManager tương đương với ServiceGroup để đồng bộ tên gọi với sơ đồ Use Case
 using ServiceManager = ServiceGroup;

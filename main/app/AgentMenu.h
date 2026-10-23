@@ -1,31 +1,25 @@
 #pragma once 
 
-/**
- * @file AgentMenu.h
- * @brief Lớp điều khiển giao diện Menu và các thao tác CRUD cho Điện thoại viên (Agent).
- * Quản lý các thuộc tính: Mã ID (AGxxx), Họ và tên, Số điện thoại, Email, Số máy lẻ, Trạng thái.
- * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra trùng số điện thoại/email, kiểm tra toàn vẹn dữ liệu khi xóa.
- */
-
 #include "../Repository/Repository.h"
 #include "../Entity/Agent.h"
 #include "../Entity/AgentShift.h"
 
 class AgentMenu {
-  private:
+private:
+    // Truyền tham chiếu (&) để thao tác trực tiếp trên kho dữ liệu Điện thoại viên gốc
     Repository<Agent>& agentRepository;
-    Repository<AgentShift>& agentShiftRepository; // Kiểm tra ràng buộc toàn vẹn với Ca trực (cùng phân hệ của Thành)
+    // Truyền thêm tham chiếu kho Ca trực để kiểm tra xem nhân viên có đang được phân công trực không trước khi xóa
+    Repository<AgentShift>& agentShiftRepository;
     
-    void showMenu();
-    void displayAll();
-    void findById();
-    void add();
-    void update();
-    void remove();
+    void showMenu();   // Hiển thị danh mục chức năng quản lý Điện thoại viên
+    void displayAll(); // Hiển thị toàn bộ danh sách điện thoại viên
+    void findById();   // Tìm kiếm điện thoại viên theo mã ID
+    void add();        // Thêm mới điện thoại viên (kiểm tra trùng SĐT, Email, Máy lẻ)
+    void update();     // Cập nhật thông tin điện thoại viên
+    void remove();     // Xóa điện thoại viên (chặn xóa nếu đang có tên trong ca trực)
 
-  public:
+public:
     AgentMenu(Repository<Agent>& agRepo, Repository<AgentShift>& asRepo);
 
-    void run();
-
+    void run();        // Chạy vòng lặp điều khiển menu Điện thoại viên
 };

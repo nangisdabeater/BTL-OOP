@@ -6,20 +6,15 @@
 #include <stdexcept>
 #include "Utilities.h"
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
-/**
-Nạp danh sách Ticket từ file văn bản có kẻ hàng cột
-Định dạng ID yêu cầu: TK001, TK002,...
-Đầu vào: Đường dẫn file (data/tickets.txt)
-Trả về danh sách vector các đối tượng Ticket đã đọc được
- */
+// Chuyên biệt hóa hàm load cho Ticket: đọc dữ liệu phiếu yêu cầu từ file văn bản có kẻ bảng
 vector<Ticket> FileManager<Ticket>::load(const string& filePath){
     vector<Ticket> result;
     ifstream inFile(filePath);
     if (!inFile.is_open()){
-        // Tự tạo file rỗng nếu chưa tồn tại
-
+        // Tự động tạo file rỗng nếu chưa tồn tại
         ofstream outFile(filePath);
         outFile.close();
         return result;
@@ -35,7 +30,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath){
         stringstream ss(line);
         string id, title, desc, sgId;
 
-        // Đọc các trường cơ bản ngăn cách bằng '|'
+        // Tách các trường bằng dấu '|' thay vì toán tử >> vì nội dung văn bản có chứa khoảng trắng
         if (getline(ss, id, '|') &&
             getline(ss, title, '|') &&
             getline(ss, desc, '|') &&
@@ -56,7 +51,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath){
                 continue;
             }
 
-            // Đọc các cột tiếp theo
+            // Đọc các cột còn lại trên dòng
             string nextCol;
             vector<string> remainingCols;
             while (getline(ss, nextCol, '|')){
@@ -69,7 +64,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath){
             int statusCode = 0;
 
             if (remainingCols.size() >= 4){
-                // Định dạng: priority | estimatedFee | createdDate | status
+                // Định dạng đầy đủ: mức ưu tiên | chi phí dự kiến | ngày tạo | mã trạng thái
                 try { priority = stoi(remainingCols[0]); } catch (...) { priority = 2; }
                 try { estimatedFee = static_cast<int>(stod(remainingCols[1])); } catch (...) { estimatedFee = 0; }
                 createdDate = remainingCols[2];
@@ -111,10 +106,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath){
     return result;
 }
 
-/**
-Ghi toàn bộ danh sách Ticket ra file văn bản kẻ hàng cột ngay ngắn
-Đầu vào: filePath là  Đường dẫn file (data/tickets.txt) và data là  Dữ liệu cần ghi
- */
+// Chuyên biệt hóa hàm save cho Ticket: ghi danh sách phiếu yêu cầu ra file văn bản kẻ cột ngay ngắn
 void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& data){
 
     ofstream outFile(filePath);
@@ -122,7 +114,7 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
         throw runtime_error("Khong the mo file de ghi: " + filePath);
     }
 
-    // Kẻ bảng: Dòng tiêu đề cột và dòng gạch ngang phân cách
+    // Ghi dòng tiêu đề cột và dòng gạch ngang phân cách
     outFile << left
             << setw(8)  << "Ma ID"          << " | "
             << setw(24) << "Tieu de"        << " | "
@@ -143,6 +135,7 @@ void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& dat
                 << setw(10) << t.getPriority()       << " | "
                 << setw(12) << t.getEstimatedFee()   << " | "
                 << setw(12) << t.getCreatedDate()    << " | "
+                // Ép kiểu enum class sang số nguyên khi lưu file để gọn và dễ đọc lại
                 << static_cast<int>(t.getStatus())   << "\n";
     }
 

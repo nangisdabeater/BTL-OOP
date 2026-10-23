@@ -6,8 +6,10 @@
 #include <iomanip>
 #include <stdexcept>
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
+// Hàm nội bộ tách một dòng văn bản thành mảng các cột dựa theo ký tự phân cách '|'
 static vector<string> fields(const string& line) {
     vector<string> v;
     string x;
@@ -18,16 +20,11 @@ static vector<string> fields(const string& line) {
     return v;
 }
 
-/**
- * @brief Đọc danh sách Phiếu đánh giá hài lòng từ file văn bản có định dạng bảng
- * @param path Đường dẫn file dữ liệu (mặc định data/feedback.txt)
- * @return std::vector<Feedback> Danh sách các đối tượng Feedback nạp được
- */
+// Chuyên biệt hóa hàm load cho Feedback: đọc danh sách Phiếu đánh giá hài lòng từ file văn bản
 vector<Feedback> FileManager<Feedback>::load(const string& path) {
     vector<Feedback> out;
     ifstream f(path);
     if (!f.is_open()) {
-
         ofstream outFile(path);
         outFile.close();
         return out;
@@ -42,7 +39,7 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
         if (firstChar == string::npos || l[firstChar] == '-' || l[firstChar] == '+') continue;
 
         auto v = fields(l);
-        // Kiểm tra số lượng cột dữ liệu (Ma ID, Ma KH, Diem, Ngay ban hanh [, Noi dung danh gia])
+        // Kiểm tra số lượng cột dữ liệu (Mã ID, Mã KH, Điểm, Ngày ban hành [, Nội dung đánh giá])
         if (v.size() != 5 && v.size() != 4) {
             cout << "[Canh bao] Dong sai dinh dang: \"" << l << "\". Bo qua dong nay." << endl;
             continue;
@@ -51,7 +48,7 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
         // Bỏ qua dòng tiêu đề bảng
         if (v[0] == "Ma ID") continue;
 
-        // Bỏ qua dòng nếu mã ID không đúng quy chuẩn (tiền tố 'DG')
+        // Bỏ qua dòng nếu mã ID không đúng quy chuẩn tiền tố "DG"
         if (Utils::extractIdNumber(v[0], "DG") == -1) {
             cout << "[Canh bao] Dong sai dinh dang: \"" << l << "\". Bo qua dong nay." << endl;
             continue;
@@ -70,13 +67,8 @@ vector<Feedback> FileManager<Feedback>::load(const string& path) {
     return out;
 }
 
-/**
- * @brief Ghi danh sách Phiếu đánh giá hài lòng ra file văn bản theo định dạng bảng căn lề chuẩn
- * @param path Đường dẫn file dữ liệu (mặc định data/feedback.txt)
- * @param data Danh sách đối tượng Feedback cần lưu
- */
+// Chuyên biệt hóa hàm save cho Feedback: ghi danh sách Phiếu đánh giá hài lòng ra file văn bản
 void FileManager<Feedback>::save(const string& path, const vector<Feedback>& data) {
-
     ofstream f(path);
     if (!f) throw runtime_error("Khong the mo file de ghi: " + path);
 

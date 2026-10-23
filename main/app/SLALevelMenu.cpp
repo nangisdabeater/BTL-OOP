@@ -3,11 +3,14 @@
 #include <iomanip>
 #include <Utilities.h>
 
+// Chỉ dùng using namespace std ở file .cpp để code gọn mà không làm bẩn file .h
 using namespace std;
 
+// Khởi tạo menu bằng danh sách khởi tạo cho 2 biến tham chiếu Repository
 SLALevelMenu::SLALevelMenu(Repository<SLALevel>& repo, Repository<TransferTicket>& tfRepo)
     : slaRepository(repo), transferRepository(tfRepo) {}
 
+// Hiển thị bảng tùy chọn quản lý mức cam kết dịch vụ (SLA)
 void SLALevelMenu::showMenu()
 {
     cout << "========================================" << endl;
@@ -22,6 +25,7 @@ void SLALevelMenu::showMenu()
     cout << "========================================" << endl;
 }
 
+// Vòng lặp điều phối các chức năng trong menu SLA
 void SLALevelMenu::run()
 {
     bool inMenu = true;
@@ -31,6 +35,7 @@ void SLALevelMenu::run()
 
         int choice;
         cout << "Nhap lua chon: ";
+        // Kiểm tra nếu người dùng nhập chữ thay vì số để xóa trạng thái lỗi của cin, tránh treo vòng lặp
         if (!(cin >> choice))
         {
             cin.clear();
@@ -38,6 +43,7 @@ void SLALevelMenu::run()
             cout << "Lua chon khong hop le!" << endl << endl;
             continue;
         }
+        // Xóa ký tự xuống dòng còn sót trong bộ đệm để các lệnh getline sau không bị trôi
         cin.ignore(10000, '\n');
 
         switch (choice)
@@ -54,8 +60,10 @@ void SLALevelMenu::run()
     }
 }
 
+// Hiển thị toàn bộ danh sách mức SLA dưới dạng bảng căn lề trái
 void SLALevelMenu::displayAll()
 {
+    // Lấy tham chiếu hằng tới vector để đọc dữ liệu mà không tốn bộ nhớ sao chép
     const auto& list = slaRepository.getAll();
     if (list.empty())
     {
@@ -83,6 +91,7 @@ void SLALevelMenu::displayAll()
     Utils::backChoice();
 }
 
+// Tìm kiếm mức SLA theo mã định danh
 void SLALevelMenu::findById()
 {
     string id = Utils::inputNonEmptyString("Nhap ma muc SLA can tim (vi du SL001, nhap 0 de quay lai): ");
@@ -90,6 +99,7 @@ void SLALevelMenu::findById()
     {
         return;
     }
+    // Nhận con trỏ từ findById để kiểm tra được trường hợp không tìm thấy (nullptr)
     SLALevel* s = slaRepository.findById(id);
     if (s == nullptr)
     {
@@ -97,13 +107,12 @@ void SLALevelMenu::findById()
         Utils::backChoice();
         return;
     }
+    // Gọi hàm đa hình để in thông tin chi tiết của đối tượng SLALevel
     Utils::printEntityDetails(*s);
     Utils::backChoice();
 }
 
-/**
- * Them moi. Rang buoc: ten khong rong, khong trung ten; thoi gian > 0; uu tien 1-5.
- */
+// Thêm mới mức SLA: kiểm tra tên duy nhất, thời gian > 0 và độ ưu tiên từ 1 đến 5
 void SLALevelMenu::add()
 {
     cout << "--- Them muc SLA moi ---" << endl;
@@ -113,6 +122,7 @@ void SLALevelMenu::add()
         return;
     }
 
+    // Kiểm tra trùng tên mức SLA trước khi thêm mới
     for (const auto& existing : slaRepository.getAll())
     {
         if (existing.getName() == name)
@@ -123,6 +133,7 @@ void SLALevelMenu::add()
         }
     }
 
+    // Dùng hàm tiện ích inputInt để ép người dùng nhập số nguyên trong khoảng hợp lệ
     int resp = Utils::inputInt("Nhap thoi gian phan hoi toi da (phut, >0): ", 1, 100000);
     int resolve = Utils::inputInt("Nhap thoi gian xu ly toi da (gio, >0): ", 1, 100000);
     int prio = Utils::inputInt("Nhap muc do uu tien (1 = cao nhat ... 5 = thap nhat): ", 1, 5);
@@ -140,10 +151,7 @@ void SLALevelMenu::add()
     Utils::backChoice();
 }
 
-/**
- * Cap nhat. Rang buoc: ID phai ton tai; ten moi khong trung muc khac; gia tri moi hop le.
- * Nhan Enter de giu nguyen tung truong.
- */
+// Cập nhật mức SLA: cho phép nhấn Enter để giữ nguyên từng trường không muốn sửa
 void SLALevelMenu::update()
 {
     cout << "--- Cap nhat muc SLA ---" << endl;
@@ -161,6 +169,7 @@ void SLALevelMenu::update()
         return;
     }
 
+    // Tạo bản sao để chỉnh sửa tạm, chỉ lưu vào kho khi tất cả trường đều hợp lệ
     SLALevel updated = *s;
     cout << "Thong tin hien tai:" << endl;
     updated.printInfo();
@@ -174,6 +183,7 @@ void SLALevelMenu::update()
         line = Utils::trim(line);
         if (!line.empty())
         {
+            // Kiểm tra tên mới không được trùng với các mức SLA khác
             for (const auto& other : slaRepository.getAll())
             {
                 if (other.getId() != id && other.getName() == line)
@@ -212,17 +222,13 @@ void SLALevelMenu::update()
     }
     catch (const exception& e)
     {
-        // Gom ca loi rang buoc (invalid_argument) va loi nhap so (stoi)
+        // Bắt cả ngoại lệ ràng buộc nghiệp vụ (invalid_argument) lẫn lỗi chuyển chuỗi sang số (stoi)
         cout << "Cap nhat that bai, gia tri khong hop le: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * Xoa. Rang buoc: ID phai ton tai, can xac nhan.
- * TODO (cho nhom thong nhat): khi Ticket (hoac ServiceGroup) co truong slaLevelId,
- * them kiem tra "khong xoa muc SLA dang duoc tham chieu" tai day.
- */
+// Xóa mức SLA: kiểm tra toàn vẹn khóa ngoại với TransferTicket trước khi cho phép xóa
 void SLALevelMenu::remove()
 {
     cout << "--- Xoa muc SLA ---" << endl;
@@ -240,7 +246,7 @@ void SLALevelMenu::remove()
         return;
     }
 
-    // Kiểm tra ràng buộc toàn vẹn dữ liệu với Phiếu chuyển xử lý (TransferTicket)
+    // Chặn xóa nếu mức SLA này đang được tham chiếu bởi bất kỳ phiếu chuyển xử lý nào
     for (const auto& tf : transferRepository.getAll())
     {
         if (tf.getSlaId() == id)

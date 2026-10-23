@@ -3,18 +3,15 @@
 #include <iostream>
 #include <iomanip>
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
+// Khởi tạo menu đánh giá với tham chiếu tới kho Phiếu đánh giá và kho Khách hàng
 FeedbackMenu::FeedbackMenu(Repository<Feedback>& r, Repository<Customer>& c)
-    : repo(r), customers(c)
-{
-}
+    : repo(r), customers(c) {}
 
-/**
- * @brief Hiển thị menu chức năng quản lý phiếu đánh giá hài lòng
- */
-void FeedbackMenu::showMenu()
-{
+// Hiển thị bảng menu các chức năng quản lý phiếu đánh giá hài lòng
+void FeedbackMenu::showMenu() {
     cout << "========================================" << endl;
     cout << "   QUAN LY PHIEU DANH GIA HAI LONG" << endl;
     cout << "========================================" << endl;
@@ -27,14 +24,10 @@ void FeedbackMenu::showMenu()
     cout << "========================================" << endl;
 }
 
-/**
- * @brief Hiển thị toàn bộ danh sách phiếu đánh giá dưới dạng bảng
- */
-void FeedbackMenu::displayAll()
-{
+// Hiển thị toàn bộ danh sách phiếu đánh giá dưới dạng bảng căn lề trái
+void FeedbackMenu::displayAll() {
     const auto& list = repo.getAll();
-    if (list.empty())
-    {
+    if (list.empty()) {
         cout << "Danh sach phieu danh gia dang trong!" << endl;
         Utils::backChoice();
         return;
@@ -48,8 +41,7 @@ void FeedbackMenu::displayAll()
          << "Noi dung danh gia" << endl;
     cout << string(75, '-') << endl;
 
-    for (const auto& x : list)
-    {
+    for (const auto& x : list) {
         cout << left
              << setw(8)  << x.getId()
              << setw(10) << x.getCustomerId()
@@ -60,41 +52,31 @@ void FeedbackMenu::displayAll()
     Utils::backChoice();
 }
 
-/**
- * @brief Tìm kiếm và hiển thị thông tin phiếu đánh giá theo mã ID
- */
-void FeedbackMenu::findById()
-{
+// Tìm kiếm và hiển thị thông tin phiếu đánh giá theo mã định danh ID
+void FeedbackMenu::findById() {
     string id = Utils::inputNonEmptyString("Nhap ma danh gia can tim (VD: DG001, nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     auto* x = repo.findById(id);
-    if (x)
-    {
+    if (x) {
         Utils::printEntityDetails(*x);
     }
-    else
-    {
+    else {
         cout << "Khong tim thay phieu danh gia voi ma: " << id << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Thêm phiếu đánh giá mới, có kiểm tra tồn tại mã khách hàng và định dạng ngày dd/mm/yyyy
- */
-void FeedbackMenu::add()
-{
+// Thêm phiếu đánh giá mới: kiểm tra tồn tại mã khách hàng (khóa ngoại) và định dạng ngày DD/MM/YYYY
+void FeedbackMenu::add() {
     cout << "--- Them phieu danh gia moi ---" << endl;
     string kh = Utils::inputNonEmptyString("Nhap ma khach hang (VD: KH001, nhap 0 de quay lai): ");
-    if (kh == "0")
-    {
+    if (kh == "0") {
         return;
     }
-    if (!customers.findById(kh))
-    {
+    // Kiểm tra khóa ngoại: mã khách hàng phải tồn tại trong kho khách hàng
+    if (!customers.findById(kh)) {
         cout << "Loi rang buoc: Khach hang voi ma '" << kh << "' khong ton tai!" << endl;
         Utils::backChoice();
         return;
@@ -108,38 +90,32 @@ void FeedbackMenu::add()
     msg = Utils::trim(msg);
 
     Feedback x(kh, score, msg, date);
-    try
-    {
+    try {
         repo.add(x);
         const auto& list = repo.getAll();
         cout << "Them phieu danh gia thanh cong! Ma duoc cap: " << list.back().getId() << endl;
     }
-    catch (const exception& ex)
-    {
+    catch (const exception& ex) {
         cout << "Loi khi them danh gia: " << ex.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Cập nhật điểm và nhận xét cho phiếu đánh giá hiện có
- */
-void FeedbackMenu::update()
-{
+// Cập nhật điểm số và nhận xét cho phiếu đánh giá hiện có
+void FeedbackMenu::update() {
     cout << "--- Cap nhat phieu danh gia ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma danh gia can sua (nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     auto* x = repo.findById(id);
-    if (!x)
-    {
+    if (!x) {
         cout << "Khong tim thay phieu danh gia voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
+    // Tạo bản sao tạm để chỉnh sửa trước khi lưu chính thức vào kho
     Feedback updated = *x;
 
     cout << "Thong tin hien tai:" << endl;
@@ -149,8 +125,7 @@ void FeedbackMenu::update()
     string v;
     getline(cin, v);
     v = Utils::trim(v);
-    if (!v.empty())
-    {
+    if (!v.empty()) {
         try {
             int sc = stoi(v);
             if (sc >= 1 && sc <= 5) updated.setScore(sc);
@@ -164,43 +139,33 @@ void FeedbackMenu::update()
     cout << "Nhap noi dung moi (Enter de giu nguyen): ";
     getline(cin, v);
     v = Utils::trim(v);
-    if (!v.empty())
-    {
+    if (!v.empty()) {
         updated.setComment(v);
     }
 
-    try
-    {
-        if (repo.update(updated))
-        {
+    try {
+        if (repo.update(updated)) {
             cout << "Cap nhat phieu danh gia thanh cong!" << endl;
         }
-        else
-        {
+        else {
             cout << "Loi khi cap nhat phieu danh gia!" << endl;
         }
     }
-    catch (const exception& ex)
-    {
+    catch (const exception& ex) {
         cout << "Loi khi luu: " << ex.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Xóa phiếu đánh giá khỏi hệ thống
- */
-void FeedbackMenu::remove()
-{
+// Xóa phiếu đánh giá khỏi hệ thống
+void FeedbackMenu::remove() {
     cout << "--- Xoa phieu danh gia ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma danh gia can xoa (nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     auto* x = repo.findById(id);
-    if (!x)
-    {
+    if (!x) {
         cout << "Khong tim thay phieu danh gia voi ma: " << id << endl;
         Utils::backChoice();
         return;
@@ -212,37 +177,28 @@ void FeedbackMenu::remove()
     char y;
     cin >> y;
     cin.ignore(10000, '\n');
-    if (y == 'y' || y == 'Y')
-    {
-        if (repo.remove(id))
-        {
+    if (y == 'y' || y == 'Y') {
+        if (repo.remove(id)) {
             cout << "Da xoa phieu danh gia thanh cong!" << endl;
         }
-        else
-        {
+        else {
             cout << "Khong the xoa phieu danh gia!" << endl;
         }
     }
-    else
-    {
+    else {
         cout << "Da huy thao tac xoa." << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Điều phối các lựa chọn người dùng trong menu đánh giá hài lòng
- */
-void FeedbackMenu::run()
-{
+// Điều phối các lựa chọn của người dùng trong menu đánh giá hài lòng
+void FeedbackMenu::run() {
     bool inMenu = true;
-    while (inMenu)
-    {
+    while (inMenu) {
         showMenu();
         int choice;
         cout << "Nhap lua chon: ";
-        if (!(cin >> choice))
-        {
+        if (!(cin >> choice)) {
             cin.clear();
             cin.ignore(10000, '\n');
             cout << "Lua chon khong hop le!" << endl << endl;
@@ -250,10 +206,8 @@ void FeedbackMenu::run()
         }
         cin.ignore(10000, '\n');
 
-        try
-        {
-            switch (choice)
-            {
+        try {
+            switch (choice) {
             case 1: displayAll(); break;
             case 2: findById();   break;
             case 3: add();        break;
@@ -263,8 +217,7 @@ void FeedbackMenu::run()
             default: cout << "Lua chon khong hop le!" << endl;
             }
         }
-        catch (const exception& e)
-        {
+        catch (const exception& e) {
             cout << "Loi: " << e.what() << endl;
         }
 

@@ -1,33 +1,25 @@
 #pragma once
 
-/**
- * @file TransferTicket.h
- * @brief Thuc the Phieu chuyen xu ly: ghi nhan phieu chuyen tuyen xu ly theo muc cam ket SLA.
- * Thuoc tinh: ma ID (TFxxx), ma muc SLA (SLxxx), bo phan chuyen, bo phan nhan, ly do, trang thai.
- */
-
 #include <string>
 #include "BaseEntity.h"
 
-
-enum class TransferStatus
-{
-    PENDING,     // Cho nhan
-    ACCEPTED,    // Da nhan
-    COMPLETED    // Hoan tat
+// Dùng enum class cho trạng thái phiếu chuyển tuyến để tránh xung đột tên toàn cục và đảm bảo an toàn kiểu
+enum class TransferStatus {
+    PENDING,     // Đang chờ bộ phận mới tiếp nhận
+    ACCEPTED,    // Bộ phận mới đã tiếp nhận xử lý
+    COMPLETED    // Đã hoàn tất xử lý
 };
 
-class TransferTicket : public BaseEntity
-{
+class TransferTicket : public BaseEntity {
 private:
-    std::string slaId;       // Ma muc SLA ap dung (SLxxx - khoa ngoai lien ket SLALevel)
-    std::string fromDept;    // Bo phan / tuyen chuyen
-    std::string toDept;      // Bo phan / tuyen nhan
-    std::string reason;      // Ly do chuyen xu ly
-    TransferStatus status;
+    std::string slaId;       // Mã mức cam kết SLA áp dụng (khóa ngoại liên kết với SLALevel, VD: SL001)
+    std::string fromDept;    // Bộ phận chuyển đi
+    std::string toDept;      // Bộ phận tiếp nhận xử lý
+    std::string reason;      // Lý do chuyển tuyến xử lý
+    TransferStatus status;   // Trạng thái hiện tại của phiếu chuyển
 
 public:
-    // id se duoc Repository cap khi add (TFxxx)
+    // Hàm khởi tạo có tham số mặc định (ID sẽ được Repository tự động cấp dạng TFxxx khi thêm mới)
     TransferTicket(
         const std::string& slaId = "",
         const std::string& fromDept = "",
@@ -35,24 +27,25 @@ public:
         const std::string& reason = ""
     );
 
-    // Getter
+    // Các hàm Getter lấy thông tin phiếu chuyển
     const std::string& getSlaId() const;
     const std::string& getFromDept() const;
     const std::string& getToDept() const;
     const std::string& getReason() const;
     TransferStatus getStatus() const;
 
-    // Setter
+    // Các hàm Setter cập nhật thông tin kèm kiểm tra không được để trống
     void setSlaId(const std::string& slaId);
     void setFromDept(const std::string& fromDept);
     void setToDept(const std::string& toDept);
     void setReason(const std::string& reason);
 
+    // Ghi đè phương thức thuần ảo từ BaseEntity để hiển thị thông tin phiếu chuyển
     void printInfo() const override;
 
-    // Business method: chi cho phep chuyen trang thai theo chieu PENDING -> ACCEPTED -> COMPLETED
+    // Chuyển trạng thái theo quy trình một chiều: PENDING -> ACCEPTED -> COMPLETED (không cho phép lùi trạng thái)
     void changeStatus(TransferStatus newStatus);
 
-    // Dung khi doc tu file (khong kiem tra chieu chuyen)
+    // Khôi phục trạng thái trực tiếp khi đọc dữ liệu từ file (không kiểm tra chiều tiến trình)
     void restoreStatus(TransferStatus s);
 };

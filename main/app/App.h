@@ -14,59 +14,37 @@
 #include "../Entity/Feedback.h"
 #include "../Entity/AgentShift.h"
 
-using namespace std;
-
-class Application{
+class Application {
 private:
-    Repository<ServiceGroup> serviceGroupRepository; // Kho lưu trữ Dịch vụ / ServiceManager (file: data/service_groups.txt, prefix SM)
-    Repository<Ticket> ticketRepository;             // Kho lưu trữ Ticket (file: data/tickets.txt, prefix TK)
-    Repository<Agent> agentRepository;               // Kho lưu trữ Agent (file: data/agents.txt, prefix AG)
-    Repository<ReceptionChannel> channelRepository;   // Kho lưu trữ Kênh tiếp nhận (file: data/channels.txt, prefix CN)
-    Repository<InboundCall> inboundCallRepository;   // Kho lưu trữ Cuộc gọi tiếp nhận (file: data/inbound_calls.txt, prefix CA)
-    Repository<SLALevel> slaRepository;              // Kho lưu trữ Mức SLA (file: data/sla_levels.txt, prefix SL)
-    Repository<TransferTicket> transferRepository;   // Kho lưu trữ Phiếu chuyển (file: data/transfer_tickets.txt, prefix TF)
-    Repository<Customer> customerRepository;         // Kho lưu trữ Khách hàng (file: data/customers.txt, prefix KH)
-    Repository<Feedback> feedbackRepository;         // Kho lưu trữ Đánh giá (file: data/feedback.txt, prefix DG)
-    Repository<AgentShift> agentShiftRepository;     // Kho lưu trữ Đánh giá (file: data/agent_shifts.txt, prefix AS)
+    Repository<ServiceGroup> serviceGroupRepository; // Kho lưu trữ Nhóm dịch vụ (file: data/service_groups.txt, tiền tố SM)
+    Repository<Ticket> ticketRepository;             // Kho lưu trữ Ticket (file: data/tickets.txt, tiền tố TK)
+    Repository<Agent> agentRepository;               // Kho lưu trữ Điện thoại viên (file: data/agents.txt, tiền tố AG)
+    Repository<ReceptionChannel> channelRepository;  // Kho lưu trữ Kênh tiếp nhận (file: data/channels.txt, tiền tố CN)
+    Repository<InboundCall> inboundCallRepository;   // Kho lưu trữ Cuộc gọi tiếp nhận (file: data/inbound_calls.txt, tiền tố CA)
+    Repository<SLALevel> slaRepository;              // Kho lưu trữ Mức cam kết SLA (file: data/sla_levels.txt, tiền tố SL)
+    Repository<TransferTicket> transferRepository;   // Kho lưu trữ Phiếu chuyển xử lý (file: data/transfer_tickets.txt, tiền tố TF)
+    Repository<Customer> customerRepository;         // Kho lưu trữ Khách hàng (file: data/customers.txt, tiền tố KH)
+    Repository<Feedback> feedbackRepository;         // Kho lưu trữ Đánh giá hài lòng (file: data/feedback.txt, tiền tố DG)
+    Repository<AgentShift> agentShiftRepository;     // Kho lưu trữ Ca trực (file: data/agent_shifts.txt, tiền tố AS)
 
 public:
-    // Khởi tạo ứng dụng và nạp dữ liệu từ các file tương ứng
+    // Hàm khởi tạo: gán đường dẫn file và tự động nạp dữ liệu từ ổ đĩa vào 10 kho lưu trữ
     Application();
 
-    // Vòng lặp điều phối chính của chương trình
+    // Chạy vòng lặp menu chính của chương trình
     void run();
 
 private:
-    // Hiển thị menu chung / Menu chính
-    void showMainMenu();
-
-    // Menu quản lý Dịch vụ / ServiceManager (điều hướng sang ServiceGroupMenu)
-    void serviceGroupMenu();
-
-    // Menu quản lý Ticket (điều hướng sang TicketMenu)
-    void ticketMenu();
-
-    // Menu quản lý Agent (điều hướng sang AgentMenu)
-    void agentMenu();
-
-    // Menu quản lý Kênh tiếp nhận (điều hướng sang ReceptionChannelMenu)
-    void receptionChannelMenu();
-
-    // Menu quản lý Cuộc gọi tiếp nhận (điều hướng sang InboundCallMenu)
-    void inboundCallMenu();
-
-    // Menu quản lý Mức SLA (điều hướng sang SLALevelMenu)
-    void slaLevelMenu();
-
-    // Menu quản lý Phiếu chuyển xử lý (điều hướng sang TransferTicketMenu)
-    void transferTicketMenu();
-
-    // Menu quản lý Khách hàng (điều hướng sang CustomerMenu)
-    void customerMenu();
-
-    // Menu quản lý Đánh giá hài lòng (điều hướng sang FeedbackMenu)
-    void feedbackMenu();
-
-    // Menu quản lý Ca trực (điều hướng sang AgentShiftMenu)
-    void agentShiftMenu();
+    // Các hàm điều hướng nội bộ được đặt ở private vì chỉ gọi từ bên trong hàm run()
+    void showMainMenu();         // In bảng menu chính ra màn hình
+    void serviceGroupMenu();     // Mở menu quản lý Nhóm dịch vụ
+    void ticketMenu();           // Mở menu quản lý Ticket
+    void agentMenu();            // Mở menu quản lý Điện thoại viên
+    void receptionChannelMenu(); // Mở menu quản lý Kênh tiếp nhận
+    void inboundCallMenu();      // Mở menu quản lý Cuộc gọi tiếp nhận
+    void slaLevelMenu();         // Mở menu quản lý Mức cam kết SLA
+    void transferTicketMenu();   // Mở menu quản lý Phiếu chuyển xử lý
+    void customerMenu();         // Mở menu quản lý Khách hàng
+    void feedbackMenu();         // Mở menu quản lý Phiếu đánh giá hài lòng
+    void agentShiftMenu();       // Mở menu quản lý Ca trực
 };

@@ -6,8 +6,10 @@
 #include <iomanip>
 #include <stdexcept>
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
+// Hàm nội bộ tách một dòng văn bản thành mảng các cột dựa theo ký tự phân cách '|'
 static vector<string> fields(const string& line) {
     vector<string> v;
     string x;
@@ -18,16 +20,11 @@ static vector<string> fields(const string& line) {
     return v;
 }
 
-/**
- * @brief Đọc danh sách Khách hàng từ file văn bản có định dạng bảng
- * @param path Đường dẫn file dữ liệu (mặc định data/customers.txt)
- * @return std::vector<Customer> Danh sách các đối tượng Customer nạp được
- */
+// Chuyên biệt hóa hàm load cho Customer: đọc danh sách Khách hàng từ file văn bản
 vector<Customer> FileManager<Customer>::load(const string& path) {
     vector<Customer> out;
     ifstream f(path);
     if (!f.is_open()) {
-
         ofstream outFile(path);
         outFile.close();
         return out;
@@ -42,7 +39,7 @@ vector<Customer> FileManager<Customer>::load(const string& path) {
         if (firstChar == string::npos || l[firstChar] == '-' || l[firstChar] == '+') continue;
 
         auto v = fields(l);
-        // Kiểm tra số lượng cột dữ liệu (Ma ID, Ho ten, So dien thoai, Email, Dia chi)
+        // Kiểm tra đủ 5 cột dữ liệu (Mã ID, Họ tên, Số điện thoại, Email, Địa chỉ)
         if (v.size() != 5) {
             cout << "[Canh bao] Dong sai dinh dang: \"" << l << "\". Bo qua dong nay." << endl;
             continue;
@@ -51,7 +48,7 @@ vector<Customer> FileManager<Customer>::load(const string& path) {
         // Bỏ qua dòng tiêu đề bảng
         if (v[0] == "Ma ID") continue;
 
-        // Bỏ qua dòng nếu mã ID không đúng quy chuẩn (tiền tố 'KH')
+        // Bỏ qua dòng nếu mã ID không đúng quy chuẩn tiền tố "KH"
         if (Utils::extractIdNumber(v[0], "KH") == -1) {
             cout << "[Canh bao] Dong sai dinh dang: \"" << l << "\". Bo qua dong nay." << endl;
             continue;
@@ -68,13 +65,8 @@ vector<Customer> FileManager<Customer>::load(const string& path) {
     return out;
 }
 
-/**
- * @brief Ghi danh sách Khách hàng ra file văn bản theo định dạng bảng căn lề chuẩn
- * @param path Đường dẫn file dữ liệu (mặc định data/customers.txt)
- * @param data Danh sách đối tượng Customer cần lưu
- */
+// Chuyên biệt hóa hàm save cho Customer: ghi danh sách Khách hàng ra file văn bản kẻ cột
 void FileManager<Customer>::save(const string& path, const vector<Customer>& data) {
-
     ofstream f(path);
     if (!f) throw runtime_error("Khong the mo file de ghi: " + path);
 

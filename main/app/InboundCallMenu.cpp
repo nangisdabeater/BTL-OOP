@@ -1,35 +1,20 @@
-/**
- * @file InboundCallMenu.cpp
- * @brief Triển khai các chức năng điều khiển Menu cho Cuộc gọi tiếp nhận (InboundCall)
- * [PHẦN THÊM MỚI]
- */
-
 #include "InboundCallMenu.h"
 #include <iostream>
 #include <iomanip>
 #include <Utilities.h>
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
-/**
- * @brief Khởi tạo đối tượng InboundCallMenu
- * @param cRepo Kho lưu trữ Cuộc gọi tiếp nhận
- * @param chRepo Kho lưu trữ Kênh tiếp nhận (khóa ngoại)
- * @param agRepo Kho lưu trữ Điện thoại viên (khóa ngoại)
- */
+// Khởi tạo đối tượng InboundCallMenu với tham chiếu tới kho Cuộc gọi và kho Kênh tiếp nhận
 InboundCallMenu::InboundCallMenu(
     Repository<InboundCall>& cRepo,
     Repository<ReceptionChannel>& chRepo
 )
-    : callRepository(cRepo), channelRepository(chRepo)
-{
-}
+    : callRepository(cRepo), channelRepository(chRepo) {}
 
-/**
- * @brief Hiển thị bảng danh mục chức năng quản lý Cuộc gọi tiếp nhận
- */
-void InboundCallMenu::showMenu()
-{
+// Hiển thị bảng danh mục chức năng quản lý Cuộc gọi tiếp nhận
+void InboundCallMenu::showMenu() {
     cout << "========================================" << endl;
     cout << "      QUAN LY CUOC GOI TIEP NHAN" << endl;
     cout << "========================================" << endl;
@@ -43,20 +28,15 @@ void InboundCallMenu::showMenu()
     cout << "========================================" << endl;
 }
 
-/**
- * @brief Điều phối vòng lặp xử lý các lựa chọn trong menu Cuộc gọi tiếp nhận
- */
-void InboundCallMenu::run()
-{
+// Điều phối vòng lặp xử lý các lựa chọn trong menu Cuộc gọi tiếp nhận
+void InboundCallMenu::run() {
     bool inMenu = true;
-    while (inMenu)
-    {
+    while (inMenu) {
         showMenu();
 
         int choice;
         cout << "Nhap lua chon: ";
-        if (!(cin >> choice))
-        {
+        if (!(cin >> choice)) {
             cin.clear();
             cin.ignore(10000, '\n');
             cout << "Lua chon khong hop le!" << endl << endl;
@@ -64,8 +44,7 @@ void InboundCallMenu::run()
         }
         cin.ignore(10000, '\n');
 
-        switch (choice)
-        {
+        switch (choice) {
         case 1:
             displayAll();
             break;
@@ -95,14 +74,10 @@ void InboundCallMenu::run()
     }
 }
 
-/**
- * @brief Hiển thị toàn bộ danh sách cuộc gọi tiếp nhận (Read All)
- */
-void InboundCallMenu::displayAll()
-{
+// Hiển thị toàn bộ danh sách cuộc gọi tiếp nhận dưới dạng bảng
+void InboundCallMenu::displayAll() {
     const auto& list = callRepository.getAll();
-    if (list.empty())
-    {
+    if (list.empty()) {
         cout << "Danh sach cuoc goi tiep nhan dang trong!" << endl;
         Utils::backChoice();
         return;
@@ -118,8 +93,7 @@ void InboundCallMenu::displayAll()
          << "Ghi chu" << endl;
     cout << string(90, '-') << endl;
 
-    for (const auto& call : list)
-    {
+    for (const auto& call : list) {
         cout << left
              << setw(8)  << call.getId()
              << setw(14) << call.getPhoneNumber()
@@ -132,20 +106,15 @@ void InboundCallMenu::displayAll()
     Utils::backChoice();
 }
 
-/**
- * @brief Tìm kiếm cuộc gọi theo mã ID (CAxxx)
- */
-void InboundCallMenu::findById()
-{
+// Tìm kiếm cuộc gọi theo mã ID (CAxxx) và hiển thị kèm tên kênh tiếp nhận
+void InboundCallMenu::findById() {
     string id = Utils::inputNonEmptyString("Nhap ma cuoc goi can tim (vi du CA001, nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     InboundCall* call = callRepository.findById(id);
 
-    if (call == nullptr)
-    {
+    if (call == nullptr) {
         cout << "Khong tim thay cuoc goi voi ma: " << id << endl;
         Utils::backChoice();
         return;
@@ -153,60 +122,47 @@ void InboundCallMenu::findById()
 
     Utils::printEntityDetails(*call);
     ReceptionChannel* ch = channelRepository.findById(call->getChannelId());
-    if (ch != nullptr)
-    {
-        cout << "  -> Kênh tiếp nhận: " << ch->getName()
+    if (ch != nullptr) {
+        cout << "  -> Kenh tiep nhan: " << ch->getName()
              << " (" << (ch->isActive() ? "Hoat dong" : "Ngung hoat dong") << ")" << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Ghi nhận cuộc gọi đến mới (Create)
- * Kiểm tra khóa ngoại kênh tiếp nhận (channelId) và điện thoại viên (agentId).
- * Tự động sinh ID định dạng CA001, CA002,...
- */
-void InboundCallMenu::add()
-{
+// Ghi nhận cuộc gọi đến mới: kiểm tra khóa ngoại mã kênh tiếp nhận tồn tại
+void InboundCallMenu::add() {
     cout << "--- Ghi nhan cuoc goi tiep nhan moi ---" << endl;
 
-    // Kiểm tra xem đã có kênh tiếp nhận nào tồn tại chưa
-    if (channelRepository.getAll().empty())
-    {
+    // Kiểm tra xem đã có kênh tiếp nhận nào tồn tại trong hệ thống chưa
+    if (channelRepository.getAll().empty()) {
         cout << "Loi: Chua co kenh tiep nhan nao trong he thong! Vui long them kenh tiep nhan truoc." << endl;
         Utils::backChoice();
         return;
     }
 
     string phone = Utils::inputNonEmptyString("Nhap so dien thoai nguoi goi (nhap 0 de quay lai): ");
-    if (phone == "0")
-    {
+    if (phone == "0") {
         return;
     }
 
-    // Nhập và kiểm tra mã kênh tiếp nhận
+    // Nhập và kiểm tra mã kênh tiếp nhận (khóa ngoại)
     string chId;
-    while (true)
-    {
-        chId = Utils::inputNonEmptyString("Nhap ma kenh tiếp nhận (VD: CN001, nhap 0 de quay lai): ");
-        if (chId == "0")
-        {
+    while (true) {
+        chId = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan (VD: CN001, nhap 0 de quay lai): ");
+        if (chId == "0") {
             return;
         }
         ReceptionChannel* ch = channelRepository.findById(chId);
-        if (ch == nullptr)
-        {
+        if (ch == nullptr) {
             cout << "Loi: Khong ton tai kenh tiep nhan voi ma " << chId << "! Vui long nhap lai." << endl;
         }
-        else if (!ch->isActive())
-        {
+        else if (!ch->isActive()) {
             cout << "Canh bao: Kenh " << chId << " dang tam dung hoat dong. Ban van muon chon? (y/n): ";
             string cf;
             getline(cin, cf);
             if (Utils::trim(cf) == "y" || Utils::trim(cf) == "Y") break;
         }
-        else
-        {
+        else {
             break;
         }
     }
@@ -215,15 +171,13 @@ void InboundCallMenu::add()
 
     int duration = 0;
     cout << "Nhap thoi luong cuoc goi (tinh theo giay): ";
-    if (!(cin >> duration) || duration < 0)
-    {
+    if (!(cin >> duration) || duration < 0) {
         cin.clear();
         cin.ignore(10000, '\n');
         duration = 0;
         cout << "Thoi luong khong hop le, mac dinh dat la 0 giay." << endl;
     }
-    else
-    {
+    else {
         cin.ignore(10000, '\n');
     }
 
@@ -246,35 +200,27 @@ void InboundCallMenu::add()
     note = Utils::trim(note);
 
     InboundCall newCall(phone, chId, callTime, duration, status, note);
-    try
-    {
-        // Repository sẽ tự sinh mã ID với tiền tố "CA", VD: CA001
+    try {
         callRepository.add(newCall);
         const auto& list = callRepository.getAll();
         cout << "Ghi nhan cuoc goi thanh cong! Ma ID duoc cap: " << list.back().getId() << endl;
     }
-    catch (const exception& e)
-    {
+    catch (const exception& e) {
         cout << "Loi khi them cuoc goi tiep nhan: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Cập nhật thông tin cuộc gọi (Update)
- */
-void InboundCallMenu::update()
-{
+// Cập nhật thông tin trạng thái và ghi chú cuộc gọi
+void InboundCallMenu::update() {
     cout << "--- Cap nhat thong tin cuoc goi ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma cuoc goi can cap nhat (vi du CA001, nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
 
     InboundCall* call = callRepository.findById(id);
-    if (call == nullptr)
-    {
+    if (call == nullptr) {
         cout << "Khong tim thay cuoc goi voi ma: " << id << endl;
         Utils::backChoice();
         return;
@@ -285,7 +231,7 @@ void InboundCallMenu::update()
     cout << "Thong tin hien tai:" << endl;
     updated.printInfo();
 
-    // Cập nhật trạng thái
+    // Cập nhật trạng thái cuộc gọi
     cout << "Chon trang thai moi (1: ANSWERED, 2: MISSED, 3: BUSY, de trong de giu nguyen): ";
     string stInput;
     getline(cin, stInput);
@@ -294,48 +240,38 @@ void InboundCallMenu::update()
     else if (stInput == "2") updated.setStatus("MISSED");
     else if (stInput == "3") updated.setStatus("BUSY");
 
-    // Cập nhật ghi chú
+    // Cập nhật ghi chú cuộc gọi
     cout << "Nhap ghi chu moi (de trong de giu nguyen): ";
     string newNote;
     getline(cin, newNote);
     newNote = Utils::trim(newNote);
-    if (!newNote.empty())
-    {
+    if (!newNote.empty()) {
         updated.setNote(newNote);
     }
 
-    try
-    {
-        if (callRepository.update(updated))
-        {
+    try {
+        if (callRepository.update(updated)) {
             cout << "Cap nhat cuoc goi thanh cong!" << endl;
         }
-        else
-        {
+        else {
             cout << "Loi khi cap nhat cuoc goi!" << endl;
         }
     }
-    catch (const exception& e)
-    {
+    catch (const exception& e) {
         cout << "Loi khi cap nhat cuoc goi: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Lọc các cuộc gọi tiếp nhận theo mã kênh (CNxxx)
- */
-void InboundCallMenu::filterByChannel()
-{
+// Lọc các cuộc gọi tiếp nhận theo mã kênh (CNxxx)
+void InboundCallMenu::filterByChannel() {
     string chId = Utils::inputNonEmptyString("Nhap ma kenh tiep nhan can loc (VD: CN001, nhap 0 de quay lai): ");
-    if (chId == "0")
-    {
+    if (chId == "0") {
         return;
     }
 
     ReceptionChannel* ch = channelRepository.findById(chId);
-    if (ch == nullptr)
-    {
+    if (ch == nullptr) {
         cout << "Loi: Kenh tiep nhan voi ma '" << chId << "' khong ton tai!" << endl;
         Utils::backChoice();
         return;
@@ -343,41 +279,32 @@ void InboundCallMenu::filterByChannel()
 
     int count = 0;
     cout << "\n--- Danh sach cuoc goi thuoc kenh: " << chId << " (" << ch->getName() << ") ---" << endl;
-    for (const auto& call : callRepository.getAll())
-    {
-        if (call.getChannelId() == chId)
-        {
+    for (const auto& call : callRepository.getAll()) {
+        if (call.getChannelId() == chId) {
             call.printInfo();
             count++;
         }
     }
 
-    if (count == 0)
-    {
+    if (count == 0) {
         cout << "Khong co cuoc goi nao thuoc kenh " << chId << "!" << endl;
     }
-    else
-    {
+    else {
         cout << "Tong so cuoc goi: " << count << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Xóa cuộc gọi tiếp nhận (Delete)
- */
-void InboundCallMenu::remove()
-{
+// Xóa cuộc gọi tiếp nhận khỏi hệ thống
+void InboundCallMenu::remove() {
     cout << "--- Xoa thong tin cuoc goi ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma cuoc goi can xoa (vi du CA001, nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
 
     InboundCall* call = callRepository.findById(id);
-    if (call == nullptr)
-    {
+    if (call == nullptr) {
         cout << "Khong tim thay cuoc goi voi ma: " << id << endl;
         Utils::backChoice();
         return;
@@ -388,26 +315,20 @@ void InboundCallMenu::remove()
     cout << "Ban co chac muon xoa cuoc goi " << id << "? (y/n): ";
     string confirm;
     getline(cin, confirm);
-    if (Utils::trim(confirm) == "y" || Utils::trim(confirm) == "Y")
-    {
-        try
-        {
-            if (callRepository.remove(id))
-            {
+    if (Utils::trim(confirm) == "y" || Utils::trim(confirm) == "Y") {
+        try {
+            if (callRepository.remove(id)) {
                 cout << "Xoa cuoc goi " << id << " thanh cong!" << endl;
             }
-            else
-            {
+            else {
                 cout << "Xoa that bai!" << endl;
             }
         }
-        catch (const exception& e)
-        {
+        catch (const exception& e) {
             cout << "Loi khi xoa cuoc goi: " << e.what() << endl;
         }
     }
-    else
-    {
+    else {
         cout << "Da huy thao tac xoa." << endl;
     }
     Utils::backChoice();

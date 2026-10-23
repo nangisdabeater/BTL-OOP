@@ -3,8 +3,10 @@
 #include <iomanip>
 #include <Utilities.h>
 
+// Chỉ dùng using namespace std ở file .cpp để giữ sạch không gian tên toàn cục ở file .h
 using namespace std;
 
+// Khởi tạo menu bằng danh sách khởi tạo cho 2 biến tham chiếu Repository
 TransferTicketMenu::TransferTicketMenu(
     Repository<TransferTicket>& tfRepo,
     Repository<SLALevel>& sRepo
@@ -13,6 +15,7 @@ TransferTicketMenu::TransferTicketMenu(
 {
 }
 
+// Chuyển đổi giá trị enum TransferStatus sang chuỗi mô tả để hiển thị trên bảng
 string TransferTicketMenu::statusToString(TransferStatus s)
 {
     switch (s)
@@ -24,6 +27,7 @@ string TransferTicketMenu::statusToString(TransferStatus s)
     return "Khong ro";
 }
 
+// Tra cứu tên mức SLA từ mã slaId để hiển thị kèm khi xem chi tiết phiếu chuyển
 string TransferTicketMenu::slaNameOf(const string& slaId)
 {
     SLALevel* s = slaRepository.findById(slaId);
@@ -34,6 +38,7 @@ string TransferTicketMenu::slaNameOf(const string& slaId)
     return s->getName();
 }
 
+// Hiển thị bảng tùy chọn quản lý phiếu chuyển xử lý
 void TransferTicketMenu::showMenu()
 {
     cout << "========================================" << endl;
@@ -48,6 +53,7 @@ void TransferTicketMenu::showMenu()
     cout << "========================================" << endl;
 }
 
+// Vòng lặp điều phối các chức năng trong menu phiếu chuyển xử lý
 void TransferTicketMenu::run()
 {
     bool inMenu = true;
@@ -57,6 +63,7 @@ void TransferTicketMenu::run()
 
         int choice;
         cout << "Nhap lua chon: ";
+        // Kiểm tra nếu người dùng nhập chữ thay vì số để xóa cờ lỗi cin, tránh lặp vô hạn
         if (!(cin >> choice))
         {
             cin.clear();
@@ -80,6 +87,7 @@ void TransferTicketMenu::run()
     }
 }
 
+// Hiển thị danh sách phiếu chuyển dưới dạng bảng căn lề trái
 void TransferTicketMenu::displayAll()
 {
     const auto& list = transferRepository.getAll();
@@ -111,6 +119,7 @@ void TransferTicketMenu::displayAll()
     Utils::backChoice();
 }
 
+// Tìm kiếm phiếu chuyển theo mã định danh và hiển thị kèm tên mức SLA
 void TransferTicketMenu::findById()
 {
     string id = Utils::inputNonEmptyString("Nhap ma phieu chuyen can tim (vi du TF001, nhap 0 de quay lai): ");
@@ -131,12 +140,7 @@ void TransferTicketMenu::findById()
     Utils::backChoice();
 }
 
-/**
- * Tao phieu chuyen. Rang buoc:
- * 1. Cac truong khong rong.
- * 2. Khoa ngoai: Ma SLA (SLxxx) phai ton tai trong slaRepository.
- * 3. Bo phan chuyen khac Bo phan nhan.
- */
+// Tạo phiếu chuyển mới: kiểm tra khóa ngoại slaId tồn tại và bộ phận chuyển khác bộ phận nhận
 void TransferTicketMenu::add()
 {
     cout << "--- Tao phieu chuyen xu ly ---" << endl;
@@ -155,6 +159,7 @@ void TransferTicketMenu::add()
         {
             return;
         }
+        // Kiểm tra mã SLA phải tồn tại trong slaRepository trước khi cho phép gán
         SLALevel* sla = slaRepository.findById(slaId);
         if (sla == nullptr)
         {
@@ -178,6 +183,7 @@ void TransferTicketMenu::add()
         return;
     }
 
+    // Kiểm tra ràng buộc nghiệp vụ: không được chuyển phiếu cho chính bộ phận đang giữ
     if (fromDept == toDept)
     {
         cout << "Loi rang buoc: Bo phan chuyen va bo phan nhan khong duoc trung nhau!" << endl;
@@ -201,10 +207,7 @@ void TransferTicketMenu::add()
     Utils::backChoice();
 }
 
-/**
- * Cap nhat. Rang buoc: ID ton tai; phieu Hoan tat bi khoa;
- * trang thai chi di toi (Cho nhan -> Da nhan -> Hoan tat).
- */
+// Cập nhật phiếu chuyển: khóa sửa nếu đã Hoàn tất và chỉ cho phép trạng thái tiến lên một chiều
 void TransferTicketMenu::update()
 {
     cout << "--- Cap nhat phieu chuyen xu ly ---" << endl;
@@ -221,6 +224,7 @@ void TransferTicketMenu::update()
         Utils::backChoice();
         return;
     }
+    // Phiếu đã hoàn tất thì bị khóa chỉnh sửa để đảm bảo tính toàn vẹn lịch sử xử lý
     if (t->getStatus() == TransferStatus::COMPLETED)
     {
         cout << "Loi rang buoc: Phieu '" << id << "' da Hoan tat, khong duoc chinh sua!" << endl;
@@ -253,7 +257,8 @@ void TransferTicketMenu::update()
                 Utils::backChoice();
                 return;
             }
-            updated.changeStatus(static_cast<TransferStatus>(st));  // nem loi neu di lui
+            // Dùng hàm changeStatus thay vì gán trực tiếp để kiểm tra quy tắc không được lùi trạng thái
+            updated.changeStatus(static_cast<TransferStatus>(st));
         }
 
         if (transferRepository.update(updated))
@@ -272,9 +277,7 @@ void TransferTicketMenu::update()
     Utils::backChoice();
 }
 
-/**
- * Xoa. Rang buoc: ID ton tai; khong xoa phieu da Hoan tat (giu lai de truy vet).
- */
+// Xóa phiếu chuyển: chặn xóa nếu phiếu đã Hoàn tất để giữ lại dữ liệu đối soát
 void TransferTicketMenu::remove()
 {
     cout << "--- Xoa phieu chuyen xu ly ---" << endl;

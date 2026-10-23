@@ -6,107 +6,98 @@
 #include <stdexcept>
 #include "Utilities.h"
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
-/**
- * @brief Nap danh sach Muc SLA tu file (data/sla_levels.txt)
- * - File chua ton tai -> tra ve danh sach rong
- * - Dong sai dinh dang / sai rang buoc -> bo qua, doc tiep cac dong sau
- */
-vector<SLALevel> FileManager<SLALevel>::load(const string& filePath)
-{
+// Chuyên biệt hóa hàm load cho SLALevel: nạp danh sách Mức SLA từ file văn bản
+vector<SLALevel> FileManager<SLALevel>::load(const string& filePath) {
     vector<SLALevel> result;
     ifstream inFile(filePath);
-    if (!inFile.is_open())
-    {
-
+    if (!inFile.is_open()) {
         ofstream outFile(filePath);
         outFile.close();
         return result;
     }
 
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)) {
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
+        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách bảng
         if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
-        string id, name, resp, resolve, prio;
+        string id, name, respStr, resStr, prioStr;
+
+        // Tách từng trường dữ liệu ngăn cách bởi dấu '|'
         if (getline(ss, id, '|') &&
             getline(ss, name, '|') &&
-            getline(ss, resp, '|') &&
-            getline(ss, resolve, '|') &&
-            getline(ss, prio, '|'))
-        {
+            getline(ss, respStr, '|') &&
+            getline(ss, resStr, '|') &&
+            getline(ss, prioStr, '|')) {
             id = Utils::trim(id);
             name = Utils::trim(name);
-            resp = Utils::trim(resp);
-            resolve = Utils::trim(resolve);
-            prio = Utils::trim(prio);
+            respStr = Utils::trim(respStr);
+            resStr = Utils::trim(resStr);
+            prioStr = Utils::trim(prioStr);
 
-            if (id == "Ma ID") continue; // dong tieu de
+            // Bỏ qua dòng tiêu đề bảng
+            if (id == "Ma ID") {
+                continue;
+            }
 
-            if (Utils::extractIdNumber(id, "SL") == -1)
-            {
+            // Kiểm tra định dạng mã SLA phải có tiền tố "SL" (SL001, SL002,...)
+            if (Utils::extractIdNumber(id, "SL") == -1) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
 
-            try
-            {
-                SLALevel s(name, stoi(resp), stoi(resolve), stoi(prio));
-                s.setId(id);
-                result.push_back(s);
+            try {
+                int resp = stoi(respStr);
+                int res = stoi(resStr);
+                int prio = stoi(prioStr);
+
+                SLALevel sla(name, resp, res, prio);
+                sla.setId(id);
+                result.push_back(sla);
             }
-            catch (...)
-            {
+            catch (...) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
         }
-        else
-        {
+        else {
             cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;
 }
 
-/**
- * @brief Ghi toan bo danh sach Muc SLA ra file (data/sla_levels.txt)
- */
-void FileManager<SLALevel>::save(const string& filePath, const vector<SLALevel>& data)
-{
-
-
+// Chuyên biệt hóa hàm save cho SLALevel: ghi toàn bộ danh sách Mức SLA ra file văn bản kẻ cột
+void FileManager<SLALevel>::save(const string& filePath, const vector<SLALevel>& data) {
     ofstream outFile(filePath);
-    if (!outFile.is_open())
-    {
+    if (!outFile.is_open()) {
         throw runtime_error("Khong the mo file de ghi: " + filePath);
     }
 
     outFile << left
-            << setw(8)  << "Ma ID"        << " | "
-            << setw(20) << "Ten muc SLA"  << " | "
+            << setw(8)  << "Ma ID"          << " | "
+            << setw(20) << "Ten muc SLA"    << " | "
             << setw(15) << "Phan hoi(phut)" << " | "
-            << setw(12) << "Xu ly(gio)"   << " | "
-            << "Uu tien" << "\n";
+            << setw(12) << "Xu ly(gio)"     << " | "
+            << "Uu tien"                    << "\n";
     outFile << string(75, '-') << "\n";
 
-    for (const auto& s : data)
-    {
+    for (const auto& s : data) {
         outFile << left
                 << setw(8)  << s.getId()              << " | "
                 << setw(20) << s.getName()            << " | "
                 << setw(15) << s.getResponseMinutes() << " | "
                 << setw(12) << s.getResolveHours()    << " | "
-                << s.getPriority() << "\n";
+                << s.getPriority()                    << "\n";
     }
 
     outFile.flush();
-    if (!outFile)
-    {
+    if (!outFile) {
         throw runtime_error("Khong the ghi du lieu vao file: " + filePath);
     }
 }

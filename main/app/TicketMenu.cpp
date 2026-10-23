@@ -5,19 +5,14 @@
 
 using namespace std;
 
-/**
-Khởi tạo đối tượng TicketMenu
-tRepo Tham chiếu tới kho lưu trữ Ticket
-sgRepo Tham chiếu tới kho lưu trữ Dịch vụ (để kiểm tra ràng buộc bên ngoài)
- */
+// Bắt buộc gắn 2 biến tham chiếu (&) ngay tại Danh sách khởi tạo ": ticketRepository(tRepo)..."
+// vì trong C++ biến tham chiếu không thể để trống rồi mới gán bên trong cặp ngoặc nhọn {}.
 TicketMenu::TicketMenu(Repository<Ticket>& tRepo, Repository<ServiceGroup>& sgRepo)
-    : ticketRepository(tRepo), serviceGroupRepository(sgRepo){}
+    : ticketRepository(tRepo), serviceGroupRepository(sgRepo) {}
 
-
-//Chuyển đổi giá trị enum TicketStatus sang dạng chuỗi hiển thị
-
-string TicketMenu::ticketStatusToString(TicketStatus status){
-    switch (status){
+// Hàm hỗ trợ chuyển kiểu enum class TicketStatus sang chuỗi để in ra bảng trên màn hình
+string TicketMenu::ticketStatusToString(TicketStatus status) {
+    switch (status) {
     case TicketStatus::OPEN:
         return "OPEN";
     case TicketStatus::IN_PROGRESS:
@@ -31,11 +26,9 @@ string TicketMenu::ticketStatusToString(TicketStatus status){
     }
 }
 
-//Chuyển đổi mã mức độ ưu tiên sang chuỗi hiển thị
-
-string TicketMenu::priorityToString(int priority){
-    switch (priority)
-    {
+// Hàm hỗ trợ chuyển số mức độ ưu tiên (1-4) sang tên mức độ tương ứng
+string TicketMenu::priorityToString(int priority) {
+    switch (priority) {
     case 1: return "Thap";
     case 2: return "Trung binh";
     case 3: return "Cao";
@@ -44,9 +37,7 @@ string TicketMenu::priorityToString(int priority){
     }
 }
 
-//Hiển thị bảng danh mục các chức năng quản lý Ticket
-
-void TicketMenu::showMenu(){
+void TicketMenu::showMenu() {
     cout << "========================================" << endl;
     cout << "             QUAN LY TICKET" << endl;
     cout << "========================================" << endl;
@@ -59,24 +50,23 @@ void TicketMenu::showMenu(){
     cout << "========================================" << endl;
 }
 
-//Điều phối vòng lặp xử lý các lựa chọn trong menu Ticket
-
-void TicketMenu::run(){
+void TicketMenu::run() {
     bool inMenu = true;
-    while (inMenu){
+    while (inMenu) {
         showMenu();
 
         int choice;
         cout << "Nhap lua chon: ";
-        if (!(cin >> choice)){
-            cin.clear();
-            cin.ignore(10000, '\n');
+        // Nếu người dùng nhập chữ thay vì số thì cin sẽ báo lỗi, cần xóa cờ lỗi và dọn bộ đệm
+        if (!(cin >> choice)) {
+            cin.clear();             // Phục hồi trạng thái bình thường cho cin
+            cin.ignore(10000, '\n'); // Đẩy toàn bộ ký tự nhập sai ra khỏi bộ đệm bàn phím
             cout << "Lua chon khong hop le!" << endl << endl;
             continue;
         }
-        cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng còn sót trong bộ đệm
+        cin.ignore(10000, '\n'); // Xóa ký tự Enter (\n) còn sót lại sau lệnh cin >> choice
 
-        switch (choice){
+        switch (choice) {
         case 1:
             displayAll();
             break;
@@ -93,7 +83,7 @@ void TicketMenu::run(){
             remove();
             break;
         case 0:
-            inMenu = false;
+            inMenu = false; // Thoát khỏi vòng lặp menu Ticket để quay về menu chính
             break;
         default:
             cout << "Lua chon khong hop le!" << endl;
@@ -103,16 +93,16 @@ void TicketMenu::run(){
     }
 }
 
-//Hiển thị danh sách tất cả các ticket 
-
-void TicketMenu::displayAll(){
+void TicketMenu::displayAll() {
+    // Dùng "const auto&" để đọc trực tiếp danh sách từ kho mà không tốn bộ nhớ tạo bản sao
     const auto& list = ticketRepository.getAll();
-    if (list.empty()){
+    if (list.empty()) {
         cout << "Danh sach ticket dang trong!" << endl;
         Utils::backChoice();
         return;
     }
 
+    // Dùng left và setw() để căn chỉnh độ rộng các cột thẳng hàng
     cout << left
          << setw(8)  << "Ma ID"
          << setw(26) << "Tieu de"
@@ -123,7 +113,7 @@ void TicketMenu::displayAll(){
          << setw(14) << "Trang thai" << endl;
     cout << string(94, '-') << endl;
 
-    for (const auto& t : list){
+    for (const auto& t : list) {
         cout << left
              << setw(8)  << t.getId()
              << setw(26) << t.getTitle()
@@ -136,60 +126,55 @@ void TicketMenu::displayAll(){
     Utils::backChoice();
 }
 
-//Tìm kiếm ticket theo mã ID (Read by ID: TKxxx)
-
-void TicketMenu::findById(){
+void TicketMenu::findById() {
     string id = Utils::inputNonEmptyString("Nhap ma ticket can tim (vi du TK001, nhap 0 de quay lai): ");
-    if (id == "0"){
+    if (id == "0") {
         return;
     }
+
+    // Tìm kiếm Ticket theo ID, kết quả trả về là con trỏ Ticket* (hoặc nullptr nếu không có)
     Ticket* t = ticketRepository.findById(id);
 
-    if (t == nullptr){
+    if (t == nullptr) {
         cout << "Khong tim thay ticket voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
+    // Truyền đối tượng (*t) vào hàm printEntityDetails để gọi hàm ảo printInfo() đa hình
     Utils::printEntityDetails(*t);
     Utils::backChoice();
 }
 
-/**
- * Tạo mới ticket (Create)
- * Ràng buộc:
- * 1. Mã ticket sinh tự động dạng TKxxx.
- * 2. Tiêu đề không rỗng, tối đa 100 ký tự.
- * 3. Khóa ngoại: Mã dịch vụ (ServiceGroupId: SMxxx) phải tồn tại và đang hoạt động.
- * 4. Mức ưu tiên 1 - 4. Chi phí >= 0. Ngày tạo hợp lệ (DD/MM/YYYY).
- */
-void TicketMenu::add(){
+void TicketMenu::add() {
     cout << "--- Tao ticket moi ---" << endl;
     string title = Utils::inputNonEmptyString("Nhap tieu de ticket (nhap 0 de quay lai): ");
-    if (title == "0"){
+    if (title == "0") {
         return;
     }
     string description = Utils::inputNonEmptyString("Nhap mo ta chi tiet van de: ");
     
-    // Ràng buộc bên ngoài : Kiểm tra tồn tại và hoạt động của dịch vụ
+    // Kiểm tra ràng buộc với ServiceGroup trước khi cho phép tạo Ticket
     string serviceGroupId;
-    while (true){
+    while (true) {
         serviceGroupId = Utils::inputNonEmptyString("Nhap ma dich vu (vi du SM001, nhap 0 de quay lai): ");
-        if (serviceGroupId == "0"){
+        if (serviceGroupId == "0") {
             cout << "Da huy thao tac tao ticket." << endl;
             Utils::backChoice();
             return;
         }
+        // Tra cứu mã dịch vụ trong kho ServiceGroup
         ServiceGroup* sg = serviceGroupRepository.findById(serviceGroupId);
-        if (sg == nullptr){
+        if (sg == nullptr) {
             cout << "Loi rang buoc: Dich vu voi ma '" << serviceGroupId << "' khong ton tai! Vui long nhap lai." << endl;
         }
-        else if (!sg->isActive()){
+        else if (!sg->isActive()) {
+            // Nếu dịch vụ tồn tại nhưng đang bị tạm ngưng (active == false) thì cũng chặn không cho tạo ticket mới
             cout << "Loi rang buoc: Dich vu '" << sg->getName()
                  << "' dang TAM NGUNG hoat dong! Khong the tao ticket moi." << endl;
         }
-        else{
-            break;
+        else {
+            break; // Mã dịch vụ tồn tại và đang hoạt động hợp lệ -> thoát vòng lặp kiểm tra
         }
     }
 
@@ -198,77 +183,74 @@ void TicketMenu::add(){
     string createdDate = Utils::inputDateString("Nhap ngay tao ticket (DD/MM/YYYY): ");
 
     Ticket newTicket(title, description, serviceGroupId, priority, estimatedFee, createdDate);
-    try{
+    try {
+        // Thêm vào kho: Repository tự động cấp mã TKxxx và ghi xuống file data/tickets.txt
         ticketRepository.add(newTicket);
         const auto& list = ticketRepository.getAll();
         cout << "Tao ticket thanh cong! Ma ticket duoc cap: " << list.back().getId() << endl;
     }
-    catch (const exception& e){
+    catch (const exception& e) {
         cout << "Loi khi tao ticket: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-//Cập nhật thông tin và trạng thái ticket (Update)
-
-void TicketMenu::update(){
+void TicketMenu::update() {
     cout << "--- Cap nhat thong tin ticket ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma ticket can cap nhat (vi du TK001, nhap 0 de quay lai): ");
-    if (id == "0"){
+    if (id == "0") {
         return;
     }
 
     Ticket* t = ticketRepository.findById(id);
-    if (t == nullptr){
+    if (t == nullptr) {
         cout << "Loi: Khong tim thay ticket voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
+    // Tạo bản sao tạm thời để sửa đổi, chỉ khi hoàn tất mới lưu đè vào kho
     Ticket updated = *t;
 
     cout << "Thong tin hien tai:" << endl;
     updated.printInfo();
 
-    // Cập nhật tiêu đề
+    // Cho phép nhấn Enter (chuỗi rỗng) để giữ nguyên giá trị cũ mà không cần nhập lại
     cout << "Nhap tieu de moi (nhan Enter de giu nguyen): ";
     string newTitle;
     getline(cin, newTitle);
     newTitle = Utils::trim(newTitle);
-    if (!newTitle.empty()){
+    if (!newTitle.empty()) {
         updated.setTitle(newTitle);
     }
 
-    // Cập nhật mô tả
     cout << "Nhap mo ta moi (nhan Enter de giu nguyen): ";
     string newDesc;
     getline(cin, newDesc);
     newDesc = Utils::trim(newDesc);
-    if (!newDesc.empty()){
+    if (!newDesc.empty()) {
         updated.setDescription(newDesc);
     }
 
-    // Cập nhật mức ưu tiên
     cout << "Nhap muc uu tien moi (1-4, Enter de giu nguyen): ";
     string prioInput;
     getline(cin, prioInput);
     prioInput = Utils::trim(prioInput);
-    if (!prioInput.empty()){
+    if (!prioInput.empty()) {
         try {
             int p = stoi(prioInput);
             if (p >= 1 && p <= 4) updated.setPriority(p);
             else cout << "Muc uu tien khong hop le, giu nguyen cu." << endl;
         } catch (...) {
-            cout << "Muc ưu tiên khong hop le, giu nguyen cu." << endl;
+            cout << "Muc uu tien khong hop le, giu nguyen cu." << endl;
         }
     }
 
-    // Cập nhật chi phí
     cout << "Nhap chi phi moi (Enter de giu nguyen): ";
     string feeInput;
     getline(cin, feeInput);
     feeInput = Utils::trim(feeInput);
-    if (!feeInput.empty()){
+    if (!feeInput.empty()) {
         try {
             int fee = stoi(feeInput);
             if (fee >= 0) updated.setEstimatedFee(fee);
@@ -279,57 +261,57 @@ void TicketMenu::update(){
         }
     }
 
-    // Cập nhật trạng thái
     cout << "Chon trang thai moi (0: OPEN, 1: IN_PROGRESS, 2: RESOLVED, 3: CLOSED, Enter: Giu nguyen): ";
     string statusChoice;
     getline(cin, statusChoice);
     statusChoice = Utils::trim(statusChoice);
-    if (!statusChoice.empty()){
-        try{
+    if (!statusChoice.empty()) {
+        try {
             int st = stoi(statusChoice);
-            if (st >= 0 && st <= 3){
+            if (st >= 0 && st <= 3) {
+                // Dùng static_cast<TicketStatus> thay vì ép kiểu kiểu C "(TicketStatus)st"
+                // để trình biên dịch kiểm tra tính hợp lệ của kiểu dữ liệu an toàn hơn tại lúc biên dịch.
                 updated.changeStatus(static_cast<TicketStatus>(st));
             }
-            else{
+            else {
                 cout << "Loi: Ma trang thai khong hop le (chi chap nhan tu 0 den 3)! Giu nguyen trang thai cu." << endl;
             }
         }
-        catch (...){
+        catch (...) {
             cout << "Loi: Dinh dang trang thai khong hop le! Giu nguyen trang thai cu." << endl;
         }
     }
 
-    try{
-        if (ticketRepository.update(updated)){
+    try {
+        if (ticketRepository.update(updated)) {
             cout << "Cap nhat ticket thanh cong!" << endl;
         }
-        else{
+        else {
             cout << "Loi khi cap nhat ticket!" << endl;
         }
     }
-    catch (const exception& e){
+    catch (const exception& e) {
         cout << "Loi khi cap nhat ticket: " << e.what() << endl;
     }
     Utils::backChoice();
 }
 
-// Xóa ticket
-
-void TicketMenu::remove(){
+void TicketMenu::remove() {
     cout << "--- Xoa ticket ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma ticket can xoa (vi du TK001, nhap 0 de quay lai): ");
-    if (id == "0"){
+    if (id == "0") {
         return;
     }
 
     Ticket* t = ticketRepository.findById(id);
-    if (t == nullptr){
+    if (t == nullptr) {
         cout << "Loi: Khong tim thay ticket voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
-    if (t->getStatus() == TicketStatus::IN_PROGRESS){
+    // Ràng buộc nghiệp vụ: Nếu Ticket đang được nhân viên xử lý (IN_PROGRESS) thì chặn không cho xóa
+    if (t->getStatus() == TicketStatus::IN_PROGRESS) {
         cout << "Loi rang buoc nghiep vu: Ticket '" << id << "' dang trong tien trinh xu ly (IN_PROGRESS), khong the xoa!" << endl;
         Utils::backChoice();
         return;
@@ -342,20 +324,20 @@ void TicketMenu::remove(){
     getline(cin, confirm);
     confirm = Utils::trim(confirm);
 
-    if (confirm == "y" || confirm == "Y"){
-        try{
-            if (ticketRepository.remove(id)){
+    if (confirm == "y" || confirm == "Y") {
+        try {
+            if (ticketRepository.remove(id)) {
                 cout << "Da xoa ticket thanh cong!" << endl;
             }
-            else{
+            else {
                 cout << "Loi: Khong the xoa ticket!" << endl;
             }
         }
-        catch (const exception& e){
+        catch (const exception& e) {
             cout << "Loi khi xoa ticket: " << e.what() << endl;
         }
     }
-    else{
+    else {
         cout << "Da huy thao tac xoa." << endl;
     }
     Utils::backChoice();

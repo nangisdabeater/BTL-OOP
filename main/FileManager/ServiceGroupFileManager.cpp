@@ -6,20 +6,15 @@
 #include <stdexcept>
 #include "Utilities.h"
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
-/**
-Nạp danh sách Dịch vụ (ServiceManager / ServiceGroup) từ file văn bản
-Định dạng ID yêu cầu: SM001, SM002,...
-Đường dẫn file (data/service_groups.txt)
-Trả về danh sách vector các đối tượng ServiceGroup
- */
+// Chuyên biệt hóa hàm load cho ServiceGroup: đọc file văn bản có kẻ bảng thay vì file nhị phân để dễ kiểm tra trực tiếp
 vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
     vector<ServiceGroup> result;
     ifstream inFile(filePath);
     if (!inFile.is_open()){
-        // Tự tạo file rỗng nếu chưa tồn tại
-
+        // Tự động tạo file rỗng nếu file chưa tồn tại để chương trình không bị văng lỗi lúc khởi động
         ofstream outFile(filePath);
         outFile.close();
         return result;
@@ -29,19 +24,19 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
     while (getline(inFile, line)){
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
-        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách (bắt đầu bằng '-' hoặc '+')
+        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách bảng (bắt đầu bằng '-' hoặc '+')
         if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, name, desc;
 
-        // Đọc các trường dữ liệu ngăn cách bằng ký tự '|'
+        // Dùng ký tự '|' làm dấu phân cách cột thay vì dấu cách vì tên và mô tả dịch vụ có chứa khoảng trắng
         if (getline(ss, id, '|') &&getline(ss, name, '|') &&getline(ss, desc, '|')){
             id = Utils::trim(id);
             name = Utils::trim(name);
             desc = Utils::trim(desc);
 
-            // Bỏ qua dòng tiêu đề cột
+            // Bỏ qua dòng tiêu đề cột của bảng
             if (id == "Ma ID"){
                 continue;
             }
@@ -66,7 +61,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
             bool isActive = true;
 
             if (remainingCols.size() >= 5){
-                // Định dạng mới: dept | sla | baseFee | createdDate | active
+                // Định dạng đầy đủ: phòng ban | giờ SLA | phí cơ bản | ngày ban hành | trạng thái
                 department = remainingCols[0];
                 try { slaHours = stoi(remainingCols[1]); } catch (...) { slaHours = 24; }
                 try { baseFee = static_cast<int>(stod(remainingCols[2])); } catch (...) { baseFee = 0; }
@@ -78,7 +73,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
                 isActive = (remainingCols[4] != "0");
             }
             else if (!remainingCols.empty()){
-                // Định dạng cũ: chỉ có activeStr
+                // Định dạng rút gọn: chỉ có cột trạng thái hoạt động
                 isActive = (remainingCols[0] != "0");
             }
             else{
@@ -110,11 +105,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
     return result;
 }
 
-/**
-Ghi toàn bộ danh sách Dịch vụ ra file văn bản kẻ hàng cột ngay ngắn
-Đường dẫn file (data/service_groups.txt)
-Tham số đầu vào: data (Dữ liệu cần ghi)
- */
+// Chuyên biệt hóa hàm save cho ServiceGroup: dùng setw căn lề trái để file văn bản thẳng hàng như bảng
 void FileManager<ServiceGroup>::save(const string& filePath, const vector<ServiceGroup>& data){
 
     ofstream outFile(filePath);
@@ -122,7 +113,7 @@ void FileManager<ServiceGroup>::save(const string& filePath, const vector<Servic
         throw runtime_error("Khong the mo file de ghi: " + filePath);
     }
 
-    // Kẻ bảng: Dòng tiêu đề cột và dòng gạch ngang phân cách
+    // Ghi dòng tiêu đề cột và dòng gạch ngang phân cách bảng
     outFile << left
             << setw(8)  << "Ma ID"            << " | "
             << setw(25) << "Ten dich vu"      << " | "
@@ -146,6 +137,7 @@ void FileManager<ServiceGroup>::save(const string& filePath, const vector<Servic
                 << (sg.isActive() ? 1 : 0)         << "\n";
     }
 
+    // Đẩy toàn bộ bộ đệm xuống đĩa ngay lập tức để tránh mất dữ liệu
     outFile.flush();
     if (!outFile){
         throw runtime_error("Khong the ghi du lieu vao file: " + filePath);

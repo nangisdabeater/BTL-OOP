@@ -1,33 +1,35 @@
 #pragma once
 
-/**
-Định nghĩa thực thể Ticket (phiếu hỗ trợ khách hàng)
-Đại diện cho 1 ticket với các thuộc tính: mã ID, tiêu đề, mô tả, mã nhóm dịch vụ, độ ưu tiên, chi phí, ngày tạo và trạng thái.
- */
-
 #include <string>
 #include "BaseEntity.h"
 
-
-enum class TicketStatus{
-    OPEN,
-    IN_PROGRESS,
-    RESOLVED,
-    CLOSED
+// Tại sao dùng "enum class TicketStatus" thay vì dùng kiểu chuỗi string hay enum thường?
+// - Không dùng string: vì so sánh chuỗi chậm và dễ gõ sai chính tả (VD: "Open" khác với "OPEN").
+// - Không dùng enum thường: vì các giá trị OPEN, CLOSED sẽ bị tràn ra phạm vi toàn cục dễ đụng độ tên với lớp khác,
+//   và tự động bị ép kiểu ngầm sang số nguyên int gây mất an toàn.
+// - Dùng enum class: bắt buộc gọi rõ "TicketStatus::OPEN", chống xung đột tên và an toàn kiểu tuyệt đối.
+enum class TicketStatus {
+    OPEN,        // Phiếu mới tạo, đang chờ tiếp nhận
+    IN_PROGRESS, // Đang trong quá trình xử lý
+    RESOLVED,    // Đã giải quyết xong sự cố
+    CLOSED       // Đã đóng phiếu hoàn tất
 };
 
-class Ticket : public BaseEntity{
+class Ticket : public BaseEntity {
 private:
-    std::string title;            // Tieu de ticket (khong rong, toi da 100 ky tu)
-    std::string description;      // Mo ta chi tiet
-    std::string serviceGroupId;   // Ma dich vu SMxxx (khoa ngoai)
-    int priority;            // Muc do uu tien: 1 (Thap), 2 (Trung binh), 3 (Cao), 4 (Khan cap)
-    int estimatedFee;        // Chi phi xu ly uoc tinh (>= 0)
-    std::string createdDate;      // Ngay tao (DD/MM/YYYY)
-    TicketStatus status;     // Trang thai ticket
+    std::string title;          // Tiêu đề phiếu hỗ trợ (không được rỗng, tối đa 100 ký tự)
+    std::string description;    // Mô tả chi tiết vấn đề của khách hàng
+    // Tại sao lưu "serviceGroupId" dạng chuỗi (mã khóa ngoại) thay vì lưu cả đối tượng ServiceGroup bên trong Ticket?
+    // Để giảm sự phụ thuộc chặt (Loose Coupling) và tránh việc dữ liệu bị nhân bản: nếu tên dịch vụ thay đổi,
+    // chỉ cần sửa ở ServiceGroup mà không bị lệch dữ liệu trong các Ticket.
+    std::string serviceGroupId; // Mã nhóm dịch vụ liên kết (VD: SM001)
+    int priority;               // Mức độ ưu tiên: 1 (Thấp), 2 (Trung bình), 3 (Cao), 4 (Khẩn cấp)
+    int estimatedFee;           // Chi phí xử lý ước tính (>= 0 VNĐ)
+    std::string createdDate;    // Ngày tạo phiếu theo định dạng DD/MM/YYYY
+    TicketStatus status;        // Trạng thái hiện tại của phiếu hỗ trợ
 
 public:
-    // Constructor (ID se duoc Repository cap tu dong dang TKxxx)
+    // Hàm khởi tạo có tham số mặc định (ID sẽ được Repository tự động cấp phát dạng TKxxx khi thêm vào kho)
     Ticket(
         const std::string& title = "",
         const std::string& description = "",
@@ -37,7 +39,7 @@ public:
         const std::string& createdDate = "01/01/2026"
     );
 
-    // Getter
+    // Các hàm Getter lấy thông tin thuộc tính (dùng const& cho chuỗi để không tốn bộ nhớ copy)
     const std::string& getTitle() const;
     const std::string& getDescription() const;
     const std::string& getServiceGroupId() const;
@@ -46,7 +48,7 @@ public:
     const std::string& getCreatedDate() const;
     TicketStatus getStatus() const;
 
-    // Setter (kiem tra rang buoc)
+    // Các hàm Setter cập nhật thuộc tính kèm kiểm tra ràng buộc dữ liệu hợp lệ
     void setTitle(const std::string& title);
     void setDescription(const std::string& description);
     void setServiceGroupId(const std::string& serviceGroupId);
@@ -54,9 +56,9 @@ public:
     void setEstimatedFee(int fee);
     void setCreatedDate(const std::string& date);
 
-    // Implement pure virtual method
+    // Ghi đè phương thức thuần ảo của lớp cha BaseEntity để in thông tin Ticket
     void printInfo() const override;
 
-    // Business method
+    // Thay đổi trạng thái xử lý của Ticket (OPEN, IN_PROGRESS, RESOLVED, CLOSED)
     void changeStatus(TicketStatus status);
 };

@@ -6,38 +6,36 @@
 #include <stdexcept>
 #include "Utilities.h"
 
+// Chỉ dùng using namespace std ở file .cpp để không làm bẩn không gian tên ở file .h
 using namespace std;
 
-/**
- * @brief Nap danh sach Phieu chuyen xu ly tu file (data/transfer_tickets.txt)
- */
-vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
-{
+// Chuyên biệt hóa hàm load cho TransferTicket: nạp danh sách Phiếu chuyển xử lý từ file văn bản
+vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath) {
     vector<TransferTicket> result;
     ifstream inFile(filePath);
-    if (!inFile.is_open())
-    {
+    if (!inFile.is_open()) {
         ofstream outFile(filePath);
         outFile.close();
         return result;
     }
 
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)) {
         if (line.empty()) continue;
         size_t firstChar = line.find_first_not_of(" \t\r\n");
+        // Bỏ qua dòng trống hoặc dòng kẻ ngang phân cách bảng
         if (firstChar == string::npos || line[firstChar] == '-' || line[firstChar] == '+') continue;
 
         stringstream ss(line);
         string id, slaId, fromDept, toDept, reason, statusStr;
+
+        // Tách từng trường dữ liệu ngăn cách bởi dấu '|'
         if (getline(ss, id, '|') &&
             getline(ss, slaId, '|') &&
             getline(ss, fromDept, '|') &&
             getline(ss, toDept, '|') &&
             getline(ss, reason, '|') &&
-            getline(ss, statusStr, '|'))
-        {
+            getline(ss, statusStr, '|')) {
             id = Utils::trim(id);
             slaId = Utils::trim(slaId);
             fromDept = Utils::trim(fromDept);
@@ -45,49 +43,46 @@ vector<TransferTicket> FileManager<TransferTicket>::load(const string& filePath)
             reason = Utils::trim(reason);
             statusStr = Utils::trim(statusStr);
 
-            if (id == "Ma ID") continue;
+            // Bỏ qua dòng tiêu đề bảng
+            if (id == "Ma ID") {
+                continue;
+            }
 
-            if (Utils::extractIdNumber(id, "TF") == -1)
-            {
+            // Kiểm tra định dạng mã phiếu chuyển phải có tiền tố "TF" (TF001, TF002,...)
+            if (Utils::extractIdNumber(id, "TF") == -1) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
                 continue;
             }
 
-            try
-            {
-                int st = stoi(statusStr);
-                if (st < 0 || st > 2)
-                {
-                    cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
-                    continue;
+            try {
+                TransferTicket ticket(slaId, fromDept, toDept, reason);
+                ticket.setId(id);
+                try {
+                    int st = stoi(statusStr);
+                    if (st >= 0 && st <= 2) {
+                        // Dùng restoreStatus để gán thẳng trạng thái khi nạp từ file mà không bị chặn bởi kiểm tra chuyển trạng thái
+                        ticket.restoreStatus(static_cast<TransferStatus>(st));
+                    }
                 }
+                catch (...) {}
 
-                TransferTicket t(slaId, fromDept, toDept, reason);
-                t.setId(id);
-                t.restoreStatus(static_cast<TransferStatus>(st));
-                result.push_back(t);
+                result.push_back(ticket);
             }
-            catch (...)
-            {
+            catch (...) {
                 cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
             }
         }
-        else
-        {
+        else {
             cout << "[Canh bao] Dong sai dinh dang: \"" << line << "\". Bo qua dong nay." << endl;
         }
     }
     return result;
 }
 
-/**
- * @brief Ghi toan bo danh sach Phieu chuyen xu ly ra file (data/transfer_tickets.txt)
- */
-void FileManager<TransferTicket>::save(const string& filePath, const vector<TransferTicket>& data)
-{
+// Chuyên biệt hóa hàm save cho TransferTicket: ghi toàn bộ danh sách Phiếu chuyển xử lý ra file văn bản
+void FileManager<TransferTicket>::save(const string& filePath, const vector<TransferTicket>& data) {
     ofstream outFile(filePath);
-    if (!outFile.is_open())
-    {
+    if (!outFile.is_open()) {
         throw runtime_error("Khong the mo file de ghi: " + filePath);
     }
 
@@ -97,23 +92,22 @@ void FileManager<TransferTicket>::save(const string& filePath, const vector<Tran
             << setw(22) << "Bo phan chuyen" << " | "
             << setw(22) << "Bo phan nhan"   << " | "
             << setw(36) << "Ly do"          << " | "
-            << "Trang thai" << "\n";
+            << "Trang thai"                 << "\n";
     outFile << string(117, '-') << "\n";
 
-    for (const auto& t : data)
-    {
+    for (const auto& t : data) {
         outFile << left
-                << setw(8)  << t.getId()       << " | "
-                << setw(10) << t.getSlaId()    << " | "
-                << setw(22) << t.getFromDept() << " | "
-                << setw(22) << t.getToDept()   << " | "
-                << setw(36) << t.getReason()   << " | "
-                << static_cast<int>(t.getStatus()) << "\n";
+                << setw(8)  << t.getId()                   << " | "
+                << setw(10) << t.getSlaId()                << " | "
+                << setw(22) << t.getFromDept()             << " | "
+                << setw(22) << t.getToDept()               << " | "
+                << setw(36) << t.getReason()               << " | "
+                // Ép kiểu enum class sang số nguyên khi ghi file
+                << static_cast<int>(t.getStatus())         << "\n";
     }
 
     outFile.flush();
-    if (!outFile)
-    {
+    if (!outFile) {
         throw runtime_error("Khong the ghi du lieu vao file: " + filePath);
     }
 }

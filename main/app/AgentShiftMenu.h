@@ -1,32 +1,26 @@
 #pragma once 
 
-/**
- * @file AgentMenu.h
- * @brief Lớp điều khiển giao diện Menu và các thao tác CRUD cho Ca trực (AgentShift).
- * Quản lý các thuộc tính: Mã ID, Tên ca trực, Ngày trực, Bắt đầu, Kết thúc, Trạng thái hoạt động.
- * Đảm bảo các ràng buộc: Kiểm tra rỗng, kiểm tra trùng tên, kiểm tra toàn vẹn dữ liệu khi xóa.
- */
-
 #include "../Repository/Repository.h"
 #include "../Entity/AgentShift.h"
 #include "../Entity/Agent.h"
 
 class AgentShiftMenu {
-  private:
+private:
+    // Tham chiếu trực tiếp tới kho lưu trữ Ca trực gốc trong lớp Application
     Repository<AgentShift>& agentShiftRepository;
+    // Tham chiếu tới kho Điện thoại viên để kiểm tra mã nhân viên có tồn tại và đang hoạt động không khi phân công vào ca
     Repository<Agent>& agentRepository;
     
-    void showMenu();
-    void displayAll();
-    void findById();
-    void add();
-    void update();
-    void remove();
-    void manageAgentShift();
+    void showMenu();         // Hiển thị danh mục chức năng quản lý Ca trực
+    void displayAll();       // Hiển thị danh sách tất cả các ca trực
+    void findById();         // Tìm kiếm thông tin ca trực theo mã ID
+    void add();              // Tạo mới ca trực (kiểm tra trùng khung giờ trong cùng ngày)
+    void update();           // Cập nhật thông tin ca trực
+    void remove();           // Xóa ca trực (chặn xóa nếu ca trực đã có nhân viên đăng ký)
+    void manageAgentShift(); // Thêm hoặc gỡ nhân viên khỏi một ca trực
 
-  public:
+public:
     AgentShiftMenu(Repository<AgentShift>& asRepo, Repository<Agent>& agRepo);
 
-    void run();
-
+    void run();              // Chạy vòng lặp điều khiển menu Ca trực
 };

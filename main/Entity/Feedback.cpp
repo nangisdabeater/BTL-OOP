@@ -5,71 +5,56 @@
 
 using namespace std;
 
-/**
- * @brief Constructor khởi tạo đối tượng Feedback
- */
+// Khởi tạo đối tượng Feedback bằng danh sách khởi tạo thành viên
 Feedback::Feedback(const string& c, int s, const string& m, const string& d)
-    : customerId(c), comment(m), date(d), score(s)
-{
-}
+    : BaseEntity(), customerId(c), comment(m), date(d), score(s) {}
 
 const string& Feedback::getCustomerId() const {
-    return customerId;
+    return customerId; // Trả về mã khách hàng thực hiện đánh giá
 }
 
 const string& Feedback::getComment() const {
-    return comment;
+    return comment; // Trả về nội dung nhận xét
 }
 
 const string& Feedback::getDate() const {
-    return date;
+    return date; // Trả về ngày đánh giá
 }
 
 int Feedback::getScore() const {
-    return score;
+    return score; // Trả về điểm đánh giá (1 -> 5)
 }
 
-/**
- * @brief Cập nhật mã khách hàng, yêu cầu không được để trống
- */
 void Feedback::setCustomerId(const string& v) {
+    // Mã khách hàng không được để trống
     if (v.empty()) {
         throw invalid_argument("Ma khach hang khong duoc rong");
     }
     customerId = v;
 }
 
-/**
- * @brief Cập nhật nội dung nhận xét (cho phép để trống)
- */
 void Feedback::setComment(const string& v) {
-    comment = v;
+    comment = v; // Nhận xét có thể để trống tùy ý khách hàng
 }
 
-/**
- * @brief Cập nhật ngày đánh giá, yêu cầu đúng định dạng dd/mm/yyyy
- */
 void Feedback::setDate(const string& v) {
+    // Kiểm tra ngày đánh giá phải đúng định dạng DD/MM/YYYY
     if (!Utils::isValidDate(v)) {
         throw invalid_argument("Ngay phai co dang dd/mm/yyyy hop le");
     }
     date = v;
 }
 
-/**
- * @brief Cập nhật điểm đánh giá, thang điểm từ 1 đến 5
- */
 void Feedback::setScore(int v) {
+    // Điểm đánh giá hài lòng bắt buộc nằm trong thang từ 1 đến 5 sao
     if (v < 1 || v > 5) {
         throw invalid_argument("Diem danh gia phai tu 1 den 5");
     }
     score = v;
 }
 
-/**
- * @brief Hiển thị thông tin tóm tắt phiếu đánh giá
- */
 void Feedback::printInfo() const {
+    // Hiển thị thông tin chi tiết phiếu đánh giá ra màn hình
     cout << "Feedback ID: " << id
          << " | Ma KH: " << customerId
          << " | Diem: " << score << "/5"

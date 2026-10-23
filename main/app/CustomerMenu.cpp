@@ -3,16 +3,15 @@
 #include <iostream>
 #include <iomanip>
 
+// Chỉ dùng using namespace std ở file .cpp để không làm ô nhiễm không gian tên ở file .h
 using namespace std;
 
+// Khởi tạo menu quản lý khách hàng với tham chiếu tới kho Khách hàng và kho Phiếu đánh giá
 CustomerMenu::CustomerMenu(Repository<Customer>& r, Repository<Feedback>& fbRepo)
-    : repo(r), feedbackRepo(fbRepo){}
+    : repo(r), feedbackRepo(fbRepo) {}
 
-/**
- * @brief Hiển thị menu chức năng quản lý khách hàng
- */
-void CustomerMenu::showMenu()
-{
+// Hiển thị bảng menu các chức năng quản lý khách hàng
+void CustomerMenu::showMenu() {
     cout << "========================================" << endl;
     cout << "         QUAN LY KHACH HANG" << endl;
     cout << "========================================" << endl;
@@ -25,14 +24,10 @@ void CustomerMenu::showMenu()
     cout << "========================================" << endl;
 }
 
-/**
- * @brief Hiển thị toàn bộ danh sách khách hàng dưới dạng bảng
- */
-void CustomerMenu::displayAll()
-{
+// Hiển thị toàn bộ danh sách khách hàng dưới dạng bảng căn lề trái
+void CustomerMenu::displayAll() {
     const auto& list = repo.getAll();
-    if (list.empty())
-    {
+    if (list.empty()) {
         cout << "Danh sach khach hang dang trong!" << endl;
         Utils::backChoice();
         return;
@@ -46,8 +41,7 @@ void CustomerMenu::displayAll()
          << "Dia chi" << endl;
     cout << string(90, '-') << endl;
 
-    for (const auto& x : list)
-    {
+    for (const auto& x : list) {
         cout << left
              << setw(8)  << x.getId()
              << setw(24) << x.getFullName()
@@ -58,82 +52,66 @@ void CustomerMenu::displayAll()
     Utils::backChoice();
 }
 
-/**
- * @brief Tìm kiếm thông tin khách hàng theo mã định danh (ID)
- */
-void CustomerMenu::findById()
-{
+// Tìm kiếm thông tin khách hàng theo mã định danh ID
+void CustomerMenu::findById() {
     string id = Utils::inputNonEmptyString("Nhap ma khach hang can tim (VD: KH001, nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     auto* x = repo.findById(id);
-    if (x)
-    {
+    if (x) {
         Utils::printEntityDetails(*x);
     }
-    else
-    {
+    else {
         cout << "Khong tim thay khach hang voi ma: " << id << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Thêm khách hàng mới và cấp phát mã ID tự động (KHxxx)
- */
-void CustomerMenu::add()
-{
+// Thêm khách hàng mới và cấp phát mã ID tự động (KHxxx)
+void CustomerMenu::add() {
     cout << "--- Them khach hang moi ---" << endl;
     string n = Utils::inputNonEmptyString("Nhap ho ten khach hang (nhap 0 de quay lai): ");
-    if (n == "0")
-    {
+    if (n == "0") {
         return;
     }
     string p = Utils::inputNonEmptyString("Nhap so dien thoai: ");
     string e;
-    while (true)
-    {
+    while (true) {
         e = Utils::inputNonEmptyString("Nhap email: ");
+        // Kiểm tra chuỗi email phải chứa ký tự phân cách tên miền trước khi tạo đối tượng
         if (e.find('@') != string::npos) break;
-        cout << "Email khong hop le (can chua ky tu '@')! Vui long nhap lai." << endl;
+        cout << "Email khong hop le! Vui long nhap lai." << endl;
     }
     string a = Utils::inputNonEmptyString("Nhap dia chi: ");
 
     Customer x(n, p, e, a);
-    try
-    {
+    try {
         repo.add(x);
         const auto& list = repo.getAll();
         cout << "Them khach hang thanh cong! Ma duoc cap: " << list.back().getId() << endl;
     }
-    catch (const exception& ex)
-    {
+    catch (const exception& ex) {
         cout << "Loi khi them khach hang: " << ex.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Cập nhật thông tin khách hàng, cho phép ấn Enter để giữ nguyên giá trị cũ
- */
-void CustomerMenu::update()
-{
+// Cập nhật thông tin khách hàng: cho phép nhấn Enter để giữ nguyên trường cũ
+void CustomerMenu::update() {
     cout << "--- Cap nhat thong tin khach hang ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma KH can sua (nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     auto* x = repo.findById(id);
-    if (!x)
-    {
+    if (!x) {
         cout << "Khong tim thay khach hang voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
+    // Tạo bản sao để chỉnh sửa tạm trước khi ghi đè vào kho dữ liệu
     Customer updated = *x;
 
     cout << "Thong tin hien tai:" << endl;
@@ -150,8 +128,7 @@ void CustomerMenu::update()
 
     cout << "Email [" << updated.getEmail() << "] (Enter de giu): ";
     getline(cin, v);
-    if (!Utils::trim(v).empty())
-    {
+    if (!Utils::trim(v).empty()) {
         try { updated.setEmail(Utils::trim(v)); }
         catch (const exception& ex) { cout << "Loi email: " << ex.what() << ", giu nguyen email cu." << endl; }
     }
@@ -160,48 +137,37 @@ void CustomerMenu::update()
     getline(cin, v);
     if (!Utils::trim(v).empty()) updated.setAddress(Utils::trim(v));
 
-    try
-    {
-        if (repo.update(updated))
-        {
+    try {
+        if (repo.update(updated)) {
             cout << "Cap nhat thong tin khach hang thanh cong!" << endl;
         }
-        else
-        {
+        else {
             cout << "Loi khi cap nhat khach hang!" << endl;
         }
     }
-    catch (const exception& ex)
-    {
+    catch (const exception& ex) {
         cout << "Loi khi luu: " << ex.what() << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Xóa khách hàng khỏi hệ thống
- */
-void CustomerMenu::remove()
-{
+// Xóa khách hàng khỏi hệ thống sau khi kiểm tra ràng buộc toàn vẹn với Phiếu đánh giá
+void CustomerMenu::remove() {
     cout << "--- Xoa khach hang ---" << endl;
     string id = Utils::inputNonEmptyString("Nhap ma KH can xoa (nhap 0 de quay lai): ");
-    if (id == "0")
-    {
+    if (id == "0") {
         return;
     }
     auto* x = repo.findById(id);
-    if (!x)
-    {
+    if (!x) {
         cout << "Khong tim thay khach hang voi ma: " << id << endl;
         Utils::backChoice();
         return;
     }
 
-    // Kiểm tra ràng buộc toàn vẹn dữ liệu với Phiếu đánh giá hài lòng (Feedback)
-    for (const auto& fb : feedbackRepo.getAll())
-    {
-        if (fb.getCustomerId() == id)
-        {
+    // Kiểm tra ràng buộc toàn vẹn dữ liệu: chặn xóa nếu khách hàng đang có phiếu đánh giá hài lòng (Feedback)
+    for (const auto& fb : feedbackRepo.getAll()) {
+        if (fb.getCustomerId() == id) {
             cout << "Loi rang buoc toan ven: Khong the xoa khach hang '" << id
                  << "' vi dang co phieu danh gia lien ket (Ma danh gia: " << fb.getId() << ")!" << endl;
             Utils::backChoice();
@@ -215,37 +181,28 @@ void CustomerMenu::remove()
     char y;
     cin >> y;
     cin.ignore(10000, '\n');
-    if (y == 'y' || y == 'Y')
-    {
-        if (repo.remove(id))
-        {
+    if (y == 'y' || y == 'Y') {
+        if (repo.remove(id)) {
             cout << "Da xoa khach hang thanh cong!" << endl;
         }
-        else
-        {
+        else {
             cout << "Khong the xoa khach hang!" << endl;
         }
     }
-    else
-    {
+    else {
         cout << "Da huy thao tac xoa." << endl;
     }
     Utils::backChoice();
 }
 
-/**
- * @brief Điều phối các lựa chọn người dùng trong menu quản lý khách hàng
- */
-void CustomerMenu::run()
-{
+// Điều phối các lựa chọn của người dùng trong menu quản lý khách hàng
+void CustomerMenu::run() {
     bool inMenu = true;
-    while (inMenu)
-    {
+    while (inMenu) {
         showMenu();
         int choice;
         cout << "Nhap lua chon: ";
-        if (!(cin >> choice))
-        {
+        if (!(cin >> choice)) {
             cin.clear();
             cin.ignore(10000, '\n');
             cout << "Lua chon khong hop le!" << endl << endl;
@@ -253,10 +210,8 @@ void CustomerMenu::run()
         }
         cin.ignore(10000, '\n');
 
-        try
-        {
-            switch (choice)
-            {
+        try {
+            switch (choice) {
             case 1: displayAll(); break;
             case 2: findById();   break;
             case 3: add();        break;
@@ -266,8 +221,7 @@ void CustomerMenu::run()
             default: cout << "Lua chon khong hop le!" << endl;
             }
         }
-        catch (const exception& e)
-        {
+        catch (const exception& e) {
             cout << "Loi: " << e.what() << endl;
         }
 
