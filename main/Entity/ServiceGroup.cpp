@@ -16,7 +16,7 @@ ServiceGroup::ServiceGroup(
     // Tại sao dùng Danh sách khởi tạo thành viên (Member Initializer List) ": BaseEntity(), name(name)..."
     // thay vì gán "this->name = name;" bên trong cặp ngoặc nhọn {}?
     // Vì nếu gán trong thân hàm {}, trình biên dịch sẽ phải tạo các biến string rỗng trước rồi mới gán đè giá trị lên (tốn 2 bước).
-    // Dùng danh sách khởi tạo giúp truyền thẳng giá trị ngay lúc tạo biến (chỉ mất 1 bước), tối ưu hiệu năng hơn.
+    // Dùng danh sách khởi tạo giúp truyền thẳng giá trị ngay lúc tạo biến.
     : BaseEntity(),
       name(name),
       description(description),

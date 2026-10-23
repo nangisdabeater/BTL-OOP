@@ -10,4 +10,3 @@ CN007    | Ung dung di dong          | Tiep nhan phan hoi qua ung dung          
 CN008    | SMS CSKH                  | Tiep nhan va phan hoi qua tin nhan SMS   | 1
 CN009    | Hotline khieu nai         | Tiep nhan va xu ly khieu nai             | 1
 CN010    | Quay giao dich            | Tiep nhan yeu cau truc tiep tai quay     | 1
-

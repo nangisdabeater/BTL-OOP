@@ -105,7 +105,7 @@ vector<ServiceGroup> FileManager<ServiceGroup>::load(const string& filePath){
     return result;
 }
 
-// Chuyên biệt hóa hàm save cho ServiceGroup: dùng setw căn lề trái để file văn bản thẳng hàng như bảng
+//Định dạng hàm save cho ServiceGroup: dùng setw căn lề trái để file văn bản thẳng hàng như bảng
 void FileManager<ServiceGroup>::save(const string& filePath, const vector<ServiceGroup>& data){
 
     ofstream outFile(filePath);

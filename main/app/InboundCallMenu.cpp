@@ -167,8 +167,25 @@ void InboundCallMenu::add() {
         }
     }
 
-    string callTime = Utils::inputNonEmptyString("Nhap thoi gian cuoc goi (VD: 2026-10-11 14:30): ");
-
+    string callDate = Utils::inputDateString("Nhap ngay cuoc goi (DD/MM/YYYY): ");
+    string callHour;
+    while (true)
+    {
+        callHour = Utils::inputNonEmptyString("Nhap gio cuoc goi (HH:MM, VD: 14:30): ");
+        if (callHour.length() == 5 && callHour[2] == ':' &&
+            isdigit(callHour[0]) && isdigit(callHour[1]) &&
+            isdigit(callHour[3]) && isdigit(callHour[4]))
+        {
+            int h = stoi(callHour.substr(0, 2));
+            int m = stoi(callHour.substr(3, 2));
+            if (h >= 0 && h <= 23 && m >= 0 && m <= 59)
+            {
+                break;
+            }
+        }
+        cout << "Gio khong hop le! Vui long nhap dung dinh dang HH:MM (tu 00:00 den 23:59)." << endl;
+    }
+    string callTime = callDate + " " + callHour;
     int duration = 0;
     cout << "Nhap thoi luong cuoc goi (tinh theo giay): ";
     if (!(cin >> duration) || duration < 0) {

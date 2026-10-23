@@ -106,7 +106,7 @@ vector<Ticket> FileManager<Ticket>::load(const string& filePath){
     return result;
 }
 
-// Chuyên biệt hóa hàm save cho Ticket: ghi danh sách phiếu yêu cầu ra file văn bản kẻ cột ngay ngắn
+//Định dạng  hàm save cho Ticket: ghi danh sách phiếu yêu cầu ra file văn bản kẻ bảng
 void FileManager<Ticket>::save(const string& filePath, const vector<Ticket>& data){
 
     ofstream outFile(filePath);
