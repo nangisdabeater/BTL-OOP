@@ -7,6 +7,8 @@ Triển khai các phương thức của lớp thực thể Nhóm dịch vụ (Se
 #include <iomanip>
 #include <stdexcept>
 
+using namespace std;
+
 ServiceGroup::ServiceGroup(
     const string& name,
     const string& description,

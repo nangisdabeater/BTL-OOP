@@ -8,7 +8,6 @@
 #include <string>
 #include "BaseEntity.h"
 
-using namespace std;
 
 enum class TicketStatus{
     OPEN,
@@ -19,41 +18,41 @@ enum class TicketStatus{
 
 class Ticket : public BaseEntity{
 private:
-    string title;            // Tieu de ticket (khong rong, toi da 100 ky tu)
-    string description;      // Mo ta chi tiet
-    string serviceGroupId;   // Ma dich vu SMxxx (khoa ngoai)
+    std::string title;            // Tieu de ticket (khong rong, toi da 100 ky tu)
+    std::string description;      // Mo ta chi tiet
+    std::string serviceGroupId;   // Ma dich vu SMxxx (khoa ngoai)
     int priority;            // Muc do uu tien: 1 (Thap), 2 (Trung binh), 3 (Cao), 4 (Khan cap)
     int estimatedFee;        // Chi phi xu ly uoc tinh (>= 0)
-    string createdDate;      // Ngay tao (DD/MM/YYYY)
+    std::string createdDate;      // Ngay tao (DD/MM/YYYY)
     TicketStatus status;     // Trang thai ticket
 
 public:
     // Constructor (ID se duoc Repository cap tu dong dang TKxxx)
     Ticket(
-        const string& title = "",
-        const string& description = "",
-        const string& serviceGroupId = "",
+        const std::string& title = "",
+        const std::string& description = "",
+        const std::string& serviceGroupId = "",
         int priority = 2,
         int estimatedFee = 0,
-        const string& createdDate = "01/01/2026"
+        const std::string& createdDate = "01/01/2026"
     );
 
     // Getter
-    const string& getTitle() const;
-    const string& getDescription() const;
-    const string& getServiceGroupId() const;
+    const std::string& getTitle() const;
+    const std::string& getDescription() const;
+    const std::string& getServiceGroupId() const;
     int getPriority() const;
     int getEstimatedFee() const;
-    const string& getCreatedDate() const;
+    const std::string& getCreatedDate() const;
     TicketStatus getStatus() const;
 
     // Setter (kiem tra rang buoc)
-    void setTitle(const string& title);
-    void setDescription(const string& description);
-    void setServiceGroupId(const string& serviceGroupId);
+    void setTitle(const std::string& title);
+    void setDescription(const std::string& description);
+    void setServiceGroupId(const std::string& serviceGroupId);
     void setPriority(int priority);
     void setEstimatedFee(int fee);
-    void setCreatedDate(const string& date);
+    void setCreatedDate(const std::string& date);
 
     // Implement pure virtual method
     void printInfo() const override;

@@ -9,28 +9,27 @@
 #include <string>
 #include "BaseEntity.h"
 
-using namespace std;
 
 class SLALevel : public BaseEntity
 {
 private:
-    string name;
+    std::string name;
     int responseMinutes;   // > 0
     int resolveHours;      // > 0
     int priority;          // 1 (cao nhat) -> 5 (thap nhat)
 
 public:
     // id se duoc Repository cap khi add
-    SLALevel(const string& name, int responseMinutes, int resolveHours, int priority);
+    SLALevel(const std::string& name, int responseMinutes, int resolveHours, int priority);
 
     // Getter
-    const string& getName() const;
+    const std::string& getName() const;
     int getResponseMinutes() const;
     int getResolveHours() const;
     int getPriority() const;
 
     // Setter (nem invalid_argument neu sai rang buoc)
-    void setName(const string& name);
+    void setName(const std::string& name);
     void setResponseMinutes(int minutes);
     void setResolveHours(int hours);
     void setPriority(int priority);

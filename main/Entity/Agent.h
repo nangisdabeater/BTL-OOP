@@ -12,31 +12,31 @@
 
 class Agent : public BaseEntity {
   private:
-    string fullName;
-    string phoneNumber;
-    string email;
-    string extensionPhone;
+    std::string fullName;
+    std::string phoneNumber;
+    std::string email;
+    std::string extensionPhone;
     bool status;
   public: 
     Agent(
-      const string &fullName = "",
-      const string &phoneNumber = "",
-      const string &email = "",
-      const string &extensionPhone = ""
+      const std::string &fullName = "",
+      const std::string &phoneNumber = "",
+      const std::string &email = "",
+      const std::string &extensionPhone = ""
     );
 
     // Getter 
-    const string& getFullName() const;
-    const string& getPhoneNumber() const;
-    const string& getEmail() const;
-    const string& getExtensionPhone() const;
+    const std::string& getFullName() const;
+    const std::string& getPhoneNumber() const;
+    const std::string& getEmail() const;
+    const std::string& getExtensionPhone() const;
     bool isActive() const;
 
     // Setter
-    void setFullName(const string& fullName);
-    void setPhoneNumber(const string& phoneNumber);
-    void setEmail(const string& email);
-    void setExtensionPhone(const string& extensionPhone);
+    void setFullName(const std::string& fullName);
+    void setPhoneNumber(const std::string& phoneNumber);
+    void setEmail(const std::string& email);
+    void setExtensionPhone(const std::string& extensionPhone);
 
     // Implement pure virtual method
     void printInfo() const override;

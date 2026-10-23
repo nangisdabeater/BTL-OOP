@@ -13,35 +13,35 @@
 
 class AgentShift : public BaseEntity {
   private: 
-    string shiftName;
-    string shiftDate;
-    string shiftStart;
-    string shiftEnd;
-    vector<string> agentIds;
+    std::string shiftName;
+    std::string shiftDate;
+    std::string shiftStart;
+    std::string shiftEnd;
+    std::vector<std::string> agentIds;
     bool status;
   public:
     AgentShift(
-      const string& shiftName,
-      const string& shiftDate,
-      const string& shiftStart,
-      const string& shiftEnd
+      const std::string& shiftName,
+      const std::string& shiftDate,
+      const std::string& shiftStart,
+      const std::string& shiftEnd
     );
     // Getter
-    const string& getShiftName() const;
-    const string& getShiftDate() const;
-    const string& getShiftStart() const;
-    const string& getShiftEnd() const;
-    const vector<string>& getAgentIds() const;
+    const std::string& getShiftName() const;
+    const std::string& getShiftDate() const;
+    const std::string& getShiftStart() const;
+    const std::string& getShiftEnd() const;
+    const std::vector<std::string>& getAgentIds() const;
     bool isActive() const;
 
     // Setter
-    void setShiftName(const string& shiftName);
-    void setShiftDate(const string& shiftDate);
-    void setShiftStart(const string& shiftStart);
-    void setShiftEnd(const string& shiftEnd);
-    void setAgentIds(const vector<string>& agentIds);
-    void addAgentId(const string& agentId);
-    void removeAgentId(const string& agentId);
+    void setShiftName(const std::string& shiftName);
+    void setShiftDate(const std::string& shiftDate);
+    void setShiftStart(const std::string& shiftStart);
+    void setShiftEnd(const std::string& shiftEnd);
+    void setAgentIds(const std::vector<std::string>& agentIds);
+    void addAgentId(const std::string& agentId);
+    void removeAgentId(const std::string& agentId);
 
     void printInfo() const override;
 

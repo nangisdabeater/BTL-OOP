@@ -15,30 +15,29 @@
 #include <string>
 #include "BaseEntity.h"
 
-using namespace std;
 
 class ReceptionChannel : public BaseEntity
 {
 private:
-    string name;         // Tên kênh tiếp nhận (VD: Hotline 1900, Fanpage Facebook, Email CSKH,...)
-    string description;  // Mô tả kênh tiếp nhận
+    std::string name;         // Tên kênh tiếp nhận (VD: Hotline 1900, Fanpage Facebook, Email CSKH,...)
+    std::string description;  // Mô tả kênh tiếp nhận
     bool active;         // Trạng thái (true: Đang hoạt động, false: Tạm ngưng)
 
 public:
     // Constructor (ID sẽ được Repository cấp tự động dạng CNxxx khi gọi add)
     ReceptionChannel(
-        const string& name = "",
-        const string& description = ""
+        const std::string& name = "",
+        const std::string& description = ""
     );
 
     // Getter
-    const string& getName() const;
-    const string& getDescription() const;
+    const std::string& getName() const;
+    const std::string& getDescription() const;
     bool isActive() const;
 
     // Setter (có kiểm tra dữ liệu hợp lệ)
-    void setName(const string& name);
-    void setDescription(const string& description);
+    void setName(const std::string& name);
+    void setDescription(const std::string& description);
 
     // Triển khai phương thức thuần ảo từ BaseEntity để in thông tin ra màn hình
     void printInfo() const override;

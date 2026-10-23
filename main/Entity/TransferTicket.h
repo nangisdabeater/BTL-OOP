@@ -9,7 +9,6 @@
 #include <string>
 #include "BaseEntity.h"
 
-using namespace std;
 
 enum class TransferStatus
 {
@@ -21,33 +20,33 @@ enum class TransferStatus
 class TransferTicket : public BaseEntity
 {
 private:
-    string slaId;       // Ma muc SLA ap dung (SLxxx - khoa ngoai lien ket SLALevel)
-    string fromDept;    // Bo phan / tuyen chuyen
-    string toDept;      // Bo phan / tuyen nhan
-    string reason;      // Ly do chuyen xu ly
+    std::string slaId;       // Ma muc SLA ap dung (SLxxx - khoa ngoai lien ket SLALevel)
+    std::string fromDept;    // Bo phan / tuyen chuyen
+    std::string toDept;      // Bo phan / tuyen nhan
+    std::string reason;      // Ly do chuyen xu ly
     TransferStatus status;
 
 public:
     // id se duoc Repository cap khi add (TFxxx)
     TransferTicket(
-        const string& slaId = "",
-        const string& fromDept = "",
-        const string& toDept = "",
-        const string& reason = ""
+        const std::string& slaId = "",
+        const std::string& fromDept = "",
+        const std::string& toDept = "",
+        const std::string& reason = ""
     );
 
     // Getter
-    const string& getSlaId() const;
-    const string& getFromDept() const;
-    const string& getToDept() const;
-    const string& getReason() const;
+    const std::string& getSlaId() const;
+    const std::string& getFromDept() const;
+    const std::string& getToDept() const;
+    const std::string& getReason() const;
     TransferStatus getStatus() const;
 
     // Setter
-    void setSlaId(const string& slaId);
-    void setFromDept(const string& fromDept);
-    void setToDept(const string& toDept);
-    void setReason(const string& reason);
+    void setSlaId(const std::string& slaId);
+    void setFromDept(const std::string& fromDept);
+    void setToDept(const std::string& toDept);
+    void setReason(const std::string& reason);
 
     void printInfo() const override;
 

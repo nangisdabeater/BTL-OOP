@@ -118,7 +118,7 @@ namespace Utils {
             }
         }
     }
-//Ktra xem có thực thể nào đang hoạt động chưa
+//Ktra xem có thực thể nào đang hoạt động chưa(có thể check nhiều thực thể hoạt động cùng 1 lúc)
     std::string join(const std::vector<std::string>& vec, const std::string& delemiter) {
     std::string result = "";
     for (size_t i = 0; i < vec.size(); i++) {

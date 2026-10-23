@@ -6,6 +6,8 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
+
 Agent::Agent(
   const string& fullName,
   const string& phoneNumber,

@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
+
 InboundCall::InboundCall(
     const string& phoneNumber,
     const string& channelId,

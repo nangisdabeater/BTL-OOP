@@ -3,24 +3,21 @@
 #include <string>
 #include <stdexcept>
 
-using namespace std;
-
-class BaseEntity
-{
+class BaseEntity{
 protected:
-    string id;
+    std::string id;
 
 public:
     BaseEntity() : id("") {}
     virtual ~BaseEntity() = default;
 
-    virtual const string& getId() const {
+    virtual const std::string& getId() const {
         return id;
     }
 
-    virtual void setId(const string& newId) {
+    virtual void setId(const std::string& newId) {
         if (newId.empty()) {
-            throw invalid_argument("ID khong duoc de trong!");
+            throw std::invalid_argument("ID khong duoc de trong!");
         }
         id = newId;
     }

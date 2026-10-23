@@ -17,43 +17,42 @@
 #include <string>
 #include "BaseEntity.h"
 
-using namespace std;
 
 class InboundCall : public BaseEntity{
 private:
-    string phoneNumber;  
-    string channelId;    
-    string callTime;     
+    std::string phoneNumber;  
+    std::string channelId;    
+    std::string callTime;     
     int duration;        
-    string status;       // Trạng thái cuộc gọi: ANSWERED (Thành công), MISSED (Nhỡ), BUSY (Bận máy)
-    string note;         
+    std::string status;       // Trạng thái cuộc gọi: ANSWERED (Thành công), MISSED (Nhỡ), BUSY (Bận máy)
+    std::string note;         
 
 public:
     // Constructor (ID sẽ được Repository cấp tự động dạng CAxxx khi gọi add)
     InboundCall(
-        const string& phoneNumber = "",
-        const string& channelId = "",
-        const string& callTime = "",
+        const std::string& phoneNumber = "",
+        const std::string& channelId = "",
+        const std::string& callTime = "",
         int duration = 0,
-        const string& status = "ANSWERED",
-        const string& note = ""
+        const std::string& status = "ANSWERED",
+        const std::string& note = ""
     );
 
     // Getter
-    const string& getPhoneNumber() const;
-    const string& getChannelId() const;
-    const string& getCallTime() const;
+    const std::string& getPhoneNumber() const;
+    const std::string& getChannelId() const;
+    const std::string& getCallTime() const;
     int getDuration() const;
-    const string& getStatus() const;
-    const string& getNote() const;
+    const std::string& getStatus() const;
+    const std::string& getNote() const;
 
     // Setter (có kiểm tra dữ liệu hợp lệ)
-    void setPhoneNumber(const string& phoneNumber);
-    void setChannelId(const string& channelId);
-    void setCallTime(const string& callTime);
+    void setPhoneNumber(const std::string& phoneNumber);
+    void setChannelId(const std::string& channelId);
+    void setCallTime(const std::string& callTime);
     void setDuration(int duration);
-    void setStatus(const string& status);
-    void setNote(const string& note);
+    void setStatus(const std::string& status);
+    void setNote(const std::string& note);
 
     // Triển khai phương thức thuần ảo từ BaseEntity
     void printInfo() const override;

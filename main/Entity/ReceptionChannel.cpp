@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
+
 // Khởi tạo kênh tiếp nhận mặc định trạng thái hoạt động là true
 ReceptionChannel::ReceptionChannel(
     const string& name,
