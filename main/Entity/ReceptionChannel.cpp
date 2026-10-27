@@ -4,54 +4,61 @@
 
 using namespace std;
 
-// Khởi tạo kênh tiếp nhận bằng danh sách khởi tạo, mặc định trạng thái hoạt động là true
+// Khởi tạo kênh tiếp nhận mặc định trạng thái hoạt động là true
 ReceptionChannel::ReceptionChannel(
     const string& name,
     const string& description)
     : BaseEntity(),
       name(name),
       description(description),
-      active(true) {}
+      active(true){}
 
-const string& ReceptionChannel::getName() const {
-    return name; // Trả về tên kênh tiếp nhận
+// GETTER
+
+const string& ReceptionChannel::getName() const{
+    return name;
 }
 
-const string& ReceptionChannel::getDescription() const {
-    return description; // Trả về mô tả kênh tiếp nhận
+const string& ReceptionChannel::getDescription() const{
+    return description;
 }
 
-bool ReceptionChannel::isActive() const {
-    return active; // Trả về trạng thái hoạt động
+bool ReceptionChannel::isActive() const{
+    return active;
 }
 
-void ReceptionChannel::setName(const string& name) {
-    // Tên kênh tiếp nhận không được phép để trống
+// SETTER
+
+void ReceptionChannel::setName(const string& name){
     if (name.empty()) {
         throw invalid_argument("Ten kenh tiep nhan khong duoc de trong!");
     }
     this->name = name;
 }
 
-void ReceptionChannel::setDescription(const string& description) {
+void ReceptionChannel::setDescription(const string& description){
     if (description.empty()) {
         throw invalid_argument("Mo ta kenh tiep nhan khong duoc de trong!");
     }
     this->description = description;
 }
 
-void ReceptionChannel::printInfo() const {
-    // Hiển thị thông tin chi tiết của kênh tiếp nhận ra màn hình
+// PHƯƠNG THỨC HIỂN THỊ THÔNG TIN
+
+void ReceptionChannel::printInfo() const
+{
     cout << "Kenh tiep nhan ID: " << id 
          << " | Ten: " << name 
          << " | Mo ta: " << description 
          << " | Trang thai: " << (active ? "Hoat dong" : "Ngung hoat dong") << endl;
 }
 
-void ReceptionChannel::activate() {
-    active = true; // Kích hoạt kênh tiếp nhận
+// CÁC HÀM NGHIỆP VỤ BẬT / TẮT
+
+void ReceptionChannel::activate(){
+    active = true;
 }
 
-void ReceptionChannel::deactivate() {
-    active = false; // Tạm ngưng kênh tiếp nhận
+void ReceptionChannel::deactivate(){
+    active = false;
 }

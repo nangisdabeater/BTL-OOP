@@ -1,29 +1,42 @@
 #pragma once
 
+/**
+ * @file InboundCallMenu.h
+ * @brief Lớp điều khiển giao diện Menu và các thao tác CRUD cho Cuộc gọi tiếp nhận (InboundCall)
+ * [PHẦN THÊM MỚI]
+ * Quản lý các thuộc tính: Mã ID (CAxxx), Số điện thoại, Mã kênh (CNxxx), Mã DTV (AGxxx), Thời gian, Thời lượng, Trạng thái, Ghi chú.
+ * Đảm bảo các ràng buộc:
+ *   - Mã kênh tiếp nhận phải tồn tại và đang hoạt động.
+ *   - Mã điện thoại viên tiếp nhận (nếu có nhập) phải tồn tại trong danh sách Agent.
+ *   - Tự động sinh ID theo tiền tố "CA" (CA001, CA002,...).
+ */
+
 #include "../Repository/Repository.h"
 #include "../Entity/InboundCall.h"
 #include "../Entity/ReceptionChannel.h"
+#include "../Entity/Agent.h"
 
-class InboundCallMenu {
+class InboundCallMenu
+{
 private:
-    // Tham chiếu trực tiếp tới kho lưu trữ Cuộc gọi tiếp nhận
     Repository<InboundCall>& callRepository;
-    // Tham chiếu tới kho Kênh tiếp nhận để kiểm tra mã kênh (khóa ngoại) có tồn tại không khi ghi nhận cuộc gọi
-    Repository<ReceptionChannel>& channelRepository;
+    Repository<ReceptionChannel>& channelRepository; // Khóa ngoại kiểm tra mã kênh
+    Repository<Agent>& agentRepository;             // Khóa ngoại kiểm tra mã nhân viên tiếp nhận
 
-    void showMenu();        // Hiển thị danh mục chức năng quản lý Cuộc gọi tiếp nhận
-    void displayAll();      // Hiển thị toàn bộ danh sách cuộc gọi tiếp nhận
-    void findById();        // Tìm kiếm cuộc gọi theo mã ID (CAxxx)
-    void add();             // Ghi nhận cuộc gọi đến mới (kiểm tra khóa ngoại kênh tiếp nhận)
-    void update();          // Cập nhật trạng thái và ghi chú cuộc gọi
-    void filterByChannel(); // Lọc và thống kê danh sách cuộc gọi theo từng kênh tiếp nhận
-    void remove();          // Xóa thông tin cuộc gọi khỏi hệ thống
+    void showMenu();
+    void displayAll();
+    void findById();
+    void add();
+    void update();
+    void filterByChannel();
+    void remove();
 
 public:
     InboundCallMenu(
         Repository<InboundCall>& cRepo,
-        Repository<ReceptionChannel>& chRepo
+        Repository<ReceptionChannel>& chRepo,
+        Repository<Agent>& agRepo
     );
 
-    void run();             // Chạy vòng lặp điều khiển menu Cuộc gọi tiếp nhận
+    void run();
 };

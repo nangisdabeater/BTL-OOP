@@ -1,14 +1,12 @@
-Ma ID    | So dien thoai | Ma kenh   | Thoi gian          | Thoi luong | Trang thai   | Ghi chu
-----------------------------------------------------------------------------------------------------
-CA001    | 0987654321    | CN001     | 21/12/2026 08:30   | 125        | ANSWERED     | Khach hang hoi ve thoi gian giao hang
-CA002    | 0912345678    | CN001     | 21/12/2026 09:15   | 45         | ANSWERED     | Yeu cau huong dan kich hoat tai khoan
-CA003    | 0905555666    | CN001     | 21/12/2026 10:00   | 0          | MISSED       | Cuoc goi nho ngoai gio truc
-CA004    | 0934567890    | CN002     | 21/12/2026 10:20   | 180        | ANSWERED     | Khach hang hoi ve chinh sach bao hanh
-CA005    | 0945678901    | CN003     | 21/12/2026 11:05   | 240        | ANSWERED     | Ho tro khach hang cap nhat thong tin ca nhan
-CA006    | 0956789012    | CN001     | 21/12/2026 13:30   | 0          | MISSED       | Khach hang goi nhung khong co nhan vien nghe may
-CA007    | 0967890123    | CN004     | 21/12/2026 14:10   | 95         | ANSWERED     | Khach hang phan anh ve don hang giao cham
-CA008    | 0978901234    | CN005     | 21/12/2026 15:25   | 310        | ANSWERED     | Huong dan khach hang su dung dich vu
-CA009    | 0901234567    | CN006     | 21/12/2026 08:45   | 150        | ANSWERED     | Giai dap thac mac ve phi dich vu
-CA010    | 0902345678    | CN001     | 21/12/2026 09:30   | 0          | MISSED       | Khach hang goi nhung khong ket noi duoc
-CA011    | 0987654       | CN002     | 21/12/2026 14:30   | 4          | ANSWERED     | 1
-CA012    | 09876543      | CN002     | 12/12/2022 13:11   | 5          | ANSWERED     | 111
+Ma ID    | So dien thoai | Ma kenh   | Ma NV    | Thoi gian          | Thoi luong | Trang thai   | Ghi chu
+--------------------------------------------------------------------------------------------------------------
+CA001    | 0987654321    | CN001     | AG001    | 25/12/2006 08:30   | 125        | ANSWERED     | Khach hang hoi ve thoi gian giao hang
+CA002    | 0912345678    | CN001     | AG002    | 25/12/2006 09:15   | 45         | ANSWERED     | Yeu cau huong dan kich hoat tai khoan
+CA003    | 0905555666    | CN001     | AG001    | 25/12/2006 10:00   | 0          | MISSED       | Cuoc goi nho ngoai gio truc
+CA004    | 0934567890    | CN002     | AG003    | 25/12/2006 10:20   | 180        | ANSWERED     | Khach hang hoi ve chinh sach bao hanh
+CA005    | 0945678901    | CN003     | AG004    | 25/12/2006 11:05   | 240        | ANSWERED     | Ho tro khach hang cap nhat thong tin ca nhan
+CA006    | 0956789012    | CN001     | AG002    | 25/12/2006 13:30   | 0          | MISSED       | Khach hang goi nhung khong co nhan vien nghe may
+CA007    | 0967890123    | CN004     | AG005    | 25/12/2006 14:10   | 95         | ANSWERED     | Khach hang phan anh ve don hang giao cham
+CA008    | 0978901234    | CN005     | AG006    | 25/12/2006 15:25   | 310        | ANSWERED     | Huong dan khach hang su dung dich vu
+CA009    | 0901234567    | CN006     | AG007    | 25/12/2006 08:45   | 150        | ANSWERED     | Giai dap thac mac ve phi dich vu
+CA010    | 0902345678    | CN001     | AG001    | 25/12/2006 09:30   | 0          | MISSED       | Khach hang goi nhung khong ket noi duoc

@@ -67,4 +67,5 @@ set(SOURCES
 )
 
 # Tạo file thực thi 'myprogram' (trên Windows sẽ tự động sinh myprogram.exe)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(myprogram ${SOURCES})

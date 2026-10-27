@@ -4,10 +4,10 @@
 
 using namespace std;
 
-// Khởi tạo đối tượng InboundCall bằng danh sách khởi tạo thành viên
 InboundCall::InboundCall(
     const string& phoneNumber,
     const string& channelId,
+    const string& agentId,
     const string& callTime,
     int duration,
     const string& status,
@@ -16,80 +16,111 @@ InboundCall::InboundCall(
     : BaseEntity(),
       phoneNumber(phoneNumber),
       channelId(channelId),
+      agentId(agentId),
       callTime(callTime),
       duration(duration),
       status(status),
-      note(note) {}
-
-const string& InboundCall::getPhoneNumber() const {
-    return phoneNumber; // Trả về số điện thoại người gọi
+      note(note)
+{
 }
 
-const string& InboundCall::getChannelId() const {
-    return channelId; // Trả về mã kênh tiếp nhận
+// GETTER
+
+const string& InboundCall::getPhoneNumber() const{
+    return phoneNumber;
 }
 
-const string& InboundCall::getCallTime() const {
-    return callTime; // Trả về thời điểm gọi
+const string& InboundCall::getChannelId() const{
+    return channelId;
 }
 
-int InboundCall::getDuration() const {
-    return duration; // Trả về thời lượng cuộc gọi (giây)
+const string& InboundCall::getAgentId() const{
+    return agentId;
 }
 
-const string& InboundCall::getStatus() const {
-    return status; // Trả về trạng thái cuộc gọi
+const string& InboundCall::getCallTime() const
+{
+    return callTime;
 }
 
-const string& InboundCall::getNote() const {
-    return note; // Trả về ghi chú cuộc gọi
+int InboundCall::getDuration() const
+{
+    return duration;
 }
 
-void InboundCall::setPhoneNumber(const string& phoneNumber) {
+const string& InboundCall::getStatus() const
+{
+    return status;
+}
+
+const string& InboundCall::getNote() const
+{
+    return note;
+}
+
+// SETTER (Có kiểm tra tính hợp lệ)
+
+void InboundCall::setPhoneNumber(const string& phoneNumber)
+{
     if (phoneNumber.empty()) {
         throw invalid_argument("So dien thoai khong duoc de trong!");
     }
     this->phoneNumber = phoneNumber;
 }
 
-void InboundCall::setChannelId(const string& channelId) {
+void InboundCall::setChannelId(const string& channelId)
+{
     if (channelId.empty()) {
         throw invalid_argument("Ma kenh tiep nhan khong duoc de trong!");
     }
     this->channelId = channelId;
 }
 
-void InboundCall::setCallTime(const string& callTime) {
+void InboundCall::setAgentId(const string& agentId)
+{
+    if (agentId.empty()) {
+        throw invalid_argument("Ma nhan vien tiep nhan khong duoc de trong!");
+    }
+    this->agentId = agentId;
+}
+
+void InboundCall::setCallTime(const string& callTime)
+{
     if (callTime.empty()) {
         throw invalid_argument("Thoi gian cuoc goi khong duoc de trong!");
     }
     this->callTime = callTime;
 }
 
-void InboundCall::setDuration(int duration) {
-    // Thời lượng cuộc gọi tính bằng giây không được phép là số âm
+void InboundCall::setDuration(int duration)
+{
     if (duration < 0) {
         throw invalid_argument("Thoi luong cuoc goi khong duoc am!");
     }
     this->duration = duration;
 }
 
-void InboundCall::setStatus(const string& status) {
+void InboundCall::setStatus(const string& status)
+{
     if (status.empty()) {
         throw invalid_argument("Trang thai cuoc goi khong duoc de trong!");
     }
     this->status = status;
 }
 
-void InboundCall::setNote(const string& note) {
-    this->note = note; // Ghi chú có thể để trống
+void InboundCall::setNote(const string& note)
+{
+    this->note = note;
 }
 
-void InboundCall::printInfo() const {
-    // Hiển thị thông tin chi tiết cuộc gọi ra màn hình
+// PHƯƠNG THỨC HIỂN THỊ THÔNG TIN
+
+void InboundCall::printInfo() const
+{
     cout << "Cuoc goi ID: " << id
          << " | SDT: " << phoneNumber
-         << " | Ma kenh: " << channelId
+         << " | Kenh: " << channelId
+         << " | Ma NV: " << agentId
          << " | Thoi gian: " << callTime
          << " | Thoi luong: " << duration << "s"
          << " | Trang thai: " << status

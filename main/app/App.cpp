@@ -16,21 +16,33 @@
 
 using namespace std;
 
-// Dùng Danh sách khởi tạo (Member Initializer List) để truyền tiền tố ID và đường dẫn file cho từng Repository
-// vì lớp Repository không có hàm khởi tạo mặc định không tham số.
+// TRIỂN KHAI LỚP APPLICATION
+
+/**
+ *Hàm khởi tạo Application
+ * Gán file dữ liệu riêng trong thư mục 'data/' cho mỗi Repository và tự động nạp dữ liệu cũ (nếu có).
+ * - ServiceManager / ServiceGroup: Tiền tố SM (SMxxx)
+ * - Ticket: Tiền tố TK (TKxxx)
+ * - Agent: Tiền tố AG (AGxxx)
+ * - ReceptionChannel: Tiền tố CN (CNxxx)
+ * - InboundCall: Tiền tố CA (CAxxx)
+ * - SLALevel: Tiền tố SL (SLxxx)
+ * - TransferTicket: Tiền tố TF (TFxxx)
+ * - Customer: Tiền tố KH (KHxxx)
+ * - Feedback: Tiền tố DG (DGxxx)
+ */
 Application::Application()
-    : serviceGroupRepository("SM", "../data/service_groups.txt"),
-      ticketRepository("TK", "../data/tickets.txt"),
-      agentRepository("AG", "../data/agents.txt"),
-      channelRepository("CN", "../data/channels.txt"),
-      inboundCallRepository("CA", "../data/inbound_calls.txt"),
-      slaRepository("SL", "../data/sla_levels.txt"),
-      transferRepository("TF", "../data/transfer_tickets.txt"),
-      customerRepository("KH", "../data/customers.txt"),
-      feedbackRepository("DG", "../data/feedback.txt"),
-      agentShiftRepository("AS", "../data/agent_shifts.txt") {
+    : serviceGroupRepository("SM", "data/service_groups.txt"),
+      ticketRepository("TK", "data/tickets.txt"),
+      agentRepository("AG", "data/agents.txt"),
+      channelRepository("CN", "data/channels.txt"),
+      inboundCallRepository("CA", "data/inbound_calls.txt"),
+      slaRepository("SL", "data/sla_levels.txt"),
+      transferRepository("TF", "data/transfer_tickets.txt"),
+      customerRepository("KH", "data/customers.txt"),
+      feedbackRepository("DG", "data/feedback.txt"),
+      agentShiftRepository("AS", "data/agent_shifts.txt"){
     
-    // Nạp toàn bộ dữ liệu từ các file trong thư mục data/ lên bộ nhớ RAM ngay khi mở chương trình
     serviceGroupRepository.load();
     ticketRepository.load();
     agentRepository.load();
@@ -43,24 +55,26 @@ Application::Application()
     agentShiftRepository.load();
 }
 
-void Application::run() {
+//Vòng lặp chính của chương trình
+
+void Application::run(){
     bool running = true;
 
-    while (running) {
+    while (running){
         showMainMenu();
 
         int choice;
+
         cout << "Nhap lua chon: ";
-        // Nếu người dùng nhập chữ thay vì số nguyên thì xóa cờ lỗi và dọn sạch bộ đệm bàn phím
-        if (!(cin >> choice)) {
+        if (!(cin >> choice)){
             cin.clear();
             cin.ignore(10000, '\n');
             cout << "Lua chon khong hop le!" << endl << endl;
             continue;
         }
-        cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng (\n) còn sót lại trong bộ đệm
+        cin.ignore(10000, '\n'); // Xóa ký tự xuống dòng
 
-        switch (choice) {
+        switch (choice){
         case 1:
             serviceGroupMenu();
             break;
@@ -94,9 +108,6 @@ void Application::run() {
         case 0:
             running = false;
             cout << "Dang luu du lieu va thoat chuong trinh..." << endl;
-            // Tại sao bọc từng lệnh save() trong try-catch riêng thay vì gộp chung vào 1 khối try-catch lớn?
-            // Vì nếu gộp chung, giả sử file thứ nhất bị lỗi thì 9 file phía sau sẽ bị bỏ qua không được lưu.
-            // Tách riêng từng khối giúp đảm bảo dù 1 file lỗi thì các file còn lại vẫn được lưu an toàn.
             try { serviceGroupRepository.save(); }
             catch (const exception& e) { cout << "Loi khi luu dich vu: " << e.what() << endl; }
 
@@ -136,10 +147,13 @@ void Application::run() {
     }
 }
 
-void Application::showMainMenu() {
+//Hiển thị giao diện Menu chính
+
+void Application::showMainMenu(){
     cout << "==============================" << endl;
     cout << "   QUAN LY TRUNG TAM CSKH" << endl;
     cout << "==============================" << endl;
+
     cout << "1. Quan ly dich vu (Service Manager)" << endl;
     cout << "2. Quan ly ticket" << endl;
     cout << "3. Quan ly dien thoai vien" << endl;
@@ -151,57 +165,79 @@ void Application::showMainMenu() {
     cout << "9. Quan ly danh gia hai long (Feedback)" << endl;
     cout << "10. Quan ly ca truc" << endl;
     cout << "0. Thoat" << endl;
+
     cout << "==============================" << endl;
 }
 
-// Mỗi cặp chức năng của từng thành viên chỉ truyền đúng 2 Repository trong phân hệ đó,
-// đảm bảo các usercase của 5 người hoạt động độc lập, không bị phụ thuộc chéo vào nhau.
-void Application::serviceGroupMenu() {
+
+//Điều hướng sang giao diện quản lý Dịch vụ (ServiceGroupMenu)
+
+void Application::serviceGroupMenu(){
     ServiceGroupMenu menu(serviceGroupRepository, ticketRepository);
     menu.run();
 }
 
-void Application::ticketMenu() {
+
+//Điều hướng sang giao diện quản lý Ticket (TicketMenu)
+
+void Application::ticketMenu(){
     TicketMenu menu(ticketRepository, serviceGroupRepository);
     menu.run();
 }
+
+//Điều hướng sang giao diện quản lý Điện thoại viên (AgentMenu)
 
 void Application::agentMenu() {
     AgentMenu menu(agentRepository, agentShiftRepository);
     menu.run();
 }
 
-void Application::receptionChannelMenu() {
+//Điều hướng sang giao diện quản lý Kênh tiếp nhận (ReceptionChannelMenu)
+
+void Application::receptionChannelMenu(){
     ReceptionChannelMenu menu(channelRepository, inboundCallRepository);
     menu.run();
 }
 
-void Application::inboundCallMenu() {
-    InboundCallMenu menu(inboundCallRepository, channelRepository);
+//Điều hướng sang giao diện quản lý Cuộc gọi tiếp nhận (InboundCallMenu)
+
+void Application::inboundCallMenu(){
+    InboundCallMenu menu(inboundCallRepository, channelRepository, agentRepository);
     menu.run();
 }
 
-void Application::slaLevelMenu() {
+//Điều hướng sang giao diện quản lý Mức SLA (SLALevelMenu)
+ 
+void Application::slaLevelMenu(){
     SLALevelMenu menu(slaRepository, transferRepository);
     menu.run();
 }
 
-void Application::transferTicketMenu() {
+//Điều hướng sang giao diện quản lý Phiếu chuyển xử lý (TransferTicketMenu)
+
+void Application::transferTicketMenu(){
     TransferTicketMenu menu(transferRepository, slaRepository);
     menu.run();
 }
 
-void Application::customerMenu() {
+//Điều hướng sang giao diện quản lý Khách hàng (CustomerMenu)
+
+void Application::customerMenu(){
     CustomerMenu menu(customerRepository, feedbackRepository);
     menu.run();
 }
 
-void Application::feedbackMenu() {
+//Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
+
+void Application::feedbackMenu(){
     FeedbackMenu menu(feedbackRepository, customerRepository);
     menu.run();
 }
 
-void Application::agentShiftMenu() {
+//Điều hướng sang giao diện quản lý Đánh giá hài lòng (FeedbackMenu)
+
+void Application::agentShiftMenu(){
     AgentShiftMenu menu(agentShiftRepository, agentRepository);
     menu.run();
 }
+
