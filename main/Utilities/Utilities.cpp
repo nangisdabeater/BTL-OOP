@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cctype>
+#include <stdexcept>
 #include "../Entity/BaseEntity.h"
 
 // Trong file .cpp có thể dùng "using namespace std;" an toàn vì phạm vi chỉ gói gọn trong file này,
@@ -104,6 +105,31 @@ namespace Utils {
         catch (...) {
             return false;
         }
+    }
+
+    int compareDates(const string& date1, const string& date2) {
+        string cleanDate1 = trim(date1);
+        string cleanDate2 = trim(date2);
+
+        if (!isValidDate(cleanDate1) || !isValidDate(cleanDate2)) {
+            throw invalid_argument("Dinh dang ngay thang khong hop le de so sanh (yeu cau DD/MM/YYYY)!");
+        }
+
+        int d1 = stoi(cleanDate1.substr(0, 2));
+        int m1 = stoi(cleanDate1.substr(3, 2));
+        int y1 = stoi(cleanDate1.substr(6, 4));
+
+        int d2 = stoi(cleanDate2.substr(0, 2));
+        int m2 = stoi(cleanDate2.substr(3, 2));
+        int y2 = stoi(cleanDate2.substr(6, 4));
+
+        // Quy đổi sang số nguyên dạng YYYYMMDD để so sánh thứ tự thời gian chính xác từ Năm -> Tháng -> Ngày
+        int val1 = y1 * 10000 + m1 * 100 + d1;
+        int val2 = y2 * 10000 + m2 * 100 + d2;
+
+        if (val1 < val2) return -1;
+        if (val1 > val2) return 1;
+        return 0;
     }
 
     string inputDateString(const string& prompt) {

@@ -155,6 +155,7 @@ void TicketMenu::add() {
     string description = Utils::inputNonEmptyString("Nhap mo ta chi tiet van de: ");
     
     // Kiểm tra ràng buộc với ServiceGroup trước khi cho phép tạo Ticket
+    ServiceGroup* sg = nullptr;
     string serviceGroupId;
     while (true) {
         serviceGroupId = Utils::inputNonEmptyString("Nhap ma dich vu (vi du SM001, nhap 0 de quay lai): ");
@@ -164,7 +165,7 @@ void TicketMenu::add() {
             return;
         }
         // Tra cứu mã dịch vụ trong kho ServiceGroup
-        ServiceGroup* sg = serviceGroupRepository.findById(serviceGroupId);
+        sg = serviceGroupRepository.findById(serviceGroupId);
         if (sg == nullptr) {
             cout << "Loi rang buoc: Dich vu voi ma '" << serviceGroupId << "' khong ton tai! Vui long nhap lai." << endl;
         }
@@ -180,7 +181,21 @@ void TicketMenu::add() {
 
     int priority = Utils::inputInt("Nhap muc uu tien (1: Thap, 2: Trung binh, 3: Cao, 4: Khan cap): ", 1, 4);
     int estimatedFee = Utils::inputInt("Nhap chi phi xu ly uoc tinh (VND, >= 0): ", 0);
-    string createdDate = Utils::inputDateString("Nhap ngay tao ticket (DD/MM/YYYY): ");
+
+    // Kiểm tra ràng buộc thời gian: ngày tạo ticket không được trước ngày dịch vụ được tạo ra (ban hành)
+    string createdDate;
+    while (true) {
+        createdDate = Utils::inputDateString("Nhap ngay tao ticket (DD/MM/YYYY): ");
+        if (Utils::isValidDate(sg->getCreatedDate()) &&
+            Utils::compareDates(createdDate, sg->getCreatedDate()) < 0) {
+            cout << "Loi rang buoc: Ngay tao ticket (" << createdDate
+                 << ") khong duoc truoc ngay tao cua dich vu '" << sg->getName()
+                 << "' (" << sg->getCreatedDate() << ")! Vui long nhap lai." << endl;
+        }
+        else {
+            break;
+        }
+    }
 
     Ticket newTicket(title, description, serviceGroupId, priority, estimatedFee, createdDate);
     try {
@@ -259,6 +274,31 @@ void TicketMenu::update() {
         catch (...) {
             cout << "Chi phi khong hop le, giu nguyen cu." << endl;
         }
+    }
+
+    // Cho phép cập nhật ngày tạo ticket kèm kiểm tra ràng buộc không được trước ngày tạo nhóm dịch vụ
+    while (true) {
+        cout << "Nhap ngay tao moi (DD/MM/YYYY, Enter de giu nguyen): ";
+        string dateInput;
+        getline(cin, dateInput);
+        dateInput = Utils::trim(dateInput);
+        if (dateInput.empty()) {
+            break;
+        }
+        if (!Utils::isValidDate(dateInput)) {
+            cout << "Dinh dang ngay khong hop le! Vui long nhap theo dinh dang DD/MM/YYYY (VD: 12/10/2026)." << endl;
+            continue;
+        }
+        ServiceGroup* sg = serviceGroupRepository.findById(updated.getServiceGroupId());
+        if (sg != nullptr && Utils::isValidDate(sg->getCreatedDate()) &&
+            Utils::compareDates(dateInput, sg->getCreatedDate()) < 0) {
+            cout << "Loi rang buoc: Ngay tao ticket (" << dateInput
+                 << ") khong duoc truoc ngay tao cua dich vu '" << sg->getName()
+                 << "' (" << sg->getCreatedDate() << ")! Vui long nhap lai." << endl;
+            continue;
+        }
+        updated.setCreatedDate(dateInput);
+        break;
     }
 
     cout << "Chon trang thai moi (0: OPEN, 1: IN_PROGRESS, 2: RESOLVED, 3: CLOSED, Enter: Giu nguyen): ";

@@ -26,6 +26,9 @@ namespace Utils {
     // Kiểm tra chuỗi ngày tháng có đúng định dạng DD/MM/YYYY và hợp lệ theo lịch thực tế không
     bool isValidDate(const std::string& dateStr);
 
+    // So sánh 2 ngày định dạng DD/MM/YYYY: trả về -1 nếu date1 < date2, 0 nếu bằng nhau, 1 nếu date1 > date2
+    int compareDates(const std::string& date1, const std::string& date2);
+
     // Nhập chuỗi ngày tháng từ bàn phím, yêu cầu nhập lại nếu sai định dạng DD/MM/YYYY
     std::string inputDateString(const std::string& prompt);
 
